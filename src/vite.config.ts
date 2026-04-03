@@ -2,13 +2,13 @@ import { defineConfig } from 'vite';
 import { resolve } from 'path';
 
 export default defineConfig({
-  root: 'src',
+  root: 'public',
   build: {
-    outDir: '../dist',
+    outDir: '../dist/web',
     emptyOutDir: true,
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'app.js'),
+        main: resolve(__dirname, '../public/index.html'),
       },
     },
   },
@@ -18,7 +18,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, 'src'),
+      '@': resolve(__dirname, '.'),
     },
   },
 });
