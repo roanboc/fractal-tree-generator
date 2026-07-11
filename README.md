@@ -15,6 +15,14 @@ on a shared TypeScript core.
 
 ## Features
 
+- A guided three-chapter journey: **1)** `index.html` asks why nature
+  (trees, rivers, shells) is so beautiful and introduces fractals with a
+  light history (Mandelbrot, 1975) and a kid-friendly definition; **2)**
+  `learn.html` teaches how the recursive rule works — step-by-step mini
+  canvases (1 → 31 sticks), the rule written as a simple formula, a
+  hand-drawn-style playground, and a tidy-vs-wild comparison; **3)**
+  `generator.html` is the full generator, closing with a conclusion that
+  answers the opening question: one rule plus a pinch of chaos.
 - Polished interactive generator: iterations, branch angle, and shrink
   factor are **ranges** (dual-thumb sliders) sampled per branch for
   natural-looking trees; wildness controls how much of each range is
@@ -24,11 +32,6 @@ on a shared TypeScript core.
 - Light/dark theme (follows the device by default, toggleable) and an
   English/Spanish language switcher that keeps the choice in the URL
   (`?lang=es`) so shared links open in the sender's language.
-- A kid-friendly **"How fractals work"** page (`learn.html`) that teaches
-  fractals by iteration: step-by-step mini canvases (1 → 31 sticks), the
-  recursive rule written as a simple formula, a hand-drawn-style
-  interactive playground, and a tidy-vs-wild randomness comparison — all
-  rendered by the same core `FractalService` as the main generator.
 - Same drawing algorithm on the web and in the CLI — both go through the
   same `FractalService`, so results are consistent between the two.
 - CLI mode renders to PNG and logs each generation's parameters to both

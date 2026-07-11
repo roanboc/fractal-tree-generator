@@ -1,4 +1,4 @@
-// Tiny dictionary-based i18n for the two static pages. The active language
+// Tiny dictionary-based i18n for the static pages. The active language
 // lives in the URL (?lang=es) so shared links open in the sender's language;
 // localStorage remembers it for direct visits.
 
@@ -11,17 +11,98 @@ type Entry = { en: string; es: string };
 
 const MESSAGES: Record<string, Entry> = {
   // ── Shared chrome ────────────────────────────────────────────────
-  'nav.generator': { en: 'Generator', es: 'Generador' },
-  'nav.learn': { en: 'Learn', es: 'Aprender' },
+  'nav.why': { en: 'Why?', es: '¿Por qué?' },
+  'nav.learn': { en: 'How?', es: '¿Cómo?' },
+  'nav.generator': { en: 'Create!', es: '¡Crear!' },
   'footer.text': {
     en: 'Built with a single recursive rule · Open source on',
     es: 'Hecho con una sola regla recursiva · Código abierto en',
   },
   'theme.toLight': { en: 'Switch to light mode', es: 'Cambiar a modo claro' },
   'theme.toDark': { en: 'Switch to dark mode', es: 'Cambiar a modo oscuro' },
+  'pager.next': { en: 'Next', es: 'Siguiente' },
+  'pager.back': { en: 'Back', es: 'Atrás' },
+  'pager.why': {
+    en: 'Why is nature so beautiful?',
+    es: '¿Por qué la naturaleza es tan bella?',
+  },
+  'pager.how': { en: 'How fractals work', es: 'Cómo funcionan los fractales' },
+  'pager.create': { en: 'Grow your own tree', es: 'Cultiva tu propio árbol' },
 
-  // ── Generator page ───────────────────────────────────────────────
-  'index.title': { en: 'Fractal Tree Studio', es: 'Estudio de Árboles Fractales' },
+  // ── Chapter 1: the wonder (index.html) ───────────────────────────
+  'story.title': {
+    en: 'Why Is Nature So Beautiful? · Fractal Tree Studio',
+    es: '¿Por qué la naturaleza es tan bella? · Estudio de Árboles Fractales',
+  },
+  'story.chapter': { en: 'Chapter 1 of 3 · The wonder', es: 'Capítulo 1 de 3 · El asombro' },
+  'story.hero.title': {
+    en: 'Why is nature so <span class="text-accent">beautiful</span>?',
+    es: '¿Por qué la naturaleza es tan <span class="text-accent">bella</span>?',
+  },
+  'story.hero.body': {
+    en: 'Look closely at a tree. At a river seen from an airplane. At a tiny seashell. Nobody drew them — yet they capture our eyes like the finest works of art. <strong>Why?</strong>',
+    es: 'Mira de cerca un árbol. Un río visto desde un avión. Una pequeña caracola. Nadie los dibujó — y aun así atrapan nuestra mirada como las mejores obras de arte. <strong>¿Por qué?</strong>',
+  },
+  'story.gallery.title': { en: 'Stop and look closely…', es: 'Detente y mira de cerca…' },
+  'nature.shell': { en: 'Seashell spirals', es: 'Espirales de caracola' },
+  'nature.fern': { en: 'Fern fronds', es: 'Hojas de helecho' },
+  'nature.rivers': { en: 'Rivers & coastlines', es: 'Ríos y costas' },
+  'nature.lightning': { en: 'Lightning bolts', es: 'Rayos' },
+  'nature.snow': { en: 'Snowflakes', es: 'Copos de nieve' },
+  'nature.broccoli': { en: 'Broccoli florets', es: 'Ramitos de brócoli' },
+  'story.secret.title': { en: 'They all share a secret', es: 'Todas comparten un secreto' },
+  'story.secret.body': {
+    en: 'Every one of them is built from <strong>smaller copies of itself</strong>. A branch looks like a little tree. A side stream looks like a little river. Each broccoli floret is a mini broccoli. <strong>The part looks like the whole!</strong>',
+    es: 'Cada una está construida con <strong>copias más pequeñas de sí misma</strong>. Una rama parece un arbolito. Un arroyo parece un pequeño río. Cada ramito de brócoli es un mini brócoli. <strong>¡La parte se parece al todo!</strong>',
+  },
+  'story.demo.caption': {
+    en: "This tree is pure math — drawn by one tiny rule you'll learn in the next chapter.",
+    es: 'Este árbol es pura matemática — dibujado por una reglita que aprenderás en el siguiente capítulo.',
+  },
+  'story.demo.regrow': { en: '🎲 Grow another one', es: '🎲 Cultivar otro' },
+  'story.history.title': {
+    en: 'The scientist who named the pattern',
+    es: 'El científico que nombró el patrón',
+  },
+  'story.history.body1': {
+    en: 'For centuries, math loved smooth shapes: circles, squares, triangles. But nature is not smooth — <strong>clouds are not circles, mountains are not triangles</strong>, and trees are definitely not squares.',
+    es: 'Durante siglos, a las matemáticas les encantaron las formas lisas: círculos, cuadrados, triángulos. Pero la naturaleza no es lisa — <strong>las nubes no son círculos, las montañas no son triángulos</strong>, y los árboles desde luego no son cuadrados.',
+  },
+  'story.history.body2': {
+    en: 'In <strong>1975</strong>, the mathematician <strong>Benoît Mandelbrot</strong> finally gave nature\'s rough, repeating shapes a name: <strong>fractals</strong>, from the Latin word <em>fractus</em> — "broken".',
+    es: 'En <strong>1975</strong>, el matemático <strong>Benoît Mandelbrot</strong> por fin dio nombre a las formas rugosas y repetitivas de la naturaleza: <strong>fractales</strong>, de la palabra latina <em>fractus</em> — «roto».',
+  },
+  'story.def.title': { en: 'So, what is a fractal?', es: 'Entonces, ¿qué es un fractal?' },
+  'story.def.body': {
+    en: 'A fractal is <strong>a shape made of smaller copies of itself</strong>. Zoom into any piece and you find the same pattern again — smaller, but the same.',
+    es: 'Un fractal es <strong>una forma hecha de copias más pequeñas de sí misma</strong>. Acércate a cualquier parte y encontrarás el mismo patrón otra vez — más pequeño, pero igual.',
+  },
+  'story.cta.title': { en: 'Ready to see the trick? ✨', es: '¿Listo para ver el truco? ✨' },
+  'story.cta.body': {
+    en: "It takes just one rule. Let's learn it — and then you'll grow trees of your own.",
+    es: 'Basta una sola regla. Aprendámosla — y después cultivarás tus propios árboles.',
+  },
+  'story.cta.button': { en: '✨ How fractals work', es: '✨ Cómo funcionan los fractales' },
+
+  // ── Chapter 3: generator page ────────────────────────────────────
+  'generator.title': {
+    en: 'Grow Your Own Tree · Fractal Tree Studio',
+    es: 'Cultiva tu propio árbol · Estudio de Árboles Fractales',
+  },
+  'generator.chapter': { en: 'Chapter 3 of 3 · Your turn', es: 'Capítulo 3 de 3 · Tu turno' },
+  'conclusion.title': {
+    en: 'So… why are trees so beautiful?',
+    es: 'Entonces… ¿por qué los árboles son tan bellos?',
+  },
+  'conclusion.body1': {
+    en: 'Because they follow a <strong>fractal rule</strong> — one simple pattern, repeated over and over — with <strong>a pinch of chaos</strong> sprinkled on top. The rule makes the pattern; the wildness makes it alive.',
+    es: 'Porque siguen una <strong>regla fractal</strong> — un patrón sencillo, repetido una y otra vez — con <strong>una pizca de caos</strong> espolvoreada encima. La regla crea el patrón; la rebeldía lo hace vivir.',
+  },
+  'conclusion.body2': {
+    en: "That's the beauty of math: from one tiny rule, endless one-of-a-kind trees. Next time you pass a tree, a river or a seashell, you'll see the secret pattern hiding inside. 🌳",
+    es: 'Esa es la belleza de las matemáticas: de una reglita, infinitos árboles irrepetibles. La próxima vez que pases junto a un árbol, un río o una caracola, verás el patrón secreto que esconden. 🌳',
+  },
+  'conclusion.restart': { en: '← Start the journey again', es: '← Empezar el viaje de nuevo' },
   'hero.title': {
     en: 'Grow your own <span class="text-accent">fractal tree</span>',
     es: 'Cultiva tu propio <span class="text-accent">árbol fractal</span>',
@@ -95,6 +176,7 @@ const MESSAGES: Record<string, Entry> = {
     en: 'How Fractals Work · Fractal Tree Studio',
     es: 'Cómo funcionan los fractales · Estudio de Árboles Fractales',
   },
+  'learn.chapter': { en: 'Chapter 2 of 3 · The trick', es: 'Capítulo 2 de 3 · El truco' },
   'learn.hero.title': { en: 'How do fractals work?', es: '¿Cómo funcionan los fractales?' },
   'learn.hero.body': {
     en: "A fractal is a picture made by following <strong>one simple rule</strong>, again and again and again. Each time you repeat the rule, the picture gets richer — that's called an <strong>iteration</strong>. Let's grow a tree, one iteration at a time!",
@@ -199,20 +281,6 @@ const MESSAGES: Record<string, Entry> = {
   },
   'learn.random.regrow': { en: '🎲 Grow two new trees', es: '🎲 Cultivar dos árboles nuevos' },
 
-  'learn.everywhere.title': {
-    en: 'Fractals hide everywhere',
-    es: 'Los fractales se esconden en todas partes',
-  },
-  'learn.everywhere.broccoli': { en: 'Broccoli florets', es: 'Ramitos de brócoli' },
-  'learn.everywhere.lightning': { en: 'Lightning bolts', es: 'Rayos' },
-  'learn.everywhere.snow': { en: 'Snowflakes', es: 'Copos de nieve' },
-  'learn.everywhere.lungs': { en: 'Your lungs!', es: '¡Tus pulmones!' },
-  'learn.everywhere.rivers': { en: 'Rivers & coastlines', es: 'Ríos y costas' },
-  'learn.everywhere.body': {
-    en: "Next time you eat broccoli, look closely: each little floret looks like a tiny copy of the whole thing. That's the fractal secret — <strong>the part looks like the whole</strong>.",
-    es: 'La próxima vez que comas brócoli, míralo de cerca: cada ramito parece una copia diminuta del brócoli entero. Ese es el secreto fractal — <strong>la parte se parece al todo</strong>.',
-  },
-
   'learn.cta.title': { en: 'Now you know the secret 🤫', es: 'Ya conoces el secreto 🤫' },
   'learn.cta.body': {
     en: "One rule. Many repeats. Infinite trees. Go make one that's never existed before!",
@@ -271,7 +339,7 @@ function syncLangArtifacts(): void {
 /** Append the current language to internal page links so navigation keeps it. */
 function localizeInternalLinks(): void {
   const links = document.querySelectorAll<HTMLAnchorElement>(
-    'a[href^="./index.html"], a[href^="./learn.html"]'
+    'a[href^="./index.html"], a[href^="./learn.html"], a[href^="./generator.html"]'
   );
   links.forEach((link) => {
     const url = new URL(link.getAttribute('href')!, window.location.href);

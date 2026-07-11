@@ -90,7 +90,7 @@
   }
 
   .nav-link {
-    @apply rounded-full px-3 py-1.5 text-sm font-medium transition sm:px-4;
+    @apply flex items-center gap-1.5 whitespace-nowrap rounded-full px-1.5 py-1.5 text-sm font-medium transition sm:px-3;
     color: var(--text-muted);
   }
 
@@ -101,6 +101,18 @@
   .nav-link-active {
     background: var(--chip-bg);
     color: var(--text-strong);
+  }
+
+  /* Journey step number; on phones it is the whole nav label */
+  .nav-num {
+    @apply flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold;
+    background: var(--chip-bg);
+    color: var(--text-body);
+  }
+
+  .nav-link-active .nav-num {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    color: #022c22;
   }
 
   .icon-btn {
@@ -340,6 +352,16 @@
 
   .prose-fun strong {
     color: var(--accent-text);
+  }
+
+  .chapter-badge {
+    @apply inline-flex items-center rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-[0.18em];
+    background: var(--chip-bg);
+    color: var(--accent-text);
+  }
+
+  .pager {
+    @apply mt-14 flex flex-wrap items-center justify-between gap-3;
   }
 
   .footer-link {
