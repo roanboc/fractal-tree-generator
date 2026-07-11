@@ -3,12 +3,45 @@
 @tailwind utilities;
 
 @layer base {
+  /* Dark theme (default) */
   :root {
     --bg-deep: #05060f;
-    --bg-panel: rgba(255, 255, 255, 0.04);
+    --bg-glow-1: rgba(52, 211, 153, 0.12);
+    --bg-glow-2: rgba(251, 191, 36, 0.06);
+    --surface: rgba(255, 255, 255, 0.04);
+    --border: rgba(255, 255, 255, 0.1);
+    --border-soft: rgba(255, 255, 255, 0.05);
+    --header-bg: rgba(5, 6, 15, 0.75);
+    --shadow: rgba(0, 0, 0, 0.4);
+    --text-strong: #ffffff;
+    --text-body: #cbd5e1;
+    --text-muted: #94a3b8;
+    --text-faint: #64748b;
+    --accent-text: #34d399;
     --canvas-bg: #0b1020;
-    --accent: #34d399;
-    --accent-warm: #fbbf24;
+    --track: rgba(255, 255, 255, 0.1);
+    --chip-bg: rgba(255, 255, 255, 0.1);
+    --help-bg: rgba(52, 211, 153, 0.08);
+  }
+
+  :root[data-theme='light'] {
+    --bg-deep: #f2f6f9;
+    --bg-glow-1: rgba(16, 185, 129, 0.1);
+    --bg-glow-2: rgba(251, 191, 36, 0.12);
+    --surface: #ffffff;
+    --border: rgba(15, 23, 42, 0.12);
+    --border-soft: rgba(15, 23, 42, 0.07);
+    --header-bg: rgba(255, 255, 255, 0.82);
+    --shadow: rgba(15, 23, 42, 0.1);
+    --text-strong: #0f172a;
+    --text-body: #334155;
+    --text-muted: #64748b;
+    --text-faint: #94a3b8;
+    --accent-text: #059669;
+    --canvas-bg: #eef3f8;
+    --track: rgba(15, 23, 42, 0.12);
+    --chip-bg: rgba(15, 23, 42, 0.06);
+    --help-bg: rgba(16, 185, 129, 0.1);
   }
 
   html {
@@ -16,11 +49,11 @@
   }
 
   body {
-    @apply min-h-screen font-display text-slate-200 antialiased;
+    @apply min-h-screen font-display antialiased;
+    color: var(--text-body);
     background:
-      radial-gradient(ellipse 80% 50% at 50% -10%, rgba(52, 211, 153, 0.12), transparent),
-      radial-gradient(ellipse 60% 40% at 90% 10%, rgba(251, 191, 36, 0.06), transparent),
-      var(--bg-deep);
+      radial-gradient(ellipse 80% 50% at 50% -10%, var(--bg-glow-1), transparent),
+      radial-gradient(ellipse 60% 40% at 90% 10%, var(--bg-glow-2), transparent), var(--bg-deep);
   }
 
   ::selection {
@@ -29,21 +62,76 @@
 }
 
 @layer components {
+  /* Theme-aware text helpers (replace fixed slate/white utilities) */
+  .text-strong {
+    color: var(--text-strong);
+  }
+
+  .text-body {
+    color: var(--text-body);
+  }
+
+  .text-muted {
+    color: var(--text-muted);
+  }
+
+  .text-faint {
+    color: var(--text-faint);
+  }
+
+  .text-accent {
+    color: var(--accent-text);
+  }
+
   .site-header {
-    @apply sticky top-0 z-40 border-b border-white/5 backdrop-blur-md;
-    background: rgba(5, 6, 15, 0.75);
+    @apply sticky top-0 z-40 backdrop-blur-md;
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--header-bg);
   }
 
   .nav-link {
-    @apply rounded-full px-4 py-1.5 text-sm font-medium text-slate-400 transition hover:text-white;
+    @apply rounded-full px-3 py-1.5 text-sm font-medium transition sm:px-4;
+    color: var(--text-muted);
+  }
+
+  .nav-link:hover {
+    color: var(--text-strong);
   }
 
   .nav-link-active {
-    @apply bg-white/10 text-white;
+    background: var(--chip-bg);
+    color: var(--text-strong);
+  }
+
+  .icon-btn {
+    @apply flex h-9 w-9 items-center justify-center rounded-full text-base transition;
+    border: 1px solid var(--border);
+  }
+
+  .icon-btn:hover {
+    background: var(--chip-bg);
+  }
+
+  .lang-switch {
+    @apply flex items-center overflow-hidden rounded-full text-xs font-bold;
+    border: 1px solid var(--border);
+  }
+
+  .lang-btn {
+    @apply px-2.5 py-1.5 transition;
+    color: var(--text-muted);
+  }
+
+  .lang-btn-active {
+    background: linear-gradient(135deg, #34d399, #10b981);
+    color: #022c22;
   }
 
   .card {
-    @apply rounded-2xl border border-white/10 bg-white/[0.04] shadow-xl shadow-black/40;
+    @apply rounded-2xl;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    box-shadow: 0 20px 25px -5px var(--shadow);
   }
 
   .canvas-frame {
@@ -66,35 +154,80 @@
   }
 
   .btn-ghost {
-    @apply btn border border-white/15 text-slate-300 hover:border-white/30 hover:text-white;
+    @apply btn;
+    border: 1px solid var(--border);
+    color: var(--text-body);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--text-muted);
+    color: var(--text-strong);
   }
 
   .btn-outline-warm {
-    @apply btn border border-amber-400/40 text-amber-300 hover:border-amber-300 hover:bg-amber-400/10;
+    @apply btn border border-amber-500/50 text-amber-600 hover:border-amber-500 hover:bg-amber-400/10;
+  }
+
+  :root:not([data-theme='light']) .btn-outline-warm {
+    @apply border-amber-400/40 text-amber-300 hover:border-amber-300;
   }
 
   .control-label {
-    @apply flex items-baseline justify-between text-[13px] font-medium text-slate-300;
+    @apply flex items-baseline justify-between text-[13px] font-medium;
+    color: var(--text-body);
   }
 
   .control-value {
-    @apply rounded-md bg-white/10 px-2 py-0.5 font-mono text-[11px] text-emerald-300;
+    @apply rounded-md px-2 py-0.5 font-mono text-[11px];
+    background: var(--chip-bg);
+    color: var(--accent-text);
   }
 
   .section-title {
-    @apply mb-3 text-[11px] font-bold uppercase tracking-[0.18em] text-slate-500;
+    @apply text-[11px] font-bold uppercase tracking-[0.18em];
+    color: var(--text-faint);
+  }
+
+  .section-note {
+    @apply -mt-2 text-xs leading-relaxed;
+    color: var(--text-muted);
+  }
+
+  /* "What does this do?" expandable help boxes */
+  .info-btn {
+    @apply flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full font-serif text-[11px] font-bold italic leading-none transition;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .info-btn:hover,
+  .info-btn-active {
+    border-color: var(--accent-text);
+    color: var(--accent-text);
+  }
+
+  .control-help {
+    @apply rounded-lg px-3 py-2 text-xs leading-relaxed;
+    background: var(--help-bg);
+    border: 1px solid var(--border-soft);
+    color: var(--text-body);
+  }
+
+  .actions-block {
+    border-top: 1px solid var(--border);
   }
 
   /* Range sliders */
   .range {
-    @apply h-2 w-full cursor-pointer appearance-none rounded-full bg-white/10 outline-none;
+    @apply h-2 w-full cursor-pointer appearance-none rounded-full outline-none;
+    background: var(--track);
   }
 
   .range::-webkit-slider-thumb {
     appearance: none;
     -webkit-appearance: none;
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     border-radius: 9999px;
     background: linear-gradient(135deg, #6ee7b7, #10b981);
     border: 2px solid #052e21;
@@ -107,8 +240,8 @@
   }
 
   .range::-moz-range-thumb {
-    width: 18px;
-    height: 18px;
+    width: 22px;
+    height: 22px;
     border-radius: 9999px;
     background: linear-gradient(135deg, #6ee7b7, #10b981);
     border: 2px solid #052e21;
@@ -120,9 +253,60 @@
     transform: scale(1.15);
   }
 
+  /* Dual-thumb range: two stacked native sliders. The inputs ignore pointer
+     events; only their thumbs receive them, so both mouse and touch work. */
+  .dual-range {
+    @apply relative w-full;
+    height: 26px;
+  }
+
+  .dual-track {
+    @apply absolute left-0 right-0 top-1/2 h-2 -translate-y-1/2 rounded-full;
+    background: var(--track);
+  }
+
+  .dual-fill {
+    @apply absolute top-0 h-full rounded-full;
+    background: linear-gradient(90deg, #34d399, #10b981);
+  }
+
+  .dual-range input[type='range'] {
+    @apply absolute left-0 top-0 m-0 h-full w-full appearance-none;
+    -webkit-appearance: none;
+    background: none;
+    pointer-events: none;
+    outline: none;
+    z-index: 2;
+  }
+
+  .dual-range input[type='range']::-webkit-slider-thumb {
+    appearance: none;
+    -webkit-appearance: none;
+    pointer-events: auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #6ee7b7, #10b981);
+    border: 2px solid #052e21;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.6);
+    cursor: pointer;
+  }
+
+  .dual-range input[type='range']::-moz-range-thumb {
+    pointer-events: auto;
+    width: 22px;
+    height: 22px;
+    border-radius: 9999px;
+    background: linear-gradient(135deg, #6ee7b7, #10b981);
+    border: 2px solid #052e21;
+    box-shadow: 0 2px 8px rgba(16, 185, 129, 0.6);
+    cursor: pointer;
+  }
+
   /* Color swatch inputs */
   .swatch {
-    @apply h-9 w-full cursor-pointer appearance-none rounded-lg border border-white/15 bg-transparent p-1;
+    @apply h-9 w-full cursor-pointer appearance-none rounded-lg bg-transparent p-1;
+    border: 1px solid var(--border);
   }
 
   .swatch::-webkit-color-swatch-wrapper {
@@ -150,10 +334,26 @@
   }
 
   .prose-fun {
-    @apply text-[15px] leading-relaxed text-slate-300;
+    @apply text-[15px] leading-relaxed;
+    color: var(--text-body);
   }
 
   .prose-fun strong {
-    @apply text-emerald-300;
+    color: var(--accent-text);
+  }
+
+  .footer-link {
+    color: var(--text-muted);
+  }
+
+  .footer-link:hover {
+    color: var(--text-strong);
+  }
+
+  .formula-code {
+    @apply overflow-x-auto whitespace-pre rounded-xl p-4 text-left font-mono text-sm leading-7;
+    background: var(--canvas-bg);
+    border: 1px solid var(--border);
+    color: var(--text-strong);
   }
 }

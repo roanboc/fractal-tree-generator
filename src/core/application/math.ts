@@ -1,5 +1,23 @@
+import { Interval } from '../domain/types';
+
 export function getRandomInRange(min: number, max: number): number {
   return Math.random() * (max - min) + min;
+}
+
+/**
+ * Sample a value from an interval, scaled by wildness: at wildness 0 the
+ * midpoint is always returned; at wildness 1 the sample may land anywhere
+ * in the interval. In between, samples stay proportionally closer to the
+ * midpoint.
+ */
+export function sampleInterval(
+  interval: Interval,
+  wildness: number,
+  rng: () => number = Math.random
+): number {
+  const mid = (interval.min + interval.max) / 2;
+  const half = (interval.max - interval.min) / 2;
+  return mid + (rng() * 2 - 1) * clamp(wildness, 0, 1) * half;
 }
 
 export function lerp(start: number, end: number, fraction: number): number {

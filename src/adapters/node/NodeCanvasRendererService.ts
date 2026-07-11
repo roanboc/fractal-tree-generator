@@ -15,13 +15,16 @@ export class NodeCanvasRendererService implements IRendererService {
     this.ctx.fillRect(0, 0, config.width, config.height);
   }
 
+  // strokeMs is part of the port for animating renderers; headless PNG
+  // rendering always draws instantly.
   drawBranch(
     x: number,
     y: number,
     length: number,
     angle: number,
     lineWidth: number,
-    color: string
+    color: string,
+    _strokeMs = 0
   ): void {
     this.ctx.beginPath();
     this.ctx.lineWidth = lineWidth;

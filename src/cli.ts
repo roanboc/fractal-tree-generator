@@ -1,12 +1,28 @@
 #!/usr/bin/env ts-node
 import { Command } from 'commander';
 import * as path from 'path';
-import { FractalLogEntry, FractalParams } from './core/domain/types';
+import { FractalLogEntry, FractalParamsInput, Interval } from './core/domain/types';
 import { composeNodeServices } from './composition/NodeComposition';
 import { FractalLogRepository } from './adapters/node/FractalLogRepository';
 import { LoggerService } from './adapters/node/LoggerService';
 
 const OUTPUT_DIR = path.resolve(process.cwd(), 'output');
+
+// Interval options accept either a single number ("30") or a "min:max"
+// range ("20:40"). A single number behaves as a fixed value.
+function parseIntervalOption(value: string): number | Interval {
+  const parts = value.split(':');
+  if (parts.length === 2) {
+    return { min: parseFloat(parts[0]), max: parseFloat(parts[1]) };
+  }
+  return parseFloat(value);
+}
+
+// Log entries written before intervals existed store plain numbers.
+function formatInterval(value: number | Interval): string {
+  if (typeof value === 'number') return String(value);
+  return value.min === value.max ? String(value.min) : `${value.min}–${value.max}`;
+}
 
 const program = new Command();
 
@@ -18,23 +34,39 @@ program
 program
   .command('generate', { isDefault: true })
   .description('Generate a fractal tree PNG and log the parameters')
-  .option('--depth <n>', 'Recursion depth 1-12 (default: 7)', parseFloat)
-  .option('--angle <deg>', 'Branch angle in degrees 1-90 (default: 30)', parseFloat)
-  .option('--length-factor <f>', 'Branch length multiplier 0.1-0.9 (default: 0.7)', parseFloat)
-  .option('--trunk-length <px>', 'Trunk length in pixels 10-500 (default: 120)', parseFloat)
-  .option('--line-width <px>', 'Initial line width 1-20 (default: 4)', parseFloat)
-  .option('--randomness <f>', 'Jitter factor 0-1 (default: 0)', parseFloat)
+  .option(
+    '--depth <n|min:max>',
+    'Iterations 1-12, value or range (default: 6:9)',
+    parseIntervalOption
+  )
+  .option(
+    '--angle <deg|min:max>',
+    'Branch angle in degrees 1-90, value or range (default: 18:34)',
+    parseIntervalOption
+  )
+  .option(
+    '--length-factor <f|min:max>',
+    'Branch length multiplier 0.1-0.9, value or range (default: 0.65:0.78)',
+    parseIntervalOption
+  )
+  .option('--trunk-length <px>', 'Trunk length in pixels 10-500 (default: 140)', parseFloat)
+  .option('--line-width <px>', 'Initial line width 1-20 (default: 10)', parseFloat)
+  .option(
+    '--randomness <f>',
+    'Wildness 0-1: how much of each range is used (default: 0.5)',
+    parseFloat
+  )
   .option('--speed <ms>', 'Delay between branches in ms, 0=instant (default: 0)', parseFloat)
-  .option('--trunk-color <hex>', 'Trunk color hex (default: #8B4513)')
-  .option('--leaf-color <hex>', 'Leaf color hex (default: #228B22)')
-  .option('--accent-color <hex>', 'Accent color hex (default: #FF69B4)')
+  .option('--trunk-color <hex>', 'Trunk color hex (default: #a86a33)')
+  .option('--leaf-color <hex>', 'Leaf color hex (default: #34d399)')
+  .option('--accent-color <hex>', 'Accent color hex (default: #fbbf24)')
   .option('--show-accent', 'Enable accent branches (default: false)', false)
   .option('--output <path>', 'Output PNG file path (default: output/fractal-<timestamp>.png)')
   .action(async (options) => {
     const { fractalService, rendererService, loggerService, configService, speedControlService } =
       composeNodeServices();
 
-    const partialParams: Partial<FractalParams> = {};
+    const partialParams: FractalParamsInput = {};
     if (options.depth !== undefined) partialParams.depth = options.depth;
     if (options.angle !== undefined) partialParams.angle = options.angle;
     if (options.lengthFactor !== undefined) partialParams.lengthFactor = options.lengthFactor;
@@ -60,9 +92,10 @@ program
     }
 
     console.log('\nGenerating fractal tree...');
-    console.log(`  Depth:        ${params.depth}`);
-    console.log(`  Angle:        ${params.angle}°`);
-    console.log(`  Length factor:${params.lengthFactor}`);
+    console.log(`  Iterations:   ${formatInterval(params.depth)}`);
+    console.log(`  Angle:        ${formatInterval(params.angle)}°`);
+    console.log(`  Shrink:       ${formatInterval(params.lengthFactor)}`);
+    console.log(`  Wildness:     ${Math.round(params.randomness * 100)}%`);
     console.log(`  Trunk length: ${params.trunkLength}px`);
     console.log(
       `  Speed:        ${params.animationSpeed === 0 ? 'instant' : `${params.animationSpeed}ms/branch`}`
@@ -112,7 +145,7 @@ program
     for (const entry of entries) {
       console.log(`  [${entry.id}] ${entry.timestamp}`);
       console.log(
-        `       depth=${entry.params.depth}  angle=${entry.params.angle}°  speed=${entry.params.animationSpeed}ms`
+        `       depth=${formatInterval(entry.params.depth)}  angle=${formatInterval(entry.params.angle)}°  speed=${entry.params.animationSpeed}ms`
       );
       console.log(`       branches=${entry.totalBranchesDrawn}  time=${entry.generationTimeMs}ms`);
       console.log(`       output: ${entry.outputPath}`);

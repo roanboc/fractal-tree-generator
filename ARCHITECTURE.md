@@ -120,7 +120,7 @@ classDiagram
     class IRendererService {
         <<interface>>
         +initialize(config) void
-        +drawBranch(x, y, length, angle, lineWidth, color) void
+        +drawBranch(x, y, length, angle, lineWidth, color, strokeMs) void
         +save(outputPath) Promise~void~
         +clear() void
     }
@@ -197,7 +197,7 @@ sequenceDiagram
     Main->>Fractal: generate(params)
     Fractal->>Renderer: initialize(canvasConfig)
     Renderer->>Canvas: fillRect(background)
-    loop for each branch (2^depth - 1 total)
+    loop for each branch (up to 2^depth.max - 1)
         Fractal->>Renderer: drawBranch(x, y, length, angle, lineWidth, color)
         Renderer->>Canvas: stroke path
         Fractal->>Speed: wait()

@@ -24,14 +24,13 @@ counting) is allowed to live.
 **Implemented by:** `core/application/FractalService.ts`
 **Consumed by:** `adapters/web/main.ts`, `src/cli.ts` (via the composition roots)
 
-### `generate(params: FractalParams): Promise<RenderResult>`
+### `generate(params: FractalParamsInput): Promise<RenderResult>`
 
-- **Preconditions:** `params` should be a fully-populated `FractalParams`.
-  In practice this method re-validates via the injected `IConfigService`
-  internally, so passing an already-validated object is not required for
-  correctness — but the type signature requires a full object, not a
-  `Partial`, so callers should validate first for type-safety at the call
-  site.
+- **Preconditions:** none beyond the input type. `params` may be partial
+  and may give interval parameters (`depth`, `angle`, `lengthFactor`) as
+  single numbers; this method validates and normalizes via the injected
+  `IConfigService` internally, filling defaults and converting numbers to
+  fixed intervals.
 - **Postconditions:**
   - `renderer.initialize()` is called exactly once, with the
     `CanvasConfig` injected into the `FractalService` constructor
@@ -39,8 +38,13 @@ counting) is allowed to live.
     composition-time decision, **not** part of `FractalParams` — the
     learn page composes one `FractalService` per demo canvas, each with
     its own size.
-  - `renderer.drawBranch()` is called exactly `2^depth - 1` times (a full
-    binary tree — the algorithm never prunes early).
+  - `renderer.drawBranch()` is called once per branch drawn. With
+    `randomness: 0` and a fixed depth interval (`min === max === d`) that
+    is exactly `2^d - 1` (a full binary tree). With a wider depth interval
+    or `randomness > 0`, each branch tip samples its own stopping depth
+    inside `[depth.min, depth.max]`, so the count varies between the
+    depth-`min` skeleton and the full depth-`max` tree. The reported
+    `totalBranchesDrawn` always equals the number of `drawBranch()` calls.
   - Returns a `RenderResult` with `outputPath: ''` — the caller is
     responsible for persisting the render (via `renderer.save()`) and
     filling in the real path; `FractalService` has no filesystem
@@ -86,12 +90,17 @@ Canvas2D), `adapters/node/NodeCanvasRendererService.ts` (`node-canvas`)
 - Must be called before `drawBranch()`; both adapters assume `this.ctx`
   is initialized and will throw a null-reference error otherwise.
 
-### `drawBranch(x, y, length, angle, lineWidth, color): void`
+### `drawBranch(x, y, length, angle, lineWidth, color, strokeMs?): void | Promise<void>`
 
 - Draws one line segment from `(x, y)` at the given `angle` (radians,
   standard math convention — `0` is +x, increasing counter-clockwise) for
   `length` pixels, with the given `lineWidth` and `color` (any valid CSS
   color string).
+- `strokeMs` (default `0`) asks the renderer to animate the stroke growing
+  from base to tip over that many milliseconds and return a promise that
+  resolves when the stroke is complete. Renderers without animation
+  support (the Node adapter) ignore it and draw instantly; callers must
+  therefore `await` the result but not rely on the animation happening.
 - **Postconditions:** exactly one stroked path is added to the canvas.
   Does not return the endpoint — callers that need it (i.e.
   `FractalService`) compute it themselves with the same trigonometry.
