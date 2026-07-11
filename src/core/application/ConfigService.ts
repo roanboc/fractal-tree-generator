@@ -1,4 +1,6 @@
-import { FractalParams, IConfigService } from '../types/interfaces';
+import { FractalParams } from '../domain/types';
+import { IConfigService } from '../ports';
+import { clamp } from './math';
 
 const DEFAULTS: FractalParams = {
   depth: 7,
@@ -17,18 +19,14 @@ const DEFAULTS: FractalParams = {
 };
 
 const CONSTRAINTS: Record<string, { min: number; max: number }> = {
-  depth:         { min: 1,    max: 12    },
-  angle:         { min: 1,    max: 90    },
-  lengthFactor:  { min: 0.1,  max: 0.9   },
-  trunkLength:   { min: 10,   max: 500   },
-  lineWidth:     { min: 1,    max: 20    },
-  randomness:    { min: 0,    max: 1     },
-  animationSpeed:{ min: 0,    max: 10000 },
+  depth: { min: 1, max: 12 },
+  angle: { min: 1, max: 90 },
+  lengthFactor: { min: 0.1, max: 0.9 },
+  trunkLength: { min: 10, max: 500 },
+  lineWidth: { min: 1, max: 20 },
+  randomness: { min: 0, max: 1 },
+  animationSpeed: { min: 0, max: 10000 },
 };
-
-function clamp(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}
 
 export class ConfigService implements IConfigService {
   getDefaults(): FractalParams {

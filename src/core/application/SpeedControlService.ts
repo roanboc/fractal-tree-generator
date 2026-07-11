@@ -1,4 +1,4 @@
-import { ISpeedControlService } from '../types/interfaces';
+import { ISpeedControlService } from '../ports';
 
 export class SpeedControlService implements ISpeedControlService {
   private delayMs: number = 0;
@@ -17,6 +17,6 @@ export class SpeedControlService implements ISpeedControlService {
 
   wait(): Promise<void> {
     if (this.delayMs === 0) return Promise.resolve();
-    return new Promise(resolve => setTimeout(resolve, this.delayMs));
+    return new Promise((resolve) => setTimeout(resolve, this.delayMs));
   }
 }

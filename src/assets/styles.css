@@ -1,37 +1,37 @@
 :root {
-    --base-color: #8B4513; /* Trunk color */
-    --leaf-color: #228B22; /* Leaf color */
-    --accent-color: #FF69B4; /* Optional accent color */
+  --base-color: #8b4513; /* Trunk color */
+  --leaf-color: #228b22; /* Leaf color */
+  --accent-color: #ff69b4; /* Optional accent color */
 }
 
 body {
-    @apply bg-gray-100 flex items-center justify-center min-h-screen;
+  @apply bg-gray-100 flex items-center justify-center min-h-screen;
 }
 
-#canvas {
-    @apply border-2 border-gray-300 rounded-lg;
+#fractalCanvas {
+  @apply border-2 border-gray-300 rounded-lg;
 }
 
 .controls {
-    @apply flex flex-col space-y-4 p-4 bg-white rounded-lg shadow-md;
+  @apply flex flex-col space-y-4 p-4 bg-white rounded-lg shadow-md;
 }
 
 .control-label {
-    @apply font-semibold text-gray-700;
+  @apply font-semibold text-gray-700;
 }
 
 .slider {
-    @apply w-full;
+  @apply w-full;
 }
 
 .button {
-    @apply bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition;
+  @apply bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 transition;
 }
 
 .button:disabled {
-    @apply bg-gray-300 cursor-not-allowed;
+  @apply bg-gray-300 cursor-not-allowed;
 }
 
 .accent {
-    @apply text-accent-color;
+  color: var(--accent-color);
 }

@@ -1,6 +1,7 @@
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { FractalLogEntry, IFractalLogRepository, ILoggerService } from '../types/interfaces';
+import { FractalLogEntry } from '../../core/domain/types';
+import { IFractalLogRepository, ILoggerService } from '../../core/ports';
 
 const LOGS_DIR = path.resolve(process.cwd(), 'logs');
 
