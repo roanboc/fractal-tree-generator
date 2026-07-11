@@ -6,6 +6,25 @@ one place, and every platform-specific concern (browser Canvas, Node's
 `node-canvas`, SQLite, the CLI) plugs into that core through interfaces —
 never the other way around.
 
+**Related documentation:**
+
+- [docs/CONTRACTS.md](./docs/CONTRACTS.md) — the interface contracts referenced below (pre/postconditions, invariants, error behavior)
+- [docs/BUSINESS_CONTEXT.md](./docs/BUSINESS_CONTEXT.md) — why this exists, who it's for, domain glossary, business rules
+- [docs/DATA_ARCHITECTURE.md](./docs/DATA_ARCHITECTURE.md) — data entities, storage, lifecycle
+
+## Solution overview
+
+The system has exactly one piece of business logic — "recursively draw a
+branching tree given a set of parameters" — and two delivery mechanisms for
+it: an interactive browser UI, and a headless CLI. Both delivery mechanisms
+are thin adapters wired onto the same `FractalService`. Nothing about the
+drawing algorithm, validation rules, or animation timing is duplicated
+between them; the only things that differ per platform are _how a branch
+gets drawn_ (Canvas2D vs. `node-canvas`) and _what happens to the result_
+(stays on screen vs. gets written to disk + logged).
+
+## Project structure
+
 ```
 src/
 ├── core/                        # Framework-agnostic domain + business logic
@@ -29,6 +48,191 @@ src/
 │   ├── WebComposition.ts        # Used by adapters/web/main.ts only
 │   └── NodeComposition.ts       # Used by cli.ts only
 └── cli.ts                       # Node CLI entry point
+
+tests/core/                      # Vitest unit tests for core/application/*
+docs/                            # CONTRACTS.md, BUSINESS_CONTEXT.md, DATA_ARCHITECTURE.md
+```
+
+## Component diagram
+
+```mermaid
+flowchart TB
+    Browser["Browser<br/>adapters/web/main.ts"]
+    CLI["Terminal<br/>src/cli.ts"]
+
+    subgraph Composition["composition/ — composition roots"]
+        WebComp["WebComposition"]
+        NodeComp["NodeComposition"]
+    end
+
+    subgraph Core["core/ — framework-agnostic domain"]
+        Ports(["ports.ts<br/>(interfaces)"])
+        FractalService["FractalService<br/>(the algorithm)"]
+        ConfigService["ConfigService<br/>(defaults + validation)"]
+        SpeedControlService["SpeedControlService"]
+    end
+
+    subgraph WebAdapters["adapters/web/"]
+        WebRenderer["WebRendererService<br/>(Canvas2D)"]
+        ControlsView["ControlsView<br/>(DOM)"]
+    end
+
+    subgraph NodeAdapters["adapters/node/"]
+        NodeRenderer["NodeCanvasRendererService<br/>(node-canvas)"]
+        LoggerService["LoggerService"]
+        Repo["FractalLogRepository<br/>(SQLite)"]
+    end
+
+    Browser --> WebComp
+    Browser --> ControlsView
+    CLI --> NodeComp
+
+    WebComp --> FractalService
+    WebComp --> WebRenderer
+    NodeComp --> FractalService
+    NodeComp --> NodeRenderer
+    NodeComp --> LoggerService
+    LoggerService --> Repo
+
+    FractalService -.depends on.-> Ports
+    WebRenderer -.implements.-> Ports
+    NodeRenderer -.implements.-> Ports
+    Repo -.implements.-> Ports
+
+    style Core fill:#1a1a2e,color:#fff,stroke:#8B4513,stroke-width:2px
+    style WebAdapters fill:#eef6ee,color:#111
+    style NodeAdapters fill:#eef2f9,color:#111
+```
+
+The `core` box has no outgoing arrows to `adapters` — that's the whole
+point of the pattern. Dependencies point inward, toward the domain.
+
+## Class diagram — ports and their implementers
+
+```mermaid
+classDiagram
+    class IFractalService {
+        <<interface>>
+        +generate(params) Promise~RenderResult~
+        +clear() void
+    }
+    class IRendererService {
+        <<interface>>
+        +initialize(config) void
+        +drawBranch(x, y, length, angle, lineWidth, color) void
+        +save(outputPath) Promise~void~
+        +clear() void
+    }
+    class IConfigService {
+        <<interface>>
+        +getDefaults() FractalParams
+        +validate(params) FractalParams
+    }
+    class ISpeedControlService {
+        <<interface>>
+        +setDelay(ms) void
+        +getDelay() number
+        +wait() Promise~void~
+        +isEnabled() boolean
+    }
+    class ILoggerService {
+        <<interface>>
+        +log(entry) Promise~void~
+        +getRecent(limit) Promise~FractalLogEntry[]~
+    }
+    class IFractalLogRepository {
+        <<interface>>
+        +insert(entry) number
+        +findRecent(limit) FractalLogEntry[]
+        +findById(id) FractalLogEntry
+    }
+
+    class FractalService {
+        -branchCount : number
+    }
+    class ConfigService
+    class SpeedControlService
+    class WebRendererService
+    class NodeCanvasRendererService
+    class LoggerService
+    class FractalLogRepository
+
+    FractalService ..|> IFractalService
+    ConfigService ..|> IConfigService
+    SpeedControlService ..|> ISpeedControlService
+    WebRendererService ..|> IRendererService
+    NodeCanvasRendererService ..|> IRendererService
+    LoggerService ..|> ILoggerService
+    FractalLogRepository ..|> IFractalLogRepository
+
+    FractalService --> IRendererService : uses
+    FractalService --> ISpeedControlService : uses
+    FractalService --> IConfigService : uses
+    LoggerService --> IFractalLogRepository : uses
+```
+
+Full contract details (pre/postconditions, invariants, error behavior) for
+each interface live in [docs/CONTRACTS.md](./docs/CONTRACTS.md).
+
+## Sequence diagram — web "Generate" flow
+
+```mermaid
+sequenceDiagram
+    actor User
+    participant UI as ControlsView (DOM)
+    participant Main as main.ts
+    participant Config as ConfigService
+    participant Speed as SpeedControlService
+    participant Fractal as FractalService
+    participant Renderer as WebRendererService
+    participant Canvas as Browser Canvas2D
+
+    User->>Main: click "Generate"
+    Main->>UI: getUserInput()
+    UI-->>Main: Partial<FractalParams>
+    Main->>Config: validate(partial)
+    Config-->>Main: FractalParams (defaults filled, clamped)
+    Main->>Speed: setDelay(params.animationSpeed)
+    Main->>Fractal: generate(params)
+    Fractal->>Renderer: initialize(canvasConfig)
+    Renderer->>Canvas: fillRect(background)
+    loop for each branch (2^depth - 1 total)
+        Fractal->>Renderer: drawBranch(x, y, length, angle, lineWidth, color)
+        Renderer->>Canvas: stroke path
+        Fractal->>Speed: wait()
+    end
+    Fractal-->>Main: RenderResult
+```
+
+## Sequence diagram — CLI `generate` flow
+
+```mermaid
+sequenceDiagram
+    actor Dev as Developer
+    participant CLI as cli.ts
+    participant Comp as NodeComposition
+    participant Config as ConfigService
+    participant Fractal as FractalService
+    participant Renderer as NodeCanvasRendererService
+    participant Logger as LoggerService
+    participant Repo as FractalLogRepository
+    participant DB as SQLite (fractals.db)
+    participant FS as Filesystem
+
+    Dev->>CLI: npm run cli -- generate --depth 9
+    CLI->>Comp: composeNodeServices()
+    Comp-->>CLI: fractalService, rendererService, loggerService, ...
+    CLI->>Config: validate(flags)
+    Config-->>CLI: FractalParams
+    CLI->>Fractal: generate(params)
+    Fractal->>Renderer: initialize / drawBranch (repeated)
+    Fractal-->>CLI: RenderResult
+    CLI->>Renderer: save(outputPath)
+    Renderer->>FS: write PNG
+    CLI->>Logger: log(entry)
+    Logger->>Repo: insert(entry)
+    Repo->>DB: INSERT INTO fractal_logs
+    Logger->>FS: write JSON log
 ```
 
 ## Why two composition roots instead of one factory
@@ -103,3 +307,4 @@ to plain static assets for the web target, which is what free static hosts
    gets its own, so unrelated platforms' native dependencies never end up
    in each other's module graphs.
 3. Add a thin entry point that calls your new composition function.
+4. Document the new port/adapter pair in [docs/CONTRACTS.md](./docs/CONTRACTS.md).

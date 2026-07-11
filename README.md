@@ -2,8 +2,16 @@
 
 An interactive fractal tree generator that runs in the browser (HTML
 Canvas) and as a Node CLI (headless PNG rendering + SQLite history), built
-on a shared TypeScript core. See [ARCHITECTURE.md](./ARCHITECTURE.md) for
-the design patterns and project structure in detail.
+on a shared TypeScript core.
+
+## Documentation
+
+| Document                                                 | Covers                                                                                 |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                     | Solution design, project structure, component/class/sequence diagrams, patterns in use |
+| [docs/CONTRACTS.md](./docs/CONTRACTS.md)                 | Interface contracts — pre/postconditions, invariants, error behavior for every port    |
+| [docs/BUSINESS_CONTEXT.md](./docs/BUSINESS_CONTEXT.md)   | Problem statement, actors, domain glossary, business rules and their rationale         |
+| [docs/DATA_ARCHITECTURE.md](./docs/DATA_ARCHITECTURE.md) | Data entities, ER diagram, data flow, classification, storage, retention               |
 
 ## Features
 
@@ -12,8 +20,8 @@ the design patterns and project structure in detail.
   and trunk/leaf colors.
 - Same drawing algorithm on the web and in the CLI — both go through the
   same `FractalService`, so results are consistent between the two.
-- CLI mode renders to PNG and logs each generation's parameters to SQLite
-  - JSON, for headless batch generation or scripting.
+- CLI mode renders to PNG and logs each generation's parameters to both
+  SQLite and JSON, for headless batch generation or scripting.
 
 ## Getting started
 
@@ -67,6 +75,7 @@ src/
 │                      # places concrete adapters are wired together
 └── cli.ts            # Node CLI entry point
 tests/core/            # Vitest unit tests for the core application services
+docs/                  # CONTRACTS.md, BUSINESS_CONTEXT.md, DATA_ARCHITECTURE.md
 ```
 
 ## Deploying for free
