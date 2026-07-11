@@ -10,6 +10,7 @@ export default defineConfig({
       input: {
         main: resolve(__dirname, 'index.html'),
         learn: resolve(__dirname, 'learn.html'),
+        generator: resolve(__dirname, 'generator.html'),
       },
     },
   },

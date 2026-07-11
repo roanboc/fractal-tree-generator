@@ -1,20 +1,32 @@
-import { CanvasConfig, FractalLogEntry, FractalParams, RenderResult } from './domain/types';
+import {
+  CanvasConfig,
+  FractalLogEntry,
+  FractalParams,
+  FractalParamsInput,
+  RenderResult,
+} from './domain/types';
 
 export interface IFractalService {
-  generate(params: FractalParams): Promise<RenderResult>;
+  generate(params: FractalParamsInput): Promise<RenderResult>;
   clear(): void;
 }
 
 export interface IRendererService {
   initialize(config: CanvasConfig): void;
+  /**
+   * Draw one branch. When strokeMs > 0 the renderer may animate the stroke
+   * from base to tip and return a promise that resolves when the stroke is
+   * complete; renderers without animation support draw instantly.
+   */
   drawBranch(
     x: number,
     y: number,
     length: number,
     angle: number,
     lineWidth: number,
-    color: string
-  ): void;
+    color: string,
+    strokeMs?: number
+  ): void | Promise<void>;
   save(outputPath: string): Promise<void>;
   clear(): void;
 }
@@ -33,7 +45,7 @@ export interface ISpeedControlService {
 
 export interface IConfigService {
   getDefaults(): FractalParams;
-  validate(params: Partial<FractalParams>): FractalParams;
+  validate(params: FractalParamsInput): FractalParams;
 }
 
 export interface IFractalLogRepository {

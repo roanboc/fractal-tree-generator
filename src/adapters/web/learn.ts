@@ -4,48 +4,60 @@
 // different iteration count.
 
 import { composeWebServices, WebServices } from '../../composition/WebComposition';
-import { FractalParams } from '../../core/domain/types';
+import { CanvasConfig, FractalParamsInput } from '../../core/domain/types';
+import { initChrome } from './chrome';
+import { getCanvasBackground } from './theme';
 
-const BACKGROUND = '#0b1020';
 const PALETTE = { trunk: '#a86a33', leaf: '#34d399', accent: '#fbbf24' };
 
-const BASE_PARAMS: Partial<FractalParams> = {
+// Demos teach the pure rule, so intervals are fixed values and wildness is 0
+// unless a demo opts in.
+const BASE_PARAMS: FractalParamsInput = {
   angle: 26,
   lengthFactor: 0.7,
   randomness: 0,
   animationSpeed: 0,
+  strokeDuration: 0,
   colors: PALETTE,
 };
 
 interface TreeDemo {
-  generate(params: Partial<FractalParams>): Promise<void>;
+  generate(params: FractalParamsInput): Promise<void>;
+  /** Repaint with the last params, e.g. after a theme change. Instant. */
+  redraw(): Promise<void>;
   services: WebServices;
 }
+
+const demos: TreeDemo[] = [];
 
 function composeDemo(canvasId: string): TreeDemo | null {
   const canvas = document.getElementById(canvasId) as HTMLCanvasElement | null;
   if (!canvas) return null;
 
-  const services = composeWebServices(canvas, {
+  const config: CanvasConfig = {
     width: canvas.width,
     height: canvas.height,
-    backgroundColor: BACKGROUND,
-  });
+    backgroundColor: getCanvasBackground(),
+  };
+  const services = composeWebServices(canvas, config);
 
   // Serialize generate() calls: FractalService instances are not safe for
   // overlapping runs (see docs/CONTRACTS.md).
   let busy = false;
-  let queued: Partial<FractalParams> | null = null;
+  let queued: FractalParamsInput | null = null;
+  let lastParams: FractalParamsInput | null = null;
 
-  const generate = async (params: Partial<FractalParams>): Promise<void> => {
+  const generate = async (params: FractalParamsInput): Promise<void> => {
+    lastParams = params;
     if (busy) {
       queued = params;
       return;
     }
     busy = true;
     try {
-      let next: Partial<FractalParams> | null = params;
+      let next: FractalParamsInput | null = params;
       while (next) {
+        config.backgroundColor = getCanvasBackground();
         const validated = services.configService.validate({ ...BASE_PARAMS, ...next });
         services.speedControlService.setDelay(validated.animationSpeed);
         next = null;
@@ -60,7 +72,14 @@ function composeDemo(canvasId: string): TreeDemo | null {
     }
   };
 
-  return { generate, services };
+  const redraw = async (): Promise<void> => {
+    if (!lastParams) return;
+    await generate({ ...lastParams, animationSpeed: 0, strokeDuration: 0 });
+  };
+
+  const demo = { generate, redraw, services };
+  demos.push(demo);
+  return demo;
 }
 
 function initStepCards(): void {
@@ -73,33 +92,46 @@ function initStepCards(): void {
 function initPlayground(): void {
   const demo = composeDemo('playground');
   const slider = document.getElementById('playground-depth') as HTMLInputElement | null;
-  const display = document.getElementById('playground-depth-display');
-  const count = document.getElementById('playground-count');
-  const rounds = document.getElementById('playground-rounds');
   const animate = document.getElementById('playground-animate') as HTMLInputElement | null;
   const growBtn = document.getElementById('playground-grow');
   if (!demo || !slider) return;
 
   const currentDepth = () => parseInt(slider.value, 10);
 
+  // The count/rounds strongs are re-created on language switch, so always
+  // look them up fresh instead of capturing references.
   const updateLabels = () => {
     const depth = currentDepth();
+    const display = document.getElementById('playground-depth-display');
     if (display) display.textContent = String(depth);
+    const rounds = document.getElementById('playground-rounds');
     if (rounds) rounds.textContent = String(depth);
+    const count = document.getElementById('playground-count');
     if (count) count.textContent = (Math.pow(2, depth) - 1).toLocaleString();
   };
 
-  const grow = () =>
-    demo.generate({
-      depth: currentDepth(),
+  const grow = () => {
+    const depth = currentDepth();
+    const stickCount = Math.pow(2, depth) - 1;
+    // Hand-drawn pacing: budget the animation time across the sticks so
+    // small trees draw slowly and big trees stay watchable.
+    const slow = animate?.checked ?? false;
+    const strokeDuration = slow ? Math.min(220, Math.max(18, Math.round(5000 / stickCount))) : 0;
+    const animationSpeed = slow ? Math.min(70, Math.max(6, Math.round(2000 / stickCount))) : 0;
+
+    return demo.generate({
+      depth,
       trunkLength: 100,
       lineWidth: 8,
-      animationSpeed: animate?.checked ? 14 : 0,
+      animationSpeed,
+      strokeDuration,
     });
+  };
 
   slider.addEventListener('input', updateLabels);
-  slider.addEventListener('change', grow);
-  growBtn?.addEventListener('click', grow);
+  slider.addEventListener('change', () => void grow());
+  growBtn?.addEventListener('click', () => void grow());
+  window.addEventListener('ftree:langchange', updateLabels);
 
   updateLabels();
   void grow();
@@ -112,7 +144,14 @@ function initRandomnessDemo(): void {
 
   const growBoth = () => {
     void tidy.generate({ depth: 7, trunkLength: 62, lineWidth: 5, randomness: 0 });
-    void wild.generate({ depth: 7, trunkLength: 62, lineWidth: 5, randomness: 0.5 });
+    void wild.generate({
+      depth: { min: 6, max: 8 },
+      angle: { min: 12, max: 40 },
+      lengthFactor: { min: 0.58, max: 0.8 },
+      trunkLength: 62,
+      lineWidth: 5,
+      randomness: 0.9,
+    });
   };
 
   document.getElementById('regrow')?.addEventListener('click', growBoth);
@@ -120,7 +159,12 @@ function initRandomnessDemo(): void {
 }
 
 window.addEventListener('DOMContentLoaded', () => {
+  initChrome();
   initStepCards();
   initPlayground();
   initRandomnessDemo();
+
+  window.addEventListener('ftree:themechange', () => {
+    for (const demo of demos) void demo.redraw();
+  });
 });

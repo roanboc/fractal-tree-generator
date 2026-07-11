@@ -1,5 +1,6 @@
-import { CanvasConfig, FractalParams, RenderResult } from '../domain/types';
+import { CanvasConfig, FractalParams, FractalParamsInput, RenderResult } from '../domain/types';
 import { IConfigService, IFractalService, IRendererService, ISpeedControlService } from '../ports';
+import { sampleInterval } from './math';
 
 const DEFAULT_CANVAS: CanvasConfig = {
   width: 800,
@@ -17,7 +18,7 @@ export class FractalService implements IFractalService {
     private readonly canvasConfig: CanvasConfig = DEFAULT_CANVAS
   ) {}
 
-  async generate(params: FractalParams): Promise<RenderResult> {
+  async generate(params: FractalParamsInput): Promise<RenderResult> {
     const validated = this.config.validate(params);
     this.branchCount = 0;
     const startTime = Date.now();
@@ -30,7 +31,8 @@ export class FractalService implements IFractalService {
       this.canvasConfig.height,
       validated.trunkLength,
       Math.PI / 2,
-      validated.depth,
+      1,
+      this.sampleTipDepth(validated),
       validated
     );
 
@@ -45,53 +47,61 @@ export class FractalService implements IFractalService {
     this.renderer.clear();
   }
 
+  /**
+   * Each branch decides how deep its own path may grow by sampling the depth
+   * interval: wildness 0 pins every tip to the interval's midpoint, wildness 1
+   * lets tips stop anywhere between min and max iterations.
+   */
+  private sampleTipDepth(params: FractalParams): number {
+    return Math.round(sampleInterval(params.depth, params.randomness));
+  }
+
   private async drawBranch(
     x: number,
     y: number,
     length: number,
     angle: number,
-    depth: number,
+    level: number,
+    tipDepth: number,
     params: FractalParams
   ): Promise<void> {
-    if (depth === 0) return;
-
-    // Apply randomness jitter to angle and length
-    const jitter = params.randomness;
-    const jitteredAngle = angle + (Math.random() - 0.5) * jitter * (Math.PI / 4);
-    const jitteredLength = length * (1 + (Math.random() - 0.5) * jitter * 0.3);
-
-    // Interpolate color: trunk color for deeper levels, leaf color near tips
-    const color = depth <= 2 ? params.colors.leaf : params.colors.trunk;
+    // Leaf color near this path's own tip, trunk color elsewhere
+    const color = tipDepth - level < 2 ? params.colors.leaf : params.colors.trunk;
 
     // Taper line width: thicker at base, thinner at tips
-    const lineWidth = Math.max(0.5, params.lineWidth * Math.pow(0.7, params.depth - depth));
+    const lineWidth = Math.max(0.5, params.lineWidth * Math.pow(0.7, level - 1));
 
-    this.renderer.drawBranch(x, y, jitteredLength, jitteredAngle, lineWidth, color);
+    await this.renderer.drawBranch(x, y, length, angle, lineWidth, color, params.strokeDuration);
     this.branchCount++;
 
     // Speed control: await configured delay between each branch drawn
     await this.speedControl.wait();
 
-    const endX = x + jitteredLength * Math.cos(jitteredAngle);
-    const endY = y - jitteredLength * Math.sin(jitteredAngle);
-    const branchAngleRad = (params.angle * Math.PI) / 180;
+    if (level >= tipDepth) return;
 
-    // Draw left and right child branches sequentially for step-by-step animation
-    await this.drawBranch(
-      endX,
-      endY,
-      length * params.lengthFactor,
-      jitteredAngle - branchAngleRad,
-      depth - 1,
-      params
-    );
-    await this.drawBranch(
-      endX,
-      endY,
-      length * params.lengthFactor,
-      jitteredAngle + branchAngleRad,
-      depth - 1,
-      params
-    );
+    const endX = x + length * Math.cos(angle);
+    const endY = y - length * Math.sin(angle);
+
+    // Each child samples its own angle, shrink, and tip depth from the
+    // configured intervals — wildness controls how far from the midpoints
+    // the samples may land. Children are drawn sequentially so step-by-step
+    // animation stays ordered.
+    for (const side of [-1, 1] as const) {
+      const childTipDepth = this.sampleTipDepth(params);
+      if (childTipDepth <= level) continue;
+
+      const branchAngleRad = (sampleInterval(params.angle, params.randomness) * Math.PI) / 180;
+      const shrink = sampleInterval(params.lengthFactor, params.randomness);
+
+      await this.drawBranch(
+        endX,
+        endY,
+        length * shrink,
+        angle + side * branchAngleRad,
+        level + 1,
+        childTipDepth,
+        params
+      );
+    }
   }
 }
