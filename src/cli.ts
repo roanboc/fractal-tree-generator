@@ -1,14 +1,10 @@
 #!/usr/bin/env ts-node
 import { Command } from 'commander';
 import * as path from 'path';
-import { FractalLogEntry, FractalParams } from './types/interfaces';
-import { ServiceFactory } from './factories/ServiceFactory';
-import { ConfigService } from './services/ConfigService';
-import { SpeedControlService } from './services/SpeedControlService';
-import { NodeCanvasRendererService } from './services/NodeCanvasRendererService';
-import { FractalService } from './services/FractalService';
-import { FractalLogRepository } from './repositories/FractalLogRepository';
-import { LoggerService } from './services/LoggerService';
+import { FractalLogEntry, FractalParams } from './core/domain/types';
+import { composeNodeServices } from './composition/NodeComposition';
+import { FractalLogRepository } from './adapters/node/FractalLogRepository';
+import { LoggerService } from './adapters/node/LoggerService';
 
 const OUTPUT_DIR = path.resolve(process.cwd(), 'output');
 
@@ -22,41 +18,37 @@ program
 program
   .command('generate', { isDefault: true })
   .description('Generate a fractal tree PNG and log the parameters')
-  .option('--depth <n>',         'Recursion depth 1-12 (default: 7)',      parseFloat)
-  .option('--angle <deg>',       'Branch angle in degrees 1-90 (default: 30)', parseFloat)
+  .option('--depth <n>', 'Recursion depth 1-12 (default: 7)', parseFloat)
+  .option('--angle <deg>', 'Branch angle in degrees 1-90 (default: 30)', parseFloat)
   .option('--length-factor <f>', 'Branch length multiplier 0.1-0.9 (default: 0.7)', parseFloat)
   .option('--trunk-length <px>', 'Trunk length in pixels 10-500 (default: 120)', parseFloat)
-  .option('--line-width <px>',   'Initial line width 1-20 (default: 4)', parseFloat)
-  .option('--randomness <f>',    'Jitter factor 0-1 (default: 0)', parseFloat)
-  .option('--speed <ms>',        'Delay between branches in ms, 0=instant (default: 0)', parseFloat)
+  .option('--line-width <px>', 'Initial line width 1-20 (default: 4)', parseFloat)
+  .option('--randomness <f>', 'Jitter factor 0-1 (default: 0)', parseFloat)
+  .option('--speed <ms>', 'Delay between branches in ms, 0=instant (default: 0)', parseFloat)
   .option('--trunk-color <hex>', 'Trunk color hex (default: #8B4513)')
-  .option('--leaf-color <hex>',  'Leaf color hex (default: #228B22)')
-  .option('--accent-color <hex>','Accent color hex (default: #FF69B4)')
-  .option('--show-accent',       'Enable accent branches (default: false)', false)
-  .option('--output <path>',     'Output PNG file path (default: output/fractal-<timestamp>.png)')
+  .option('--leaf-color <hex>', 'Leaf color hex (default: #228B22)')
+  .option('--accent-color <hex>', 'Accent color hex (default: #FF69B4)')
+  .option('--show-accent', 'Enable accent branches (default: false)', false)
+  .option('--output <path>', 'Output PNG file path (default: output/fractal-<timestamp>.png)')
   .action(async (options) => {
-    const configService = new ConfigService();
-    const speedControlService = new SpeedControlService();
-    const rendererService = new NodeCanvasRendererService();
-    const fractalService = new FractalService(rendererService, speedControlService, configService);
-    const repository = new FractalLogRepository();
-    const loggerService = new LoggerService(repository);
+    const { fractalService, rendererService, loggerService, configService, speedControlService } =
+      composeNodeServices();
 
     const partialParams: Partial<FractalParams> = {};
-    if (options.depth       !== undefined) partialParams.depth         = options.depth;
-    if (options.angle       !== undefined) partialParams.angle         = options.angle;
-    if (options.lengthFactor!== undefined) partialParams.lengthFactor  = options.lengthFactor;
-    if (options.trunkLength !== undefined) partialParams.trunkLength   = options.trunkLength;
-    if (options.lineWidth   !== undefined) partialParams.lineWidth     = options.lineWidth;
-    if (options.randomness  !== undefined) partialParams.randomness    = options.randomness;
-    if (options.speed       !== undefined) partialParams.animationSpeed = options.speed;
-    if (options.showAccent  !== undefined) partialParams.showAccent    = options.showAccent;
+    if (options.depth !== undefined) partialParams.depth = options.depth;
+    if (options.angle !== undefined) partialParams.angle = options.angle;
+    if (options.lengthFactor !== undefined) partialParams.lengthFactor = options.lengthFactor;
+    if (options.trunkLength !== undefined) partialParams.trunkLength = options.trunkLength;
+    if (options.lineWidth !== undefined) partialParams.lineWidth = options.lineWidth;
+    if (options.randomness !== undefined) partialParams.randomness = options.randomness;
+    if (options.speed !== undefined) partialParams.animationSpeed = options.speed;
+    if (options.showAccent !== undefined) partialParams.showAccent = options.showAccent;
 
     if (options.trunkColor || options.leafColor || options.accentColor) {
       const defaults = configService.getDefaults();
       partialParams.colors = {
-        trunk:  options.trunkColor  ?? defaults.colors.trunk,
-        leaf:   options.leafColor   ?? defaults.colors.leaf,
+        trunk: options.trunkColor ?? defaults.colors.trunk,
+        leaf: options.leafColor ?? defaults.colors.leaf,
         accent: options.accentColor ?? defaults.colors.accent,
       };
     }
@@ -72,7 +64,9 @@ program
     console.log(`  Angle:        ${params.angle}°`);
     console.log(`  Length factor:${params.lengthFactor}`);
     console.log(`  Trunk length: ${params.trunkLength}px`);
-    console.log(`  Speed:        ${params.animationSpeed === 0 ? 'instant' : `${params.animationSpeed}ms/branch`}`);
+    console.log(
+      `  Speed:        ${params.animationSpeed === 0 ? 'instant' : `${params.animationSpeed}ms/branch`}`
+    );
 
     const result = await fractalService.generate(params);
 
@@ -117,7 +111,9 @@ program
     console.log(`\nLast ${entries.length} fractal generation(s):\n`);
     for (const entry of entries) {
       console.log(`  [${entry.id}] ${entry.timestamp}`);
-      console.log(`       depth=${entry.params.depth}  angle=${entry.params.angle}°  speed=${entry.params.animationSpeed}ms`);
+      console.log(
+        `       depth=${entry.params.depth}  angle=${entry.params.angle}°  speed=${entry.params.animationSpeed}ms`
+      );
       console.log(`       branches=${entry.totalBranchesDrawn}  time=${entry.generationTimeMs}ms`);
       console.log(`       output: ${entry.outputPath}`);
       console.log();

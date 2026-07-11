@@ -11,7 +11,9 @@ export function clamp(value: number, min: number, max: number): number {
 }
 
 export function hexToRgb(hex: string): [number, number, number] {
-  let r = 0, g = 0, b = 0;
+  let r = 0,
+    g = 0,
+    b = 0;
   if (hex.length === 4) {
     r = parseInt(hex[1] + hex[1], 16);
     g = parseInt(hex[2] + hex[2], 16);

@@ -1,7 +1,8 @@
 import Database from 'better-sqlite3';
 import * as path from 'path';
 import * as fs from 'fs';
-import { FractalLogEntry, IFractalLogRepository } from '../types/interfaces';
+import { FractalLogEntry } from '../../core/domain/types';
+import { IFractalLogRepository } from '../../core/ports';
 
 const DB_PATH = path.resolve(process.cwd(), 'data', 'fractals.db');
 
@@ -57,9 +58,8 @@ export class FractalLogRepository implements IFractalLogRepository {
   }
 
   findById(id: number): FractalLogEntry | null {
-    const row = this.db
-      .prepare('SELECT * FROM fractal_logs WHERE id = ?')
-      .get(id) as FractalLogRow | undefined;
+    const row = this.db.prepare('SELECT * FROM fractal_logs WHERE id = ?').get(id) as
+      FractalLogRow | undefined;
     return row ? this.rowToEntry(row) : null;
   }
 

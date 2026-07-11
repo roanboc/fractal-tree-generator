@@ -1,11 +1,5 @@
-import {
-  FractalParams,
-  IConfigService,
-  IFractalService,
-  IRendererService,
-  ISpeedControlService,
-  RenderResult,
-} from '../types/interfaces';
+import { FractalParams, RenderResult } from '../domain/types';
+import { IConfigService, IFractalService, IRendererService, ISpeedControlService } from '../ports';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -64,19 +58,14 @@ export class FractalService implements IFractalService {
 
     // Apply randomness jitter to angle and length
     const jitter = params.randomness;
-    const jitteredAngle =
-      angle + (Math.random() - 0.5) * jitter * (Math.PI / 4);
-    const jitteredLength =
-      length * (1 + (Math.random() - 0.5) * jitter * 0.3);
+    const jitteredAngle = angle + (Math.random() - 0.5) * jitter * (Math.PI / 4);
+    const jitteredLength = length * (1 + (Math.random() - 0.5) * jitter * 0.3);
 
     // Interpolate color: trunk color for deeper levels, leaf color near tips
     const color = depth <= 2 ? params.colors.leaf : params.colors.trunk;
 
     // Taper line width: thicker at base, thinner at tips
-    const lineWidth = Math.max(
-      0.5,
-      params.lineWidth * Math.pow(0.7, params.depth - depth)
-    );
+    const lineWidth = Math.max(0.5, params.lineWidth * Math.pow(0.7, params.depth - depth));
 
     this.renderer.drawBranch(x, y, jitteredLength, jitteredAngle, lineWidth, color);
     this.branchCount++;
@@ -90,14 +79,16 @@ export class FractalService implements IFractalService {
 
     // Draw left and right child branches sequentially for step-by-step animation
     await this.drawBranch(
-      endX, endY,
+      endX,
+      endY,
       length * params.lengthFactor,
       jitteredAngle - branchAngleRad,
       depth - 1,
       params
     );
     await this.drawBranch(
-      endX, endY,
+      endX,
+      endY,
       length * params.lengthFactor,
       jitteredAngle + branchAngleRad,
       depth - 1,

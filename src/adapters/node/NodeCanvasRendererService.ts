@@ -1,7 +1,8 @@
 import { createCanvas, Canvas, CanvasRenderingContext2D } from 'canvas';
 import * as fs from 'fs/promises';
 import * as path from 'path';
-import { CanvasConfig, IRendererService } from '../types/interfaces';
+import { CanvasConfig } from '../../core/domain/types';
+import { IRendererService } from '../../core/ports';
 
 export class NodeCanvasRendererService implements IRendererService {
   private canvas!: Canvas;

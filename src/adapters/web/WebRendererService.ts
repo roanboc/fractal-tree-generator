@@ -1,4 +1,5 @@
-import { CanvasConfig, IRendererService } from '../types/interfaces';
+import { CanvasConfig } from '../../core/domain/types';
+import { IRendererService } from '../../core/ports';
 
 export class WebRendererService implements IRendererService {
   private canvas!: HTMLCanvasElement;

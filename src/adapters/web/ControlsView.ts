@@ -1,7 +1,7 @@
 // Web-layer UI adapter — builds controls and reads user input from the DOM.
 // Bug fixed: exports initializeControls and getUserInput that app.ts depends on.
 
-import { FractalParams } from '../types/interfaces';
+import { FractalParams } from '../../core/domain/types';
 
 export function getSliderValue(sliderId: string): number {
   const slider = document.getElementById(sliderId) as HTMLInputElement | null;
@@ -18,7 +18,10 @@ export function attachEventListeners(buttonId: string, callback: () => void): vo
   if (button) button.addEventListener('click', callback);
 }
 
-export function attachSliderChangeListener(sliderId: string, callback: (val: number) => void): void {
+export function attachSliderChangeListener(
+  sliderId: string,
+  callback: (val: number) => void
+): void {
   const slider = document.getElementById(sliderId);
   if (slider) {
     slider.addEventListener('input', () => callback(getSliderValue(sliderId)));
@@ -26,7 +29,12 @@ export function attachSliderChangeListener(sliderId: string, callback: (val: num
 }
 
 function createSlider(
-  id: string, label: string, min: number, max: number, step: number, value: number
+  id: string,
+  label: string,
+  min: number,
+  max: number,
+  step: number,
+  value: number
 ): HTMLDivElement {
   const wrapper = document.createElement('div');
   wrapper.className = 'flex flex-col items-start mb-2';
@@ -66,13 +74,13 @@ export function initializeControls(): void {
   container.innerHTML = '';
   container.className = 'mt-4 grid grid-cols-2 gap-4 p-4 bg-white rounded shadow';
 
-  container.appendChild(createSlider('depth',         'Depth',         1,    12,   1,    7));
-  container.appendChild(createSlider('angle',         'Angle (°)',     1,    90,   1,    30));
-  container.appendChild(createSlider('lengthFactor',  'Length Factor', 0.1,  0.9,  0.01, 0.7));
-  container.appendChild(createSlider('trunkLength',   'Trunk Length',  10,   500,  5,    120));
-  container.appendChild(createSlider('lineWidth',     'Line Width',    1,    20,   0.5,  4));
-  container.appendChild(createSlider('randomness',    'Randomness',    0,    1,    0.01, 0));
-  container.appendChild(createSlider('animationSpeed','Speed (ms)',    0,    2000, 10,   0));
+  container.appendChild(createSlider('depth', 'Depth', 1, 12, 1, 7));
+  container.appendChild(createSlider('angle', 'Angle (°)', 1, 90, 1, 30));
+  container.appendChild(createSlider('lengthFactor', 'Length Factor', 0.1, 0.9, 0.01, 0.7));
+  container.appendChild(createSlider('trunkLength', 'Trunk Length', 10, 500, 5, 120));
+  container.appendChild(createSlider('lineWidth', 'Line Width', 1, 20, 0.5, 4));
+  container.appendChild(createSlider('randomness', 'Randomness', 0, 1, 0.01, 0));
+  container.appendChild(createSlider('animationSpeed', 'Speed (ms)', 0, 2000, 10, 0));
 
   const buttonRow = document.createElement('div');
   buttonRow.className = 'col-span-2 flex gap-4 mt-2';
@@ -94,12 +102,12 @@ export function initializeControls(): void {
 
 export function getUserInput(): Partial<FractalParams> {
   return {
-    depth:         getSliderValue('depth'),
-    angle:         getSliderValue('angle'),
-    lengthFactor:  getSliderValue('lengthFactor'),
-    trunkLength:   getSliderValue('trunkLength'),
-    lineWidth:     getSliderValue('lineWidth'),
-    randomness:    getSliderValue('randomness'),
-    animationSpeed:getSliderValue('animationSpeed'),
+    depth: getSliderValue('depth'),
+    angle: getSliderValue('angle'),
+    lengthFactor: getSliderValue('lengthFactor'),
+    trunkLength: getSliderValue('trunkLength'),
+    lineWidth: getSliderValue('lineWidth'),
+    randomness: getSliderValue('randomness'),
+    animationSpeed: getSliderValue('animationSpeed'),
   };
 }
