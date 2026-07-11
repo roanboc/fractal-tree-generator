@@ -3,16 +3,74 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fractal Tree Generator</title>
-    <link rel="icon" href="data:," />
+    <title>Fractal Tree Studio</title>
+    <meta
+      name="description"
+      content="Grow your own fractal tree — play with depth, angles, colors and randomness on an interactive canvas."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌳</text></svg>"
+    />
     <link href="/src/assets/styles.css" rel="stylesheet" />
   </head>
-  <body class="bg-gray-100 flex flex-col items-center justify-center min-h-screen">
-    <h1 class="text-3xl font-bold mb-4">Fractal Tree Generator</h1>
-    <canvas id="fractalCanvas" class="border border-gray-300" width="800" height="600"></canvas>
-    <div id="controls" class="mt-4">
-      <!-- UI controls will be dynamically generated here -->
-    </div>
+  <body>
+    <header class="site-header">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+        <a href="./index.html" class="flex items-center gap-2 text-base font-bold text-white">
+          <span class="text-xl">🌳</span>
+          <span>Fractal Tree Studio</span>
+        </a>
+        <nav class="flex items-center gap-1">
+          <a href="./index.html" class="nav-link nav-link-active">Generator</a>
+          <a href="./learn.html" class="nav-link">How fractals work</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div class="mb-8">
+        <h1 class="text-3xl font-bold tracking-tight text-white sm:text-4xl">
+          Grow your own <span class="text-emerald-400">fractal tree</span>
+        </h1>
+        <p class="mt-2 max-w-2xl text-slate-400">
+          Every tree here is drawn from one simple rule, repeated over and over. Tune the sliders,
+          hit <span class="font-semibold text-slate-200">Generate</span>, and watch a unique tree
+          appear. New here?
+          <a
+            href="./learn.html"
+            class="font-medium text-emerald-400 underline-offset-4 hover:underline"
+            >See how fractals work →</a
+          >
+        </p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <section class="card flex items-center p-4 sm:p-5" aria-label="Fractal canvas">
+          <canvas
+            id="fractalCanvas"
+            class="canvas-frame"
+            width="880"
+            height="640"
+            aria-label="Fractal tree drawing"
+          ></canvas>
+        </section>
+
+        <aside class="card p-5" aria-label="Controls">
+          <div id="controls"><!-- Control panel is rendered by ControlsView --></div>
+        </aside>
+      </div>
+    </main>
+
+    <footer class="mx-auto max-w-6xl px-4 pb-10 pt-4 text-center text-xs text-slate-600 sm:px-6">
+      Built with a single recursive rule · Open source on
+      <a
+        href="https://github.com/roanboc/fractal-tree-generator"
+        class="text-slate-400 hover:text-white"
+        >GitHub</a
+      >
+    </footer>
+
     <script type="module" src="/src/adapters/web/main.ts"></script>
   </body>
 </html>

@@ -33,11 +33,12 @@ counting) is allowed to live.
   `Partial`, so callers should validate first for type-safety at the call
   site.
 - **Postconditions:**
-  - `renderer.initialize()` is called exactly once, with a fixed
-    800×600 canvas and background `#1a1a2e`. Canvas dimensions are **not**
-    configurable via `FractalParams` today — see
-    [docs/DATA_ARCHITECTURE.md](./DATA_ARCHITECTURE.md) for the fixed
-    constants.
+  - `renderer.initialize()` is called exactly once, with the
+    `CanvasConfig` injected into the `FractalService` constructor
+    (default: 800×600, background `#1a1a2e`). Canvas dimensions are a
+    composition-time decision, **not** part of `FractalParams` — the
+    learn page composes one `FractalService` per demo canvas, each with
+    its own size.
   - `renderer.drawBranch()` is called exactly `2^depth - 1` times (a full
     binary tree — the algorithm never prunes early).
   - Returns a `RenderResult` with `outputPath: ''` — the caller is
@@ -74,9 +75,10 @@ Canvas2D), `adapters/node/NodeCanvasRendererService.ts` (`node-canvas`)
 
 ### `initialize(config: CanvasConfig): void`
 
-- **Preconditions:** none for the Node adapter. The web adapter requires a
-  `<canvas id="fractalCanvas">` element to already exist in the DOM —
-  calling this before the page has rendered that element throws.
+- **Preconditions:** none for the Node adapter. The web adapter receives
+  its `HTMLCanvasElement` via its constructor (it never queries the DOM
+  itself), so the caller — a composition root — is responsible for
+  looking up the element and must not pass `null`.
 - **Postconditions:** the canvas is resized to `config.width` ×
   `config.height` and filled with `config.backgroundColor`. Any prior
   drawing is discarded (both adapters recreate/refill the backing
@@ -113,10 +115,10 @@ Canvas2D), `adapters/node/NodeCanvasRendererService.ts` (`node-canvas`)
 
 - **Node adapter:** clears the in-memory canvas buffer only; has no
   effect once `save()` has already written a file.
-- **Web adapter:** clears to full transparency (`clearRect`), **not**
-  back to `backgroundColor`. Visually this currently looks correct only
-  because the page background happens to match; a future change to the
-  page background would expose this.
+- **Web adapter:** repaints the canvas with the `backgroundColor` from
+  the last `initialize()` call, so a cleared canvas looks identical to a
+  freshly initialized one. Calling `clear()` before `initialize()` is a
+  safe no-op.
 
 ---
 

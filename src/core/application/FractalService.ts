@@ -1,9 +1,11 @@
-import { FractalParams, RenderResult } from '../domain/types';
+import { CanvasConfig, FractalParams, RenderResult } from '../domain/types';
 import { IConfigService, IFractalService, IRendererService, ISpeedControlService } from '../ports';
 
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
-const BACKGROUND_COLOR = '#1a1a2e';
+const DEFAULT_CANVAS: CanvasConfig = {
+  width: 800,
+  height: 600,
+  backgroundColor: '#1a1a2e',
+};
 
 export class FractalService implements IFractalService {
   private branchCount = 0;
@@ -11,7 +13,8 @@ export class FractalService implements IFractalService {
   constructor(
     private readonly renderer: IRendererService,
     private readonly speedControl: ISpeedControlService,
-    private readonly config: IConfigService
+    private readonly config: IConfigService,
+    private readonly canvasConfig: CanvasConfig = DEFAULT_CANVAS
   ) {}
 
   async generate(params: FractalParams): Promise<RenderResult> {
@@ -19,16 +22,12 @@ export class FractalService implements IFractalService {
     this.branchCount = 0;
     const startTime = Date.now();
 
-    this.renderer.initialize({
-      width: CANVAS_WIDTH,
-      height: CANVAS_HEIGHT,
-      backgroundColor: BACKGROUND_COLOR,
-    });
+    this.renderer.initialize(this.canvasConfig);
 
     // Start from bottom-center, pointing straight up (π/2 radians)
     await this.drawBranch(
-      CANVAS_WIDTH / 2,
-      CANVAS_HEIGHT,
+      this.canvasConfig.width / 2,
+      this.canvasConfig.height,
       validated.trunkLength,
       Math.PI / 2,
       validated.depth,
