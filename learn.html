@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>How Fractals Work · Fractal Tree Studio</title>
+    <meta
+      name="description"
+      content="A friendly, step-by-step explanation of fractals: one simple rule, repeated again and again, grows a whole tree."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌳</text></svg>"
+    />
+    <link href="/src/assets/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 sm:px-6">
+        <a href="./index.html" class="flex items-center gap-2 text-base font-bold text-white">
+          <span class="text-xl">🌳</span>
+          <span>Fractal Tree Studio</span>
+        </a>
+        <nav class="flex items-center gap-1">
+          <a href="./index.html" class="nav-link">Generator</a>
+          <a href="./learn.html" class="nav-link nav-link-active">How fractals work</a>
+        </nav>
+      </div>
+    </header>
+
+    <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      <!-- Hero -->
+      <section class="mb-14 text-center">
+        <p class="mb-3 text-4xl">🌱 ➜ 🌿 ➜ 🌳</p>
+        <h1 class="text-3xl font-bold tracking-tight text-white sm:text-5xl">
+          How do fractals work?
+        </h1>
+        <p class="prose-fun mx-auto mt-4 max-w-2xl">
+          A fractal is a picture made by following <strong>one simple rule</strong>, again and again
+          and again. Each time you repeat the rule, the picture gets richer — that's called an
+          <strong>iteration</strong>. Let's grow a tree, one iteration at a time!
+        </p>
+      </section>
+
+      <!-- The rule -->
+      <section class="mb-14">
+        <h2 class="mb-5 text-center text-2xl font-bold text-white">The one and only rule</h2>
+        <div class="grid gap-4 sm:grid-cols-3">
+          <div class="card p-5 text-center">
+            <p class="mb-2 text-3xl">✏️</p>
+            <h3 class="font-semibold text-white">1. Draw a stick</h3>
+            <p class="prose-fun mt-1 text-sm">Just one straight line. Easy!</p>
+          </div>
+          <div class="card p-5 text-center">
+            <p class="mb-2 text-3xl">✌️</p>
+            <h3 class="font-semibold text-white">2. Split the top</h3>
+            <p class="prose-fun mt-1 text-sm">
+              At the tip, draw <strong>two smaller sticks</strong>, one leaning left and one leaning
+              right.
+            </p>
+          </div>
+          <div class="card p-5 text-center">
+            <p class="mb-2 text-3xl">🔁</p>
+            <h3 class="font-semibold text-white">3. Repeat!</h3>
+            <p class="prose-fun mt-1 text-sm">
+              Do the same thing on <strong>every new stick</strong>. That's it. That's the whole
+              trick.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step by step -->
+      <section class="mb-14">
+        <h2 class="mb-2 text-center text-2xl font-bold text-white">
+          Watch it happen, step by step
+        </h2>
+        <p class="prose-fun mx-auto mb-6 max-w-2xl text-center">
+          These five little trees are drawn by the <strong>exact same code</strong> as the big
+          generator — we just stop it earlier or later.
+        </p>
+        <div class="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+          <div class="step-card">
+            <span class="step-badge">1</span>
+            <canvas id="step-1" class="canvas-frame" width="240" height="210"></canvas>
+            <p class="text-sm text-slate-300">One little stick. 🌱</p>
+            <p class="font-mono text-xs text-emerald-400">1 stick</p>
+          </div>
+          <div class="step-card">
+            <span class="step-badge">2</span>
+            <canvas id="step-2" class="canvas-frame" width="240" height="210"></canvas>
+            <p class="text-sm text-slate-300">Split the top into two.</p>
+            <p class="font-mono text-xs text-emerald-400">3 sticks</p>
+          </div>
+          <div class="step-card">
+            <span class="step-badge">3</span>
+            <canvas id="step-3" class="canvas-frame" width="240" height="210"></canvas>
+            <p class="text-sm text-slate-300">Split every new tip again.</p>
+            <p class="font-mono text-xs text-emerald-400">7 sticks</p>
+          </div>
+          <div class="step-card">
+            <span class="step-badge">4</span>
+            <canvas id="step-4" class="canvas-frame" width="240" height="210"></canvas>
+            <p class="text-sm text-slate-300">Again! It's becoming a tree…</p>
+            <p class="font-mono text-xs text-emerald-400">15 sticks</p>
+          </div>
+          <div class="step-card">
+            <span class="step-badge">5</span>
+            <canvas id="step-5" class="canvas-frame" width="240" height="210"></canvas>
+            <p class="text-sm text-slate-300">Five rounds and it's fluffy! 🌳</p>
+            <p class="font-mono text-xs text-emerald-400">31 sticks</p>
+          </div>
+        </div>
+        <p class="prose-fun mx-auto mt-6 max-w-2xl text-center">
+          Did you spot the pattern? Every round, the number of new tips
+          <strong>doubles</strong>: 1, 2, 4, 8, 16… After just 12 rounds you'd have
+          <strong>4,095 sticks</strong> — from one tiny rule!
+        </p>
+      </section>
+
+      <!-- Playground -->
+      <section class="mb-14">
+        <div class="card p-5 sm:p-8">
+          <h2 class="text-2xl font-bold text-white">Try it yourself 🎮</h2>
+          <p class="prose-fun mt-1 mb-6">
+            Slide to choose how many times the rule repeats. Turn on
+            <strong>watch it grow</strong> to see the drawing happen stick by stick.
+          </p>
+          <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_260px]">
+            <canvas id="playground" class="canvas-frame" width="720" height="460"></canvas>
+            <div class="flex flex-col gap-5">
+              <div class="flex flex-col gap-1.5">
+                <label for="playground-depth" class="control-label">
+                  <span>Iterations</span>
+                  <span id="playground-depth-display" class="control-value">5</span>
+                </label>
+                <input
+                  id="playground-depth"
+                  type="range"
+                  class="range"
+                  min="1"
+                  max="9"
+                  step="1"
+                  value="5"
+                />
+              </div>
+              <label class="flex cursor-pointer items-center gap-3 text-sm text-slate-300">
+                <input id="playground-animate" type="checkbox" class="h-4 w-4 accent-emerald-400" />
+                Watch it grow, stick by stick 🐢
+              </label>
+              <button id="playground-grow" class="btn-primary">🌱 Grow!</button>
+              <p class="prose-fun text-sm">
+                That tree has <strong id="playground-count">31</strong> sticks — drawn by repeating
+                the rule <strong id="playground-rounds">5</strong> times.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Randomness -->
+      <section class="mb-14">
+        <h2 class="mb-2 text-center text-2xl font-bold text-white">
+          Why do real trees look messy?
+        </h2>
+        <p class="prose-fun mx-auto mb-6 max-w-2xl text-center">
+          Nature never repeats the rule <em>perfectly</em>. If we let every stick wiggle a tiny
+          random amount, the same rule grows a tree that looks alive — and
+          <strong>no two are ever the same</strong>.
+        </p>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="step-card">
+            <canvas id="tidy-tree" class="canvas-frame" width="340" height="270"></canvas>
+            <p class="text-sm font-semibold text-white">Perfect rule 🤖</p>
+            <p class="text-xs text-slate-400">Every split is exactly the same.</p>
+          </div>
+          <div class="step-card">
+            <canvas id="wild-tree" class="canvas-frame" width="340" height="270"></canvas>
+            <p class="text-sm font-semibold text-white">Rule + a little wiggle 🍃</p>
+            <p class="text-xs text-slate-400">Same rule, tiny random nudges.</p>
+          </div>
+        </div>
+        <div class="mt-5 text-center">
+          <button id="regrow" class="btn-ghost">🎲 Grow two new trees</button>
+        </div>
+      </section>
+
+      <!-- Everywhere -->
+      <section class="mb-14">
+        <h2 class="mb-5 text-center text-2xl font-bold text-white">Fractals hide everywhere</h2>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-5">
+          <div class="card p-4 text-center">
+            <p class="text-3xl">🥦</p>
+            <p class="mt-1 text-sm text-slate-300">Broccoli florets</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">⚡</p>
+            <p class="mt-1 text-sm text-slate-300">Lightning bolts</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">❄️</p>
+            <p class="mt-1 text-sm text-slate-300">Snowflakes</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">🫁</p>
+            <p class="mt-1 text-sm text-slate-300">Your lungs!</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">🏞️</p>
+            <p class="mt-1 text-sm text-slate-300">Rivers &amp; coastlines</p>
+          </div>
+        </div>
+        <p class="prose-fun mx-auto mt-6 max-w-2xl text-center">
+          Next time you eat broccoli, look closely: each little floret looks like a tiny copy of the
+          whole thing. That's the fractal secret — <strong>the part looks like the whole</strong>.
+        </p>
+      </section>
+
+      <!-- CTA -->
+      <section class="text-center">
+        <div class="card mx-auto max-w-2xl p-8">
+          <h2 class="text-2xl font-bold text-white">Now you know the secret 🤫</h2>
+          <p class="prose-fun mx-auto mt-2 max-w-md">
+            One rule. Many repeats. Infinite trees. Go make one that's never existed before!
+          </p>
+          <a href="./index.html" class="btn-primary mt-5">🌳 Open the generator</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="mx-auto max-w-6xl px-4 pb-10 pt-4 text-center text-xs text-slate-600 sm:px-6">
+      Built with a single recursive rule · Open source on
+      <a
+        href="https://github.com/roanboc/fractal-tree-generator"
+        class="text-slate-400 hover:text-white"
+        >GitHub</a
+      >
+    </footer>
+
+    <script type="module" src="/src/adapters/web/learn.ts"></script>
+  </body>
+</html>

@@ -4,6 +4,7 @@ import {
   IRendererService,
   ISpeedControlService,
 } from '../core/ports';
+import { CanvasConfig } from '../core/domain/types';
 import { ConfigService } from '../core/application/ConfigService';
 import { FractalService } from '../core/application/FractalService';
 import { SpeedControlService } from '../core/application/SpeedControlService';
@@ -16,15 +17,26 @@ export interface WebServices {
   speedControlService: ISpeedControlService;
 }
 
-// Composition root for the browser entry point.
+// Composition root for the browser entry points.
 // Deliberately imports only browser-safe adapters — never Node-only adapters
 // (canvas, better-sqlite3) — so those native dependencies never enter the
 // web bundle's module graph.
-export function composeWebServices(): WebServices {
+//
+// Callable once per canvas: the learn page composes several independent
+// service graphs, one for each small demo canvas on the page.
+export function composeWebServices(
+  canvas: HTMLCanvasElement,
+  canvasConfig?: CanvasConfig
+): WebServices {
   const configService = new ConfigService();
   const speedControlService = new SpeedControlService();
-  const rendererService = new WebRendererService();
-  const fractalService = new FractalService(rendererService, speedControlService, configService);
+  const rendererService = new WebRendererService(canvas);
+  const fractalService = new FractalService(
+    rendererService,
+    speedControlService,
+    configService,
+    canvasConfig
+  );
 
   return { fractalService, rendererService, configService, speedControlService };
 }

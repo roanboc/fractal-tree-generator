@@ -39,13 +39,14 @@ src/
 │   ├── web/
 │   │   ├── WebRendererService.ts   # Implements IRendererService via Canvas2D
 │   │   ├── ControlsView.ts         # DOM-only: reads/writes form elements
-│   │   └── main.ts                 # Browser entry point
+│   │   ├── main.ts                 # Browser entry point (generator page)
+│   │   └── learn.ts                # Browser entry point ("How fractals work" page)
 │   └── node/
 │       ├── NodeCanvasRendererService.ts  # Implements IRendererService via node-canvas
 │       ├── FractalLogRepository.ts       # Implements IFractalLogRepository via SQLite
 │       └── LoggerService.ts
 ├── composition/                 # Composition roots — the only place adapters are wired together
-│   ├── WebComposition.ts        # Used by adapters/web/main.ts only
+│   ├── WebComposition.ts        # Used by the browser entry points (main.ts, learn.ts)
 │   └── NodeComposition.ts       # Used by cli.ts only
 └── cli.ts                       # Node CLI entry point
 
@@ -57,7 +58,7 @@ docs/                            # CONTRACTS.md, BUSINESS_CONTEXT.md, DATA_ARCHI
 
 ```mermaid
 flowchart TB
-    Browser["Browser<br/>adapters/web/main.ts"]
+    Browser["Browser<br/>main.ts + learn.ts"]
     CLI["Terminal<br/>src/cli.ts"]
 
     subgraph Composition["composition/ — composition roots"]

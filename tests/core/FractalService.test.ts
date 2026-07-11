@@ -34,7 +34,7 @@ describe('FractalService', () => {
     expect(renderer.drawBranch).toHaveBeenCalledTimes(7);
   });
 
-  it('initializes the renderer with the fixed canvas dimensions before drawing', async () => {
+  it('initializes the renderer with the default canvas dimensions before drawing', async () => {
     const renderer = createRendererSpy();
     const service = new FractalService(renderer, new SpeedControlService(), new ConfigService());
 
@@ -55,6 +55,39 @@ describe('FractalService', () => {
       height: 600,
       backgroundColor: '#1a1a2e',
     });
+  });
+
+  it('honors an injected canvas config and starts the trunk at its bottom-center', async () => {
+    const renderer = createRendererSpy();
+    const canvasConfig = { width: 240, height: 210, backgroundColor: '#0b1020' };
+    const service = new FractalService(
+      renderer,
+      new SpeedControlService(),
+      new ConfigService(),
+      canvasConfig
+    );
+
+    await service.generate({
+      depth: 1,
+      angle: 30,
+      lengthFactor: 0.7,
+      trunkLength: 50,
+      lineWidth: 4,
+      colors: { trunk: '#8B4513', leaf: '#228B22', accent: '#FF69B4' },
+      randomness: 0,
+      animationSpeed: 0,
+      showAccent: false,
+    });
+
+    expect(renderer.initialize).toHaveBeenCalledWith(canvasConfig);
+    expect(renderer.drawBranch).toHaveBeenCalledWith(
+      120, // width / 2
+      210, // height (bottom edge)
+      expect.any(Number),
+      expect.any(Number),
+      expect.any(Number),
+      expect.any(String)
+    );
   });
 
   it('delegates clear() to the renderer', () => {

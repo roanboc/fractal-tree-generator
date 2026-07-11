@@ -15,9 +15,13 @@ on a shared TypeScript core.
 
 ## Features
 
-- Interactive controls: recursion depth, branch angle, length factor,
-  trunk length, line-width tapering, jitter/randomness, animation speed,
-  and trunk/leaf colors.
+- Polished interactive generator: iterations, branch angle, shrink
+  factor, trunk length/thickness, wildness (jitter), growth animation,
+  trunk/leaf color pickers, and one-click PNG download.
+- A kid-friendly **"How fractals work"** page (`learn.html`) that teaches
+  fractals by iteration: step-by-step mini canvases (1 → 31 sticks), an
+  interactive playground, and a tidy-vs-wild randomness comparison — all
+  rendered by the same core `FractalService` as the main generator.
 - Same drawing algorithm on the web and in the CLI — both go through the
   same `FractalService`, so results are consistent between the two.
 - CLI mode renders to PNG and logs each generation's parameters to both

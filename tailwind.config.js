@@ -1,7 +1,19 @@
 module.exports = {
-  content: ['./index.html', './src/**/*.{js,jsx,ts,tsx,html}'],
+  content: ['./*.html', './src/**/*.{js,jsx,ts,tsx,html}'],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        display: [
+          'ui-rounded',
+          'system-ui',
+          '-apple-system',
+          'Segoe UI',
+          'Roboto',
+          'Helvetica Neue',
+          'sans-serif',
+        ],
+      },
+    },
   },
   plugins: [],
 };

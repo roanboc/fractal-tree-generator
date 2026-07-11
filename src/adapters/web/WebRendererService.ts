@@ -2,13 +2,15 @@ import { CanvasConfig } from '../../core/domain/types';
 import { IRendererService } from '../../core/ports';
 
 export class WebRendererService implements IRendererService {
-  private canvas!: HTMLCanvasElement;
   private ctx!: CanvasRenderingContext2D;
+  private backgroundColor = 'transparent';
+
+  constructor(private readonly canvas: HTMLCanvasElement) {}
 
   initialize(config: CanvasConfig): void {
-    this.canvas = document.getElementById('fractalCanvas') as HTMLCanvasElement;
     this.canvas.width = config.width;
     this.canvas.height = config.height;
+    this.backgroundColor = config.backgroundColor;
     this.ctx = this.canvas.getContext('2d')!;
     this.ctx.fillStyle = config.backgroundColor;
     this.ctx.fillRect(0, 0, config.width, config.height);
@@ -41,8 +43,11 @@ export class WebRendererService implements IRendererService {
   }
 
   clear(): void {
-    if (this.canvas) {
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (!this.ctx) return;
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    if (this.backgroundColor !== 'transparent') {
+      this.ctx.fillStyle = this.backgroundColor;
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     }
   }
 }
