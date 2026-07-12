@@ -29,42 +29,13 @@
     <link href="/src/assets/styles.css" rel="stylesheet" />
   </head>
   <body>
-    <header class="site-header">
-      <div class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-6">
-        <a href="./index.html" class="text-strong flex items-center gap-2 text-base font-bold">
-          <span class="text-xl">🌳</span>
-          <span class="hidden md:inline">Fractal Tree Studio</span>
-        </a>
-        <div class="flex items-center gap-2">
-          <nav class="flex items-center gap-1">
-            <a href="./index.html" class="nav-link nav-link-active"
-              ><span class="nav-num">1</span
-              ><span class="hidden sm:inline" data-i18n="nav.why">Why?</span></a
-            >
-            <a href="./learn.html" class="nav-link"
-              ><span class="nav-num">2</span
-              ><span class="hidden sm:inline" data-i18n="nav.learn">How?</span></a
-            >
-            <a href="./generator.html" class="nav-link"
-              ><span class="nav-num">3</span
-              ><span class="hidden sm:inline" data-i18n="nav.generator">Create!</span></a
-            >
-          </nav>
-          <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle theme">
-            ☀️
-          </button>
-          <div class="lang-switch" role="group" aria-label="Language">
-            <button id="lang-en" class="lang-btn" type="button">EN</button>
-            <button id="lang-es" class="lang-btn" type="button">ES</button>
-          </div>
-        </div>
-      </div>
-    </header>
+    <!-- Header, chapter badge and pager are rendered by chrome.ts from routes.ts -->
+    <header class="site-header" id="site-header"></header>
 
     <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
       <!-- Hero: the question -->
       <section class="mb-14 text-center">
-        <p class="chapter-badge mb-4" data-i18n="story.chapter">Chapter 1 of 3 · The wonder</p>
+        <p class="chapter-badge mb-4" id="chapter-badge"></p>
         <p class="mb-3 text-4xl">🌳 🐚 🏞️</p>
         <h1
           class="text-strong mx-auto max-w-3xl text-3xl font-bold tracking-tight sm:text-5xl"
@@ -183,11 +154,7 @@
         </div>
       </section>
 
-      <nav class="pager" aria-label="Journey navigation">
-        <a href="./learn.html" class="btn-ghost ml-auto"
-          ><span data-i18n="pager.how">How fractals work</span> →</a
-        >
-      </nav>
+      <nav class="pager" aria-label="Journey navigation" id="pager"></nav>
     </main>
 
     <footer class="text-faint mx-auto max-w-6xl px-4 pb-10 pt-4 text-center text-xs sm:px-6">

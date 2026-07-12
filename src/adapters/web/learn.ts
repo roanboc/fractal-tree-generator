@@ -6,6 +6,7 @@
 import { composeWebServices, WebServices } from '../../composition/WebComposition';
 import { CanvasConfig, FractalParamsInput } from '../../core/domain/types';
 import { initChrome } from './chrome';
+import { createSerialRunner } from './serialRunner';
 import { getCanvasBackground } from './theme';
 
 const PALETTE = { trunk: '#a86a33', leaf: '#34d399', accent: '#fbbf24' };
@@ -41,35 +42,18 @@ function composeDemo(canvasId: string): TreeDemo | null {
   };
   const services = composeWebServices(canvas, config);
 
-  // Serialize generate() calls: FractalService instances are not safe for
-  // overlapping runs (see docs/CONTRACTS.md).
-  let busy = false;
-  let queued: FractalParamsInput | null = null;
   let lastParams: FractalParamsInput | null = null;
 
-  const generate = async (params: FractalParamsInput): Promise<void> => {
+  const run = createSerialRunner(async (params: FractalParamsInput) => {
+    config.backgroundColor = getCanvasBackground();
+    const validated = services.configService.validate({ ...BASE_PARAMS, ...params });
+    services.speedControlService.setDelay(validated.animationSpeed);
+    await services.fractalService.generate(validated);
+  });
+
+  const generate = (params: FractalParamsInput): Promise<void> => {
     lastParams = params;
-    if (busy) {
-      queued = params;
-      return;
-    }
-    busy = true;
-    try {
-      let next: FractalParamsInput | null = params;
-      while (next) {
-        config.backgroundColor = getCanvasBackground();
-        const validated = services.configService.validate({ ...BASE_PARAMS, ...next });
-        services.speedControlService.setDelay(validated.animationSpeed);
-        next = null;
-        await services.fractalService.generate(validated);
-        next = queued;
-        queued = null;
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      busy = false;
-    }
+    return run(params);
   };
 
   const redraw = async (): Promise<void> => {

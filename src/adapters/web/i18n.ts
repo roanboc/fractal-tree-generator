@@ -2,6 +2,8 @@
 // lives in the URL (?lang=es) so shared links open in the sender's language;
 // localStorage remembers it for direct visits.
 
+import { ROUTES } from './routes';
+
 export type Lang = 'en' | 'es';
 
 const STORAGE_KEY = 'ftree-lang';
@@ -27,14 +29,20 @@ const MESSAGES: Record<string, Entry> = {
     es: '¿Por qué la naturaleza es tan bella?',
   },
   'pager.how': { en: 'How fractals work', es: 'Cómo funcionan los fractales' },
-  'pager.create': { en: 'Grow your own tree', es: 'Cultiva tu propio árbol' },
+  'pager.tree': { en: 'Grow your own tree', es: 'Cultiva tu propio árbol' },
+  'chapter.badge': {
+    en: 'Chapter {n} of {total} · {label}',
+    es: 'Capítulo {n} de {total} · {label}',
+  },
+  'chapter.why': { en: 'The wonder', es: 'El asombro' },
+  'chapter.learn': { en: 'The trick', es: 'El truco' },
+  'chapter.tree': { en: 'Your turn', es: 'Tu turno' },
 
   // ── Chapter 1: the wonder (index.html) ───────────────────────────
   'story.title': {
     en: 'Why Is Nature So Beautiful? · Fractal Tree Studio',
     es: '¿Por qué la naturaleza es tan bella? · Estudio de Árboles Fractales',
   },
-  'story.chapter': { en: 'Chapter 1 of 3 · The wonder', es: 'Capítulo 1 de 3 · El asombro' },
   'story.hero.title': {
     en: 'Why is nature so <span class="text-accent">beautiful</span>?',
     es: '¿Por qué la naturaleza es tan <span class="text-accent">bella</span>?',
@@ -89,7 +97,6 @@ const MESSAGES: Record<string, Entry> = {
     en: 'Grow Your Own Tree · Fractal Tree Studio',
     es: 'Cultiva tu propio árbol · Estudio de Árboles Fractales',
   },
-  'generator.chapter': { en: 'Chapter 3 of 3 · Your turn', es: 'Capítulo 3 de 3 · Tu turno' },
   'conclusion.title': {
     en: 'So… why are trees so beautiful?',
     es: 'Entonces… ¿por qué los árboles son tan bellos?',
@@ -176,7 +183,6 @@ const MESSAGES: Record<string, Entry> = {
     en: 'How Fractals Work · Fractal Tree Studio',
     es: 'Cómo funcionan los fractales · Estudio de Árboles Fractales',
   },
-  'learn.chapter': { en: 'Chapter 2 of 3 · The trick', es: 'Capítulo 2 de 3 · El truco' },
   'learn.hero.title': { en: 'How do fractals work?', es: '¿Cómo funcionan los fractales?' },
   'learn.hero.body': {
     en: "A fractal is a picture made by following <strong>one simple rule</strong>, again and again and again. Each time you repeat the rule, the picture gets richer — that's called an <strong>iteration</strong>. Let's grow a tree, one iteration at a time!",
@@ -318,10 +324,14 @@ export function setLang(lang: Lang): void {
   window.dispatchEvent(new CustomEvent('ftree:langchange', { detail: { lang } }));
 }
 
-export function t(key: string): string {
+export function t(key: string, params?: Record<string, string | number>): string {
   const entry = MESSAGES[key];
   if (!entry) return key;
-  return entry[currentLang];
+  const text = entry[currentLang];
+  if (!params) return text;
+  return text.replace(/\{(\w+)\}/g, (match, name: string) =>
+    name in params ? String(params[name]) : match
+  );
 }
 
 /** Keep <html lang> and the shareable URL (?lang=es) in sync. */
@@ -337,9 +347,9 @@ function syncLangArtifacts(): void {
 }
 
 /** Append the current language to internal page links so navigation keeps it. */
-function localizeInternalLinks(): void {
+export function localizeInternalLinks(): void {
   const links = document.querySelectorAll<HTMLAnchorElement>(
-    'a[href^="./index.html"], a[href^="./learn.html"], a[href^="./generator.html"]'
+    ROUTES.map((route) => `a[href^="./${route.file}"]`).join(', ')
   );
   links.forEach((link) => {
     const url = new URL(link.getAttribute('href')!, window.location.href);
