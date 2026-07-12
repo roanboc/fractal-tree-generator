@@ -1,11 +1,22 @@
-// Web-layer UI adapter — builds the control panel and reads user input from
-// the DOM. Purely presentational: no drawing or fractal math lives here.
+// Web-layer UI adapter — builds the tree generator's control panel and reads
+// user input from the DOM. Purely presentational: no drawing or fractal math
+// lives here. Shared row widgets live in controls/widgets.ts; this module
+// keeps the tree-specific parts (interval sliders, panel state).
 //
 // The panel is state-driven: current values live in a plain object so the
 // DOM can be rebuilt at any time (language switch, reset) without losing
 // the user's settings.
 
 import { FractalParams, FractalParamsInput, Interval } from '../../core/domain/types';
+import {
+  createActionButtons,
+  createColorInput,
+  createHelpToggle,
+  createLabelRow,
+  createScalarRow,
+  createSection,
+  formatValue,
+} from './controls/widgets';
 import { t } from './i18n';
 
 interface ControlsState {
@@ -114,90 +125,6 @@ function cloneState(source: ControlsState): ControlsState {
   };
 }
 
-function formatValue(spec: ControlSpec, v: number): string {
-  return spec.format ? spec.format(v) : String(v);
-}
-
-function createHelpToggle(
-  spec: ControlSpec | { id: string },
-  helpKey: string
-): [HTMLButtonElement, HTMLDivElement] {
-  const help = document.createElement('div');
-  help.className = 'control-help';
-  help.id = `${spec.id}-help`;
-  help.hidden = true;
-  help.textContent = t(helpKey);
-
-  const btn = document.createElement('button');
-  btn.type = 'button';
-  btn.className = 'info-btn';
-  btn.textContent = 'i';
-  btn.setAttribute('aria-label', t('info.show'));
-  btn.setAttribute('aria-expanded', 'false');
-  btn.setAttribute('aria-controls', help.id);
-  btn.addEventListener('click', () => {
-    help.hidden = !help.hidden;
-    btn.setAttribute('aria-expanded', String(!help.hidden));
-    btn.classList.toggle('info-btn-active', !help.hidden);
-  });
-
-  return [btn, help];
-}
-
-function createLabelRow(
-  spec: ControlSpec,
-  badgeText: string
-): { row: HTMLDivElement; badge: HTMLSpanElement; help: HTMLDivElement } {
-  const row = document.createElement('div');
-  row.className = 'control-label';
-
-  const left = document.createElement('span');
-  left.className = 'flex items-center gap-1.5';
-
-  const name = document.createElement('span');
-  name.textContent = t(`control.${spec.id}`);
-
-  const [infoBtn, help] = createHelpToggle(spec, `help.${spec.id}`);
-
-  left.appendChild(name);
-  left.appendChild(infoBtn);
-
-  const badge = document.createElement('span');
-  badge.className = 'control-value';
-  badge.textContent = badgeText;
-
-  row.appendChild(left);
-  row.appendChild(badge);
-  return { row, badge, help };
-}
-
-function createScalarRow(spec: ControlSpec, onChange: () => void): HTMLDivElement {
-  const key = spec.id as ScalarKey;
-  const container = document.createElement('div');
-  container.className = 'flex flex-col gap-1.5';
-
-  const { row, badge, help } = createLabelRow(spec, formatValue(spec, state[key]));
-
-  const input = document.createElement('input');
-  input.type = 'range';
-  input.id = spec.id;
-  input.className = 'range';
-  input.min = String(spec.min);
-  input.max = String(spec.max);
-  input.step = String(spec.step);
-  input.value = String(state[key]);
-  input.addEventListener('input', () => {
-    state[key] = parseFloat(input.value);
-    badge.textContent = formatValue(spec, state[key]);
-  });
-  input.addEventListener('change', onChange);
-
-  container.appendChild(row);
-  container.appendChild(help);
-  container.appendChild(input);
-  return container;
-}
-
 /**
  * Dual-thumb range slider built from two stacked native <input type=range>
  * elements: the track ignores pointer events, the thumbs receive them, so
@@ -215,7 +142,12 @@ function createIntervalRow(spec: ControlSpec, onChange: () => void): HTMLDivElem
       : `${formatValue(spec, min)} – ${formatValue(spec, max)}`;
   };
 
-  const { row, badge, help } = createLabelRow(spec, badgeText());
+  const { row, badge, help } = createLabelRow(
+    spec.id,
+    `control.${spec.id}`,
+    `help.${spec.id}`,
+    badgeText()
+  );
 
   const wrapper = document.createElement('div');
   wrapper.className = 'dual-range';
@@ -287,7 +219,7 @@ function createColorRows(onChange: () => void): HTMLDivElement {
   left.className = 'flex items-center gap-1.5';
   const name = document.createElement('span');
   name.textContent = t('control.colors');
-  const [infoBtn, help] = createHelpToggle({ id: 'colors' }, 'help.colors');
+  const [infoBtn, help] = createHelpToggle('colors', 'help.colors');
   left.appendChild(name);
   left.appendChild(infoBtn);
   labelRow.appendChild(left);
@@ -301,27 +233,17 @@ function createColorRows(onChange: () => void): HTMLDivElement {
   ];
 
   for (const spec of inputs) {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'flex flex-col gap-1.5';
-
-    const label = document.createElement('label');
-    label.htmlFor = spec.key;
-    label.className = 'control-label';
-    label.textContent = t(spec.labelKey);
-
-    const input = document.createElement('input');
-    input.type = 'color';
-    input.id = spec.key;
-    input.className = 'swatch';
-    input.value = state[spec.key];
-    input.addEventListener('change', () => {
-      state[spec.key] = input.value;
-      onChange();
-    });
-
-    wrapper.appendChild(label);
-    wrapper.appendChild(input);
-    grid.appendChild(wrapper);
+    grid.appendChild(
+      createColorInput(
+        spec.key,
+        spec.labelKey,
+        () => state[spec.key],
+        (v) => {
+          state[spec.key] = v;
+        },
+        onChange
+      )
+    );
   }
 
   container.appendChild(labelRow);
@@ -346,76 +268,46 @@ function render(): void {
   container.className = 'flex flex-col gap-6';
 
   for (const group of SECTIONS) {
-    const section = document.createElement('div');
-    section.className = 'flex flex-col gap-4';
-
-    const title = document.createElement('h2');
-    title.className = 'section-title';
-    title.textContent = t(group.titleKey);
-    section.appendChild(title);
-
-    if (group.noteKey) {
-      const note = document.createElement('p');
-      note.className = 'section-note';
-      note.textContent = t(group.noteKey);
-      section.appendChild(note);
-    }
-
-    for (const spec of group.items) {
-      section.appendChild(
-        spec.kind === 'interval'
-          ? createIntervalRow(spec, activeCallbacks.onChange)
-          : createScalarRow(spec, activeCallbacks.onChange)
-      );
-    }
+    const rows: HTMLElement[] = group.items.map((spec) =>
+      spec.kind === 'interval'
+        ? createIntervalRow(spec, activeCallbacks.onChange)
+        : createScalarRow(
+            {
+              id: spec.id,
+              labelKey: `control.${spec.id}`,
+              helpKey: `help.${spec.id}`,
+              min: spec.min,
+              max: spec.max,
+              step: spec.step,
+              format: spec.format,
+            },
+            () => state[spec.id as ScalarKey],
+            (v) => {
+              state[spec.id as ScalarKey] = v;
+            },
+            activeCallbacks.onChange
+          )
+    );
 
     if (group.withColors) {
-      section.appendChild(createColorRows(activeCallbacks.onChange));
+      rows.push(createColorRows(activeCallbacks.onChange));
     }
 
-    container.appendChild(section);
+    container.appendChild(createSection(group.titleKey, group.noteKey, rows));
   }
 
-  const actions = document.createElement('div');
-  actions.className = 'actions-block mt-2 flex flex-col gap-2.5 pt-5';
-
-  const generateBtn = document.createElement('button');
-  generateBtn.id = 'generateButton';
-  generateBtn.className = 'btn-primary w-full';
-  generateBtn.textContent = t('btn.generate');
-  generateBtn.addEventListener('click', activeCallbacks.onGenerate);
-
-  const resetBtn = document.createElement('button');
-  resetBtn.id = 'resetButton';
-  resetBtn.className = 'btn-ghost w-full';
-  resetBtn.textContent = t('btn.reset');
-  resetBtn.addEventListener('click', () => {
-    state = cloneState(defaultsState);
-    render();
-    activeCallbacks.onChange();
-  });
-
-  const secondaryRow = document.createElement('div');
-  secondaryRow.className = 'grid grid-cols-2 gap-2.5';
-
-  const clearBtn = document.createElement('button');
-  clearBtn.id = 'clearButton';
-  clearBtn.className = 'btn-ghost';
-  clearBtn.textContent = t('btn.clear');
-  clearBtn.addEventListener('click', activeCallbacks.onClear);
-
-  const downloadBtn = document.createElement('button');
-  downloadBtn.id = 'downloadButton';
-  downloadBtn.className = 'btn-outline-warm';
-  downloadBtn.textContent = t('btn.download');
-  downloadBtn.addEventListener('click', activeCallbacks.onDownload);
-
-  secondaryRow.appendChild(clearBtn);
-  secondaryRow.appendChild(downloadBtn);
-  actions.appendChild(generateBtn);
-  actions.appendChild(resetBtn);
-  actions.appendChild(secondaryRow);
-  container.appendChild(actions);
+  container.appendChild(
+    createActionButtons({
+      onGenerate: activeCallbacks.onGenerate,
+      onReset: () => {
+        state = cloneState(defaultsState);
+        render();
+        activeCallbacks.onChange();
+      },
+      onClear: activeCallbacks.onClear,
+      onDownload: activeCallbacks.onDownload,
+    })
+  );
 }
 
 export function initializeControls(callbacks: ControlsCallbacks, defaults: FractalParams): void {

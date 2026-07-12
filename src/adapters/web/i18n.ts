@@ -16,6 +16,7 @@ const MESSAGES: Record<string, Entry> = {
   'nav.why': { en: 'Why?', es: '¿Por qué?' },
   'nav.learn': { en: 'How?', es: '¿Cómo?' },
   'nav.generator': { en: 'Create!', es: '¡Crear!' },
+  'nav.snowflake': { en: 'Snowflake', es: 'Copo' },
   'footer.text': {
     en: 'Built with a single recursive rule · Open source on',
     es: 'Hecho con una sola regla recursiva · Código abierto en',
@@ -30,6 +31,7 @@ const MESSAGES: Record<string, Entry> = {
   },
   'pager.how': { en: 'How fractals work', es: 'Cómo funcionan los fractales' },
   'pager.tree': { en: 'Grow your own tree', es: 'Cultiva tu propio árbol' },
+  'pager.snowflake': { en: 'Craft a snowflake', es: 'Crea un copo de nieve' },
   'chapter.badge': {
     en: 'Chapter {n} of {total} · {label}',
     es: 'Capítulo {n} de {total} · {label}',
@@ -37,6 +39,7 @@ const MESSAGES: Record<string, Entry> = {
   'chapter.why': { en: 'The wonder', es: 'El asombro' },
   'chapter.learn': { en: 'The trick', es: 'El truco' },
   'chapter.tree': { en: 'Your turn', es: 'Tu turno' },
+  'chapter.snowflake': { en: 'The crystal', es: 'El cristal' },
 
   // ── Chapter 1: the wonder (index.html) ───────────────────────────
   'story.title': {
@@ -177,6 +180,67 @@ const MESSAGES: Record<string, Entry> = {
   'btn.download': { en: 'Save PNG', es: 'Guardar PNG' },
   'value.instant': { en: 'instant', es: 'al instante' },
   'info.show': { en: 'What does this do?', es: '¿Qué hace esto?' },
+
+  // ── Chapter 4: snowflake page ────────────────────────────────────
+  'snowflake.title': {
+    en: 'Craft a Snowflake · Fractal Tree Studio',
+    es: 'Crea un copo de nieve · Estudio de Árboles Fractales',
+  },
+  'snowflake.hero.title': {
+    en: 'Craft your own <span class="text-accent">snowflake</span>',
+    es: 'Crea tu propio <span class="text-accent">copo de nieve</span>',
+  },
+  'snowflake.hero.body': {
+    en: 'The very trick that grows trees also grows snow: one rule, repeated six times around a center. Real crystals are almost perfectly symmetric, so this one needs barely any chaos — just a pinch of frost.',
+    es: 'El mismo truco que cultiva árboles también cultiva nieve: una regla, repetida seis veces alrededor de un centro. Los cristales reales son casi perfectamente simétricos, así que este apenas necesita caos — solo una pizca de escarcha.',
+  },
+  'snowflake.outro.title': { en: 'One rule, six arms ❄️', es: 'Una regla, seis brazos ❄️' },
+  'snowflake.outro.body': {
+    en: 'Every flake here is a single recursive rule — <strong>grow a spike pair, keep going, shrink</strong> — copied six times around the middle. Trees, snowflakes… what else can one little rule draw? In the next chapter, <strong>you</strong> write the rule.',
+    es: 'Cada copo es una sola regla recursiva — <strong>brota un par de púas, sigue, encoge</strong> — copiada seis veces alrededor del centro. Árboles, copos de nieve… ¿qué más puede dibujar una reglita? En el próximo capítulo, la regla la escribes <strong>tú</strong>.',
+  },
+  'section.sf.shape.note': {
+    en: 'Six identical arms grow from the center; these knobs shape every arm at once.',
+    es: 'Seis brazos idénticos crecen desde el centro; estos controles moldean todos los brazos a la vez.',
+  },
+  'control.sf.depth': { en: 'Generations', es: 'Generaciones' },
+  'control.sf.branchAngle': { en: 'Spike angle', es: 'Ángulo de púas' },
+  'control.sf.sideScale': { en: 'Spike size', es: 'Tamaño de púas' },
+  'control.sf.spineScale': { en: 'Arm taper', es: 'Afinado del brazo' },
+  'control.sf.size': { en: 'Flake size', es: 'Tamaño del copo' },
+  'control.sf.jitter': { en: 'Frost', es: 'Escarcha' },
+  'control.sf.animationSpeed': { en: 'Growth delay', es: 'Pausa de crecimiento' },
+  'help.sf.depth': {
+    en: 'How many generations of spikes each arm grows. Every extra generation puts smaller spikes on the previous ones — real crystals rarely need more than five.',
+    es: 'Cuántas generaciones de púas crecen en cada brazo. Cada generación extra añade púas más pequeñas sobre las anteriores — los cristales reales rara vez necesitan más de cinco.',
+  },
+  'help.sf.branchAngle': {
+    en: 'The angle between an arm and its side spikes. Real snow crystals branch at about 60°, thanks to the hexagonal shape of ice molecules.',
+    es: 'El ángulo entre un brazo y sus púas laterales. Los cristales de nieve reales se ramifican a unos 60°, gracias a la forma hexagonal de las moléculas de hielo.',
+  },
+  'help.sf.sideScale': {
+    en: 'How long each side spike is compared to the arm segment it grows from. Small values give delicate needles; large ones give feathery, fern-like arms.',
+    es: 'Qué tan larga es cada púa lateral comparada con el segmento del que brota. Valores pequeños dan agujas delicadas; valores grandes, brazos plumosos como helechos.',
+  },
+  'help.sf.spineScale': {
+    en: 'How much each arm shrinks as it grows outward. Lower values make compact, star-like flakes; higher ones make long, elegant arms.',
+    es: 'Cuánto se encoge cada brazo al crecer hacia afuera. Valores bajos dan copos compactos como estrellas; valores altos, brazos largos y elegantes.',
+  },
+  'help.sf.size': {
+    en: 'The length of the first segment of each arm, in pixels. Everything else scales from it.',
+    es: 'El largo del primer segmento de cada brazo, en píxeles. Todo lo demás se escala a partir de él.',
+  },
+  'help.sf.jitter': {
+    en: 'A tiny random wobble on every angle and length. Real flakes are almost — but never exactly — symmetric, so a few percent is all it takes to look natural.',
+    es: 'Un pequeño temblor aleatorio en cada ángulo y largo. Los copos reales son casi — pero nunca exactamente — simétricos, así que unos pocos por ciento bastan para que parezca natural.',
+  },
+  'help.sf.animationSpeed': {
+    en: 'A pause between segments while the crystal is drawn, so you can watch it grow spike by spike. Set it to 0 to draw instantly.',
+    es: 'Una pausa entre segmentos mientras se dibuja el cristal, para verlo crecer púa a púa. Ponla en 0 para dibujarlo al instante.',
+  },
+  'color.arm': { en: 'Arms', es: 'Brazos' },
+  'color.tip': { en: 'Tips', es: 'Puntas' },
+  'btn.crystallize': { en: '❄️ Crystallize', es: '❄️ Cristalizar' },
 
   // ── Learn page ───────────────────────────────────────────────────
   'learn.title': {

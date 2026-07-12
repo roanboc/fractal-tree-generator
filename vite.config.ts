@@ -11,6 +11,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         learn: resolve(__dirname, 'learn.html'),
         generator: resolve(__dirname, 'generator.html'),
+        snowflake: resolve(__dirname, 'snowflake.html'),
       },
     },
   },

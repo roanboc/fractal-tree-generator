@@ -5,6 +5,7 @@ import {
   FractalParamsInput,
   RenderResult,
 } from './domain/types';
+import { SnowflakeParams } from './domain/snowflake';
 import { TurtleOptions, TurtleProgram, TurtleRenderResult } from './domain/turtle';
 
 export interface IFractalService {
@@ -14,6 +15,11 @@ export interface IFractalService {
 
 export interface ITurtleFractalService {
   run(program: TurtleProgram, options: Partial<TurtleOptions>): Promise<TurtleRenderResult>;
+  clear(): void;
+}
+
+export interface ISnowflakeService {
+  generate(input: Partial<SnowflakeParams>): Promise<TurtleRenderResult>;
   clear(): void;
 }
 
