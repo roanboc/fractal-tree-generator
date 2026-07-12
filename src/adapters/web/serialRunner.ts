@@ -1,5 +1,5 @@
 // FractalService instances are not safe for overlapping generate() calls
-// (see docs/CONTRACTS.md), so every page serializes its runs: while one is in
+// (see docs/ea/4_application/5_interface-contracts.md), so every page serializes its runs: while one is in
 // flight, remember only the latest requested params and run once more when
 // the current run finishes.
 

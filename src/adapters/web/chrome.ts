@@ -4,7 +4,7 @@
 // Pages only ship empty shell elements (#site-header, #chapter-badge, #pager).
 
 import { getLang, initI18n, localizeInternalLinks, setLang, t, translatePage, Lang } from './i18n';
-import { chapterNumber, currentRoute, ROUTES } from './routes';
+import { chapterNumber, currentRoute, Route, ROUTES } from './routes';
 import { getTheme, initTheme, toggleTheme } from './theme';
 
 function refreshThemeButton(): void {
@@ -89,11 +89,28 @@ function renderPager(): void {
   pager.innerHTML = parts.join('');
 }
 
+// In-page links marked with data-nav (next/prev/restart) get their href from
+// the route list, so page content can never drift from the journey's order.
+// The static href in the HTML is only a no-JS fallback.
+function resolveDataNavLinks(): void {
+  const index = chapterNumber(currentRoute()) - 1;
+  const targets: Record<string, Route | undefined> = {
+    next: ROUTES[index + 1],
+    prev: ROUTES[index - 1],
+    restart: ROUTES[0],
+  };
+  document.querySelectorAll<HTMLAnchorElement>('a[data-nav]').forEach((link) => {
+    const target = targets[link.dataset.nav ?? ''];
+    if (target) link.setAttribute('href', `./${target.file}`);
+  });
+}
+
 function renderChrome(): void {
   renderHeader();
   renderChapterBadge();
   renderPager();
-  // The links above are freshly created, so re-apply the ?lang= param.
+  resolveDataNavLinks();
+  // The links above are freshly created or rewritten, so re-apply ?lang=.
   localizeInternalLinks();
 }
 

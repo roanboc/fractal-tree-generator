@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="story.title">Why Is Nature So Beautiful? · Fractal Tree Studio</title>
+    <meta
+      name="description"
+      content="Why do trees, rivers and seashells capture our eyes? Discover fractals — nature's simple, repeating patterns — and grow your own tree."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌳</text></svg>"
+    />
+    <script>
+      // Apply the theme before first paint to avoid a flash. Kept inline and
+      // duplicated on every page on purpose; the app logic lives in theme.ts.
+      (function () {
+        var stored = localStorage.getItem('ftree-theme');
+        var theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <link href="../src/assets/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header, chapter badge and pager are rendered by chrome.ts from routes.ts -->
+    <header class="site-header" id="site-header"></header>
+
+    <main class="mx-auto max-w-5xl px-4 py-10 sm:px-6">
+      <!-- Hero: the question -->
+      <section class="mb-14 text-center">
+        <p class="chapter-badge mb-4" id="chapter-badge"></p>
+        <p class="mb-3 text-4xl">🌳 🐚 🏞️</p>
+        <h1
+          class="text-strong mx-auto max-w-3xl text-3xl font-bold tracking-tight sm:text-5xl"
+          data-i18n-html="story.hero.title"
+        >
+          Why is nature so <span class="text-accent">beautiful</span>?
+        </h1>
+        <p class="prose-fun mx-auto mt-4 max-w-2xl" data-i18n-html="story.hero.body">
+          Look closely at a tree. At a river seen from an airplane. At a tiny seashell. Nobody drew
+          them — yet they capture our eyes like the finest works of art. <strong>Why?</strong>
+        </p>
+      </section>
+
+      <!-- Gallery: nature's repeating shapes -->
+      <section class="mb-14">
+        <h2 class="text-strong mb-5 text-center text-2xl font-bold" data-i18n="story.gallery.title">
+          Stop and look closely…
+        </h2>
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
+          <div class="card p-4 text-center">
+            <p class="text-3xl">🐚</p>
+            <p class="text-body mt-1 text-sm" data-i18n="nature.shell">Seashell spirals</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">🌿</p>
+            <p class="text-body mt-1 text-sm" data-i18n="nature.fern">Fern fronds</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">🏞️</p>
+            <p class="text-body mt-1 text-sm" data-i18n="nature.rivers">Rivers &amp; coastlines</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">⚡</p>
+            <p class="text-body mt-1 text-sm" data-i18n="nature.lightning">Lightning bolts</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">❄️</p>
+            <p class="text-body mt-1 text-sm" data-i18n="nature.snow">Snowflakes</p>
+          </div>
+          <div class="card p-4 text-center">
+            <p class="text-3xl">🥦</p>
+            <p class="text-body mt-1 text-sm" data-i18n="nature.broccoli">Broccoli florets</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- The shared secret + a live math-drawn tree -->
+      <section class="mb-14">
+        <h2 class="text-strong mb-2 text-center text-2xl font-bold" data-i18n="story.secret.title">
+          They all share a secret
+        </h2>
+        <p class="prose-fun mx-auto mb-6 max-w-2xl text-center" data-i18n-html="story.secret.body">
+          Every one of them is built from <strong>smaller copies of itself</strong>. A branch looks
+          like a little tree. A side stream looks like a little river. Each broccoli floret is a
+          mini broccoli. <strong>The part looks like the whole!</strong>
+        </p>
+        <div class="card mx-auto max-w-2xl p-5 sm:p-6">
+          <canvas id="story-tree" class="canvas-frame" width="640" height="420"></canvas>
+          <div class="mt-4 flex flex-col items-center gap-3 sm:flex-row sm:justify-between">
+            <p class="text-muted text-sm" data-i18n="story.demo.caption">
+              This tree is pure math — drawn by one tiny rule you'll learn in the next chapter.
+            </p>
+            <button id="story-regrow" class="btn-ghost shrink-0" data-i18n="story.demo.regrow">
+              🎲 Grow another one
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- A little history -->
+      <section class="mb-14">
+        <h2 class="text-strong mb-5 text-center text-2xl font-bold" data-i18n="story.history.title">
+          The scientist who named the pattern
+        </h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+          <div class="card p-6">
+            <p class="mb-2 text-3xl">⭕ 🔺 ⬛</p>
+            <p class="prose-fun" data-i18n-html="story.history.body1">
+              For centuries, math loved smooth shapes: circles, squares, triangles. But nature is
+              not smooth — <strong>clouds are not circles, mountains are not triangles</strong>, and
+              trees are definitely not squares.
+            </p>
+          </div>
+          <div class="card p-6">
+            <p class="mb-2 text-3xl">👨‍🔬 ✨</p>
+            <p class="prose-fun" data-i18n-html="story.history.body2">
+              In <strong>1975</strong>, the mathematician <strong>Benoît Mandelbrot</strong> finally
+              gave nature's rough, repeating shapes a name: <strong>fractals</strong>, from the
+              Latin word <em>fractus</em> — "broken".
+            </p>
+          </div>
+        </div>
+        <div class="card mx-auto mt-4 max-w-2xl p-6 text-center">
+          <h3 class="text-strong text-lg font-bold" data-i18n="story.def.title">
+            So, what is a fractal?
+          </h3>
+          <p class="prose-fun mx-auto mt-2 max-w-xl" data-i18n-html="story.def.body">
+            A fractal is <strong>a shape made of smaller copies of itself</strong>. Zoom into any
+            piece and you find the same pattern again — smaller, but the same.
+          </p>
+        </div>
+      </section>
+
+      <!-- CTA to chapter 2 -->
+      <section class="text-center">
+        <div class="card mx-auto max-w-2xl p-8">
+          <h2 class="text-strong text-2xl font-bold" data-i18n="story.cta.title">
+            Ready to see the trick? ✨
+          </h2>
+          <p class="prose-fun mx-auto mt-2 max-w-md" data-i18n="story.cta.body">
+            It takes just one rule. Let's learn it — and then you'll grow trees of your own.
+          </p>
+        </div>
+      </section>
+
+      <nav class="pager" aria-label="Journey navigation" id="pager"></nav>
+    </main>
+
+    <footer class="text-faint mx-auto max-w-6xl px-4 pb-10 pt-4 text-center text-xs sm:px-6">
+      <span data-i18n="footer.text">Built with a single recursive rule · Open source on</span>
+      <a href="https://github.com/roanboc/fractal-tree-generator" class="footer-link">GitHub</a>
+    </footer>
+
+    <script type="module" src="../src/adapters/web/story.ts"></script>
+  </body>
+</html>
