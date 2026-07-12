@@ -47,7 +47,7 @@ interface RunState {
  *
  * All run state is local to run(), but the canvas itself is shared, so
  * overlapping run() calls on one canvas still interleave their strokes —
- * callers serialize runs just like with FractalService (docs/CONTRACTS.md).
+ * callers serialize runs just like with FractalService (docs/ea/4_application/5_interface-contracts.md).
  */
 export class TurtleFractalService implements ITurtleFractalService {
   constructor(

@@ -1,24 +1,35 @@
 # Enterprise Architecture — Fractal Tree Studio
 
-_[← README](../../README.md) · [ARCHITECTURE](../../ARCHITECTURE.md) · [CONTRACTS](../CONTRACTS.md) · [BUSINESS_CONTEXT](../BUSINESS_CONTEXT.md) · [DATA_ARCHITECTURE](../DATA_ARCHITECTURE.md)_
+_[← Repository README](../../README.md) · [Scope documents](../scope/README.md)_
 
-This folder documents Fractal Tree Studio as an **ArchiMate-layered enterprise
-architecture**: strategy and business context top-down, then the business,
-information, application, and technology layers, and — separately — the scope
-of the delivered initiative. Every element is grounded in the implemented
-solution: entries name the page, module, or pipeline file that realizes them,
-so the architecture can be verified against the code at any time.
+This folder is the **primary documentation of the system**, organized as an
+ArchiMate-layered enterprise architecture. Every element is grounded in the
+implemented solution: entries name the page, module, or pipeline file that
+realizes them, so the architecture can be verified against the code at any
+time.
 
-## How to navigate
+Folders and files carry a numeric prefix giving the order in which they are
+assessed. **Any change in requirements is aligned through these layers in
+this order — strategy first, technology last — and captured in a
+[scope document](../scope/README.md) before implementation starts** (see
+[CONTRIBUTING.md](../../CONTRIBUTING.md) and the `ea-first-change` skill in
+`.claude/skills/`).
 
-| Document                                | ArchiMate viewpoint        | Answers                                                                       |
-| --------------------------------------- | -------------------------- | ----------------------------------------------------------------------------- |
-| [project-scope.md](./project-scope.md)  | Implementation & Migration | What was this initiative? Work packages, deliverables, plateaus, gaps         |
-| [strategy/](./strategy/README.md)       | Motivation + Strategy      | Why does this exist? Who cares? What capabilities and value stream?           |
-| [business/](./business/README.md)       | Business layer             | Who does what? Which services does the studio offer, through which processes? |
-| [information/](./information/README.md) | Passive structure (data)   | What information exists, where does it live, how does it flow?                |
-| [application/](./application/README.md) | Application layer          | Which software services and components realize the business services?         |
-| [technology/](./technology/README.md)   | Technology layer           | What runs it all — runtimes, tooling, build, hosting, deployment?             |
+## Layers, in assessment order
+
+| #   | Layer                                       | ArchiMate viewpoint      | Answers                                                                       |
+| --- | ------------------------------------------- | ------------------------ | ----------------------------------------------------------------------------- |
+| 1   | [1_strategy/](./1_strategy/README.md)       | Motivation + Strategy    | Why does this exist? Who cares? What capabilities and value stream?           |
+| 2   | [2_business/](./2_business/README.md)       | Business layer           | Who does what? Which services does the studio offer, through which processes? |
+| 3   | [3_information/](./3_information/README.md) | Passive structure (data) | What information exists, where does it live, how does it flow?                |
+| 4   | [4_application/](./4_application/README.md) | Application layer        | Which software services and components realize the business services?         |
+| 5   | [5_technology/](./5_technology/README.md)   | Technology layer         | What runs it all — runtimes, tooling, build, hosting, deployment?             |
+
+Files inside each layer folder are numbered the same way; each layer README
+explains its own analysis order. Delivered initiatives (ArchiMate
+Implementation & Migration viewpoint) are documented per initiative in
+[../scope/](../scope/README.md), not here — the EA describes the **current**
+state, scope documents describe the **changes** that produced it.
 
 ## Notation conventions
 
@@ -89,13 +100,15 @@ flowchart TB
 
 ## Reading order
 
-Top-down (recommended for newcomers): [strategy/motivation.md](./strategy/motivation.md)
-→ [strategy/value-stream.md](./strategy/value-stream.md) →
-[business/business-services.md](./business/business-services.md) →
-[application/application-components.md](./application/application-components.md)
-→ [technology/deployment.md](./technology/deployment.md).
+Top-down (recommended for newcomers — the same order as the folder numbers):
+[1_strategy/1_motivation.md](./1_strategy/1_motivation.md)
+→ [1_strategy/3_value-stream.md](./1_strategy/3_value-stream.md)
+→ [2_business/2_business-services.md](./2_business/2_business-services.md)
+→ [3_information/1_data-objects.md](./3_information/1_data-objects.md)
+→ [4_application/2_application-components.md](./4_application/2_application-components.md)
+→ [5_technology/2_deployment.md](./5_technology/2_deployment.md).
 
 Bottom-up (for developers verifying alignment): start from
-[application/application-components.md](./application/application-components.md),
+[4_application/2_application-components.md](./4_application/2_application-components.md),
 which links each component to its source file, then trace upward via the
 "realizes" relationships.
