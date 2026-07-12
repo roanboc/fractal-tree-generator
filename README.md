@@ -6,12 +6,13 @@ on a shared TypeScript core.
 
 ## Documentation
 
-| Document                                                 | Covers                                                                                 |
-| -------------------------------------------------------- | -------------------------------------------------------------------------------------- |
-| [ARCHITECTURE.md](./ARCHITECTURE.md)                     | Solution design, project structure, component/class/sequence diagrams, patterns in use |
-| [docs/CONTRACTS.md](./docs/CONTRACTS.md)                 | Interface contracts — pre/postconditions, invariants, error behavior for every port    |
-| [docs/BUSINESS_CONTEXT.md](./docs/BUSINESS_CONTEXT.md)   | Problem statement, actors, domain glossary, business rules and their rationale         |
-| [docs/DATA_ARCHITECTURE.md](./docs/DATA_ARCHITECTURE.md) | Data entities, ER diagram, data flow, classification, storage, retention               |
+| Document                                                 | Covers                                                                                                                                 |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| [ARCHITECTURE.md](./ARCHITECTURE.md)                     | Solution design, project structure, component/class/sequence diagrams, patterns in use                                                 |
+| [docs/CONTRACTS.md](./docs/CONTRACTS.md)                 | Interface contracts — pre/postconditions, invariants, error behavior for every port                                                    |
+| [docs/BUSINESS_CONTEXT.md](./docs/BUSINESS_CONTEXT.md)   | Problem statement, actors, domain glossary, business rules and their rationale                                                         |
+| [docs/DATA_ARCHITECTURE.md](./docs/DATA_ARCHITECTURE.md) | Data entities, ER diagram, data flow, classification, storage, retention                                                               |
+| [docs/ea/](./docs/ea/README.md)                          | Enterprise architecture: strategy, business, information, application, and technology layers (ArchiMate + Mermaid), plus project scope |
 
 ## Features
 
