@@ -15,25 +15,36 @@ on a shared TypeScript core.
 
 ## Features
 
-- A guided three-chapter journey: **1)** `index.html` asks why nature
-  (trees, rivers, shells) is so beautiful and introduces fractals with a
-  light history (Mandelbrot, 1975) and a kid-friendly definition; **2)**
-  `learn.html` teaches how the recursive rule works — step-by-step mini
-  canvases (1 → 31 sticks), the rule written as a simple formula, a
-  hand-drawn-style playground, and a tidy-vs-wild comparison; **3)**
-  `generator.html` is the full generator, closing with a conclusion that
-  answers the opening question: one rule plus a pinch of chaos.
-- Polished interactive generator: iterations, branch angle, and shrink
+- A guided five-chapter journey from wonder to mastery: **1)** `index.html`
+  asks why nature (trees, rivers, shells) is so beautiful and introduces
+  fractals with a light history (Mandelbrot, 1975) and a kid-friendly
+  definition; **2)** `learn.html` teaches how the recursive rule works —
+  step-by-step mini canvases (1 → 31 sticks), the rule written as a simple
+  formula, a hand-drawn-style playground, and a tidy-vs-wild comparison;
+  **3)** `generator.html` is the full tree generator; **4)**
+  `snowflake.html` grows six-fold dendrite snow crystals with a simpler
+  panel (real crystals need barely any chaos — just a pinch of "frost");
+  **5)** `create.html` lets visitors write their **own fractal formulas**
+  in a tiny turtle language, with a visual rule builder kept in two-way
+  sync with the text, known-fractal presets (tree, snowflake, fern,
+  crystal, spiral, bush) and a full notation guide.
+- Polished interactive tree generator: iterations, branch angle, and shrink
   factor are **ranges** (dual-thumb sliders) sampled per branch for
   natural-looking trees; wildness controls how much of each range is
   used. Plus trunk length/thickness, growth animation, trunk/leaf color
   pickers, per-control explanations, reset-to-defaults, and one-click PNG
   download.
+- A generic **turtle-fractal engine** (`TurtleFractalService`) that
+  interprets draw/move/turn/branch/self-call programs with optional n-fold
+  symmetry, jitter, and a hard segment budget — the snowflake and the
+  create-your-own page both run on it. Formulas are written in a small DSL
+  (`F1 [+25 T0.7] [-25 T0.7]` is the tree) with a hand-rolled parser and
+  positioned, bilingual error messages.
 - Light/dark theme (follows the device by default, toggleable) and an
   English/Spanish language switcher that keeps the choice in the URL
   (`?lang=es`) so shared links open in the sender's language.
-- Same drawing algorithm on the web and in the CLI — both go through the
-  same `FractalService`, so results are consistent between the two.
+- Same tree-drawing algorithm on the web and in the CLI — both go through
+  the same `FractalService`, so results are consistent between the two.
 - CLI mode renders to PNG and logs each generation's parameters to both
   SQLite and JSON, for headless batch generation or scripting.
 

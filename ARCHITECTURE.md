@@ -14,14 +14,18 @@ never the other way around.
 
 ## Solution overview
 
-The system has exactly one piece of business logic — "recursively draw a
-branching tree given a set of parameters" — and two delivery mechanisms for
-it: an interactive browser UI, and a headless CLI. Both delivery mechanisms
-are thin adapters wired onto the same `FractalService`. Nothing about the
-drawing algorithm, validation rules, or animation timing is duplicated
-between them; the only things that differ per platform are _how a branch
-gets drawn_ (Canvas2D vs. `node-canvas`) and _what happens to the result_
-(stays on screen vs. gets written to disk + logged).
+The system has two pieces of business logic: the classic recursive tree
+algorithm (`FractalService`) and a generic turtle-program interpreter
+(`TurtleFractalService`) that executes data-driven fractal rules — the
+snowflake page runs a fixed dendrite rule on it (via the `SnowflakeService`
+façade) and the create-your-own page runs user-written formulas parsed by
+`turtle/formula.ts`. Both engines draw through the same
+`IRendererService` segment primitive, so the browser UI and the headless
+CLI stay thin adapters. Nothing about drawing algorithms, validation
+rules, or animation timing is duplicated between platforms; the only
+things that differ are _how a segment gets drawn_ (Canvas2D vs.
+`node-canvas`) and _what happens to the result_ (stays on screen vs. gets
+written to disk + logged).
 
 ## Project structure
 
@@ -29,24 +33,36 @@ gets drawn_ (Canvas2D vs. `node-canvas`) and _what happens to the result_
 src/
 ├── core/                        # Framework-agnostic domain + business logic
 │   ├── domain/types.ts          # Value types: FractalParams, CanvasConfig, ...
+│   ├── domain/turtle.ts         # Turtle engine types: TurtleProgram, TurtleStep, ...
+│   ├── domain/snowflake.ts      # SnowflakeParams
 │   ├── ports.ts                 # Interfaces the core depends on (never concretes)
 │   └── application/
-│       ├── FractalService.ts    # The one true recursive drawing algorithm
-│       ├── ConfigService.ts     # Defaults + validation/clamping
+│       ├── FractalService.ts    # The recursive tree algorithm (chapters 1–3)
+│       ├── TurtleFractalService.ts  # Generic turtle-program interpreter (chapters 4–5)
+│       ├── SnowflakeService.ts  # Dendrite-crystal façade over the turtle engine
+│       ├── turtle/formula.ts    # Formula DSL: parser, serializer, validator, estimator
+│       ├── ConfigService.ts     # Tree defaults + validation/clamping
 │       ├── SpeedControlService.ts
 │       └── math.ts              # Pure numeric helpers
 ├── adapters/                    # Platform-specific implementations of the ports
 │   ├── web/
 │   │   ├── WebRendererService.ts   # Implements IRendererService via Canvas2D
-│   │   ├── ControlsView.ts         # DOM-only: reads/writes form elements
-│   │   ├── main.ts                 # Browser entry point (generator page)
-│   │   └── learn.ts                # Browser entry point ("How fractals work" page)
+│   │   ├── routes.ts               # The journey's route list; nav/badges/pagers derive from it
+│   │   ├── chrome.ts               # Shared header/badge/pager rendering + theme/lang wiring
+│   │   ├── serialRunner.ts         # Serializes generate() runs (latest queued params win)
+│   │   ├── controls/widgets.ts     # Reusable slider/color/action-row widgets
+│   │   ├── ControlsView.ts         # Tree panel (interval sliders + widgets)
+│   │   ├── SnowflakeControls.ts    # Simpler snowflake panel (widgets only)
+│   │   ├── rulebuilder/            # FormulaBox (text) + RuleBuilderView (visual), two-way synced
+│   │   ├── main.ts                 # Entry: generator page (chapter 3)
+│   │   ├── story.ts / learn.ts     # Entries: chapters 1–2
+│   │   └── snowflake.ts / create.ts # Entries: chapters 4–5
 │   └── node/
 │       ├── NodeCanvasRendererService.ts  # Implements IRendererService via node-canvas
 │       ├── FractalLogRepository.ts       # Implements IFractalLogRepository via SQLite
 │       └── LoggerService.ts
 ├── composition/                 # Composition roots — the only place adapters are wired together
-│   ├── WebComposition.ts        # Used by the browser entry points (main.ts, learn.ts)
+│   ├── WebComposition.ts        # composeWebServices / composeTurtleServices / composeSnowflakeServices
 │   └── NodeComposition.ts       # Used by cli.ts only
 └── cli.ts                       # Node CLI entry point
 
