@@ -2,6 +2,8 @@
 // lives in the URL (?lang=es) so shared links open in the sender's language;
 // localStorage remembers it for direct visits.
 
+import { ROUTES } from './routes';
+
 export type Lang = 'en' | 'es';
 
 const STORAGE_KEY = 'ftree-lang';
@@ -14,6 +16,8 @@ const MESSAGES: Record<string, Entry> = {
   'nav.why': { en: 'Why?', es: '¿Por qué?' },
   'nav.learn': { en: 'How?', es: '¿Cómo?' },
   'nav.generator': { en: 'Create!', es: '¡Crear!' },
+  'nav.snowflake': { en: 'Snowflake', es: 'Copo' },
+  'nav.create': { en: 'Your rule', es: 'Tu regla' },
   'footer.text': {
     en: 'Built with a single recursive rule · Open source on',
     es: 'Hecho con una sola regla recursiva · Código abierto en',
@@ -27,14 +31,24 @@ const MESSAGES: Record<string, Entry> = {
     es: '¿Por qué la naturaleza es tan bella?',
   },
   'pager.how': { en: 'How fractals work', es: 'Cómo funcionan los fractales' },
-  'pager.create': { en: 'Grow your own tree', es: 'Cultiva tu propio árbol' },
+  'pager.tree': { en: 'Grow your own tree', es: 'Cultiva tu propio árbol' },
+  'pager.snowflake': { en: 'Craft a snowflake', es: 'Crea un copo de nieve' },
+  'pager.create': { en: 'Create your own fractal', es: 'Crea tu propio fractal' },
+  'chapter.badge': {
+    en: 'Chapter {n} of {total} · {label}',
+    es: 'Capítulo {n} de {total} · {label}',
+  },
+  'chapter.why': { en: 'The wonder', es: 'El asombro' },
+  'chapter.learn': { en: 'The trick', es: 'El truco' },
+  'chapter.tree': { en: 'Your turn', es: 'Tu turno' },
+  'chapter.snowflake': { en: 'The crystal', es: 'El cristal' },
+  'chapter.create': { en: 'Your rule', es: 'Tu regla' },
 
   // ── Chapter 1: the wonder (index.html) ───────────────────────────
   'story.title': {
     en: 'Why Is Nature So Beautiful? · Fractal Tree Studio',
     es: '¿Por qué la naturaleza es tan bella? · Estudio de Árboles Fractales',
   },
-  'story.chapter': { en: 'Chapter 1 of 3 · The wonder', es: 'Capítulo 1 de 3 · El asombro' },
   'story.hero.title': {
     en: 'Why is nature so <span class="text-accent">beautiful</span>?',
     es: '¿Por qué la naturaleza es tan <span class="text-accent">bella</span>?',
@@ -89,7 +103,6 @@ const MESSAGES: Record<string, Entry> = {
     en: 'Grow Your Own Tree · Fractal Tree Studio',
     es: 'Cultiva tu propio árbol · Estudio de Árboles Fractales',
   },
-  'generator.chapter': { en: 'Chapter 3 of 3 · Your turn', es: 'Capítulo 3 de 3 · Tu turno' },
   'conclusion.title': {
     en: 'So… why are trees so beautiful?',
     es: 'Entonces… ¿por qué los árboles son tan bellos?',
@@ -171,12 +184,255 @@ const MESSAGES: Record<string, Entry> = {
   'value.instant': { en: 'instant', es: 'al instante' },
   'info.show': { en: 'What does this do?', es: '¿Qué hace esto?' },
 
+  // ── Chapter 4: snowflake page ────────────────────────────────────
+  'snowflake.title': {
+    en: 'Craft a Snowflake · Fractal Tree Studio',
+    es: 'Crea un copo de nieve · Estudio de Árboles Fractales',
+  },
+  'snowflake.hero.title': {
+    en: 'Craft your own <span class="text-accent">snowflake</span>',
+    es: 'Crea tu propio <span class="text-accent">copo de nieve</span>',
+  },
+  'snowflake.hero.body': {
+    en: 'The very trick that grows trees also grows snow: one rule, repeated six times around a center. Real crystals are almost perfectly symmetric, so this one needs barely any chaos — just a pinch of frost.',
+    es: 'El mismo truco que cultiva árboles también cultiva nieve: una regla, repetida seis veces alrededor de un centro. Los cristales reales son casi perfectamente simétricos, así que este apenas necesita caos — solo una pizca de escarcha.',
+  },
+  'snowflake.outro.title': { en: 'One rule, six arms ❄️', es: 'Una regla, seis brazos ❄️' },
+  'snowflake.outro.body': {
+    en: 'Every flake here is a single recursive rule — <strong>grow a spike pair, keep going, shrink</strong> — copied six times around the middle. Trees, snowflakes… what else can one little rule draw? In the next chapter, <strong>you</strong> write the rule.',
+    es: 'Cada copo es una sola regla recursiva — <strong>brota un par de púas, sigue, encoge</strong> — copiada seis veces alrededor del centro. Árboles, copos de nieve… ¿qué más puede dibujar una reglita? En el próximo capítulo, la regla la escribes <strong>tú</strong>.',
+  },
+  'section.sf.shape.note': {
+    en: 'Six identical arms grow from the center; these knobs shape every arm at once.',
+    es: 'Seis brazos idénticos crecen desde el centro; estos controles moldean todos los brazos a la vez.',
+  },
+  'control.sf.depth': { en: 'Generations', es: 'Generaciones' },
+  'control.sf.branchAngle': { en: 'Spike angle', es: 'Ángulo de púas' },
+  'control.sf.sideScale': { en: 'Spike size', es: 'Tamaño de púas' },
+  'control.sf.spineScale': { en: 'Arm taper', es: 'Afinado del brazo' },
+  'control.sf.size': { en: 'Flake size', es: 'Tamaño del copo' },
+  'control.sf.jitter': { en: 'Frost', es: 'Escarcha' },
+  'control.sf.animationSpeed': { en: 'Growth delay', es: 'Pausa de crecimiento' },
+  'help.sf.depth': {
+    en: 'How many generations of spikes each arm grows. Every extra generation puts smaller spikes on the previous ones — real crystals rarely need more than five.',
+    es: 'Cuántas generaciones de púas crecen en cada brazo. Cada generación extra añade púas más pequeñas sobre las anteriores — los cristales reales rara vez necesitan más de cinco.',
+  },
+  'help.sf.branchAngle': {
+    en: 'The angle between an arm and its side spikes. Real snow crystals branch at about 60°, thanks to the hexagonal shape of ice molecules.',
+    es: 'El ángulo entre un brazo y sus púas laterales. Los cristales de nieve reales se ramifican a unos 60°, gracias a la forma hexagonal de las moléculas de hielo.',
+  },
+  'help.sf.sideScale': {
+    en: 'How long each side spike is compared to the arm segment it grows from. Small values give delicate needles; large ones give feathery, fern-like arms.',
+    es: 'Qué tan larga es cada púa lateral comparada con el segmento del que brota. Valores pequeños dan agujas delicadas; valores grandes, brazos plumosos como helechos.',
+  },
+  'help.sf.spineScale': {
+    en: 'How much each arm shrinks as it grows outward. Lower values make compact, star-like flakes; higher ones make long, elegant arms.',
+    es: 'Cuánto se encoge cada brazo al crecer hacia afuera. Valores bajos dan copos compactos como estrellas; valores altos, brazos largos y elegantes.',
+  },
+  'help.sf.size': {
+    en: 'The length of the first segment of each arm, in pixels. Everything else scales from it.',
+    es: 'El largo del primer segmento de cada brazo, en píxeles. Todo lo demás se escala a partir de él.',
+  },
+  'help.sf.jitter': {
+    en: 'A tiny random wobble on every angle and length. Real flakes are almost — but never exactly — symmetric, so a few percent is all it takes to look natural.',
+    es: 'Un pequeño temblor aleatorio en cada ángulo y largo. Los copos reales son casi — pero nunca exactamente — simétricos, así que unos pocos por ciento bastan para que parezca natural.',
+  },
+  'help.sf.animationSpeed': {
+    en: 'A pause between segments while the crystal is drawn, so you can watch it grow spike by spike. Set it to 0 to draw instantly.',
+    es: 'Una pausa entre segmentos mientras se dibuja el cristal, para verlo crecer púa a púa. Ponla en 0 para dibujarlo al instante.',
+  },
+  'color.arm': { en: 'Arms', es: 'Brazos' },
+  'color.tip': { en: 'Tips', es: 'Puntas' },
+  'btn.crystallize': { en: '❄️ Crystallize', es: '❄️ Cristalizar' },
+
+  // ── Chapter 5: create-your-own page ──────────────────────────────
+  'create.title': {
+    en: 'Create Your Own Fractal · Fractal Tree Studio',
+    es: 'Crea tu propio fractal · Estudio de Árboles Fractales',
+  },
+  'create.hero.title': {
+    en: 'Create your <span class="text-accent">own fractal</span>',
+    es: 'Crea tu <span class="text-accent">propio fractal</span>',
+  },
+  'create.hero.body': {
+    en: "You've grown trees and snowflakes from ready-made rules — now write the rule yourself. Move the turtle, turn it, branch it, and let it call itself. Start from a known fractal below, or from a blank line.",
+    es: 'Has cultivado árboles y copos con reglas ya hechas — ahora escribe tú la regla. Mueve la tortuga, gírala, ramifícala y deja que se llame a sí misma. Empieza desde un fractal conocido, o desde una línea en blanco.',
+  },
+  'create.formula.title': { en: 'The formula', es: 'La fórmula' },
+  'create.presets': { en: 'Load a known fractal:', es: 'Carga un fractal conocido:' },
+  'create.preset.custom': { en: '— your own —', es: '— el tuyo —' },
+  'create.preset.tree': { en: '🌳 Tree', es: '🌳 Árbol' },
+  'create.preset.snowflake': { en: '❄️ Snowflake', es: '❄️ Copo de nieve' },
+  'create.preset.fern': { en: '🌿 Fern', es: '🌿 Helecho' },
+  'create.preset.crystal': { en: '💠 Crystal', es: '💠 Cristal' },
+  'create.preset.spiral': { en: '🌀 Spiral galaxy', es: '🌀 Galaxia espiral' },
+  'create.preset.bush': { en: '🌱 Bush', es: '🌱 Arbusto' },
+  'create.builder.title': { en: 'Build it step by step', es: 'Constrúyela paso a paso' },
+  'create.builder.note': {
+    en: 'The very same rule, as editable steps — change one side and the formula follows.',
+    es: 'La misma regla, como pasos editables — cambia un lado y la fórmula lo sigue.',
+  },
+  'create.estimate': { en: '≈ {n} sticks will be drawn', es: '≈ se dibujarán {n} palitos' },
+  'create.estimate.trim': {
+    en: 'that is a lot! drawing stops at {max}',
+    es: '¡son muchísimos! el dibujo se detiene en {max}',
+  },
+  'create.step.draw': { en: 'Draw a stick', es: 'Dibuja un palito' },
+  'create.step.move': { en: 'Move (pen up)', es: 'Muévete (sin pintar)' },
+  'create.step.turn': { en: 'Turn (+ left / − right)', es: 'Gira (+ izquierda / − derecha)' },
+  'create.step.recurse': { en: 'Do it all again at…', es: 'Hazlo todo otra vez a…' },
+  'create.step.branch': { en: 'Branch (side trip)', es: 'Rama (desvío)' },
+  'create.step.ofLength': { en: 'of the size', es: 'del tamaño' },
+  'create.step.remove': { en: 'Remove step', es: 'Quitar paso' },
+  'create.addStep': { en: '＋ Add a step…', es: '＋ Añadir un paso…' },
+  'create.add.draw': { en: '✏️ Draw a stick', es: '✏️ Dibuja un palito' },
+  'create.add.move': { en: '👣 Move without drawing', es: '👣 Muévete sin pintar' },
+  'create.add.turnLeft': { en: '↰ Turn left 45°', es: '↰ Gira 45° a la izquierda' },
+  'create.add.turnRight': { en: '↱ Turn right 45°', es: '↱ Gira 45° a la derecha' },
+  'create.add.faceLeft': {
+    en: '⬅️ Quarter turn left (90°)',
+    es: '⬅️ Cuarto de giro a la izquierda (90°)',
+  },
+  'create.add.faceRight': {
+    en: '➡️ Quarter turn right (90°)',
+    es: '➡️ Cuarto de giro a la derecha (90°)',
+  },
+  'create.add.recurse': {
+    en: '🔁 Do it all again (self-call)',
+    es: '🔁 Hazlo todo otra vez (auto-llamada)',
+  },
+  'create.add.branch': { en: '🌿 Branch: turn + self-call', es: '🌿 Rama: giro + auto-llamada' },
+  'control.cf.depth': { en: 'Repetitions', es: 'Repeticiones' },
+  'control.cf.symmetry': { en: 'Symmetry', es: 'Simetría' },
+  'control.cf.size': { en: 'Starting size', es: 'Tamaño inicial' },
+  'control.cf.jitter': { en: 'Wildness', es: 'Rebeldía' },
+  'control.cf.animationSpeed': { en: 'Growth delay', es: 'Pausa de crecimiento' },
+  'control.cf.origin': { en: 'Grow from', es: 'Crece desde' },
+  'create.origin.bottom': { en: 'the bottom, upward', es: 'abajo, hacia arriba' },
+  'create.origin.center': { en: 'the center, outward', es: 'el centro, hacia afuera' },
+  'help.cf.depth': {
+    en: 'How many times the self-call (T) is allowed to happen. Each repetition runs your whole formula again, smaller — more repetitions, more detail, many more sticks.',
+    es: 'Cuántas veces puede ocurrir la auto-llamada (T). Cada repetición ejecuta toda tu fórmula otra vez, más pequeña — más repeticiones, más detalle y muchos más palitos.',
+  },
+  'help.cf.symmetry': {
+    en: 'Draws your whole formula this many times, rotated evenly around the starting point. 6 turns a single arm into a snowflake; 1 draws it just once.',
+    es: 'Dibuja toda tu fórmula este número de veces, rotada uniformemente alrededor del punto de partida. Con 6, un solo brazo se vuelve un copo de nieve; con 1 se dibuja una sola vez.',
+  },
+  'help.cf.size': {
+    en: 'The turtle&apos;s starting stick length in pixels. F1 draws exactly this long; every self-call shrinks it.',
+    es: 'El largo inicial del palito de la tortuga, en píxeles. F1 dibuja exactamente este largo; cada auto-llamada lo encoge.',
+  },
+  'help.cf.jitter': {
+    en: 'A random wobble on every turn and length, so the rule stops being perfect and starts looking alive — same idea as the tree generator.',
+    es: 'Un temblor aleatorio en cada giro y largo, para que la regla deje de ser perfecta y empiece a parecer viva — la misma idea que en el generador de árboles.',
+  },
+  'help.cf.animationSpeed': {
+    en: 'A pause between sticks while your fractal is drawn, so you can watch the turtle work. Set it to 0 to draw instantly.',
+    es: 'Una pausa entre palitos mientras se dibuja tu fractal, para ver trabajar a la tortuga. Ponla en 0 para dibujarlo al instante.',
+  },
+  'help.cf.origin': {
+    en: 'Where the turtle starts: at the bottom pointing up (good for trees) or in the middle (good for snowflakes, stars and spirals).',
+    es: 'Dónde empieza la tortuga: abajo apuntando hacia arriba (ideal para árboles) o en el centro (ideal para copos, estrellas y espirales).',
+  },
+  'color.cf.main': { en: 'Lines', es: 'Líneas' },
+  'btn.draw': { en: '✨ Draw it', es: '✨ Dibujar' },
+  'dsl.err.unexpectedChar': {
+    en: 'I don&apos;t know this symbol — use F, M, +, -, [, ] or T',
+    es: 'No conozco este símbolo — usa F, M, +, -, [, ] o T',
+  },
+  'dsl.err.expectedNumber': {
+    en: 'A turn needs a number of degrees, like +25 or -90',
+    es: 'Un giro necesita un número de grados, como +25 o -90',
+  },
+  'dsl.err.unclosedBracket': {
+    en: 'This [ never gets its closing ]',
+    es: 'A este [ le falta su ] de cierre',
+  },
+  'dsl.err.unexpectedClose': {
+    en: 'This ] has no matching [ before it',
+    es: 'Este ] no tiene un [ que lo abra',
+  },
+  'dsl.err.emptyProgram': {
+    en: 'The formula is empty — try F1 to draw a stick',
+    es: 'La fórmula está vacía — prueba F1 para dibujar un palito',
+  },
+  'dsl.err.emptyBranch': {
+    en: 'This branch [ ] is empty — put some steps inside',
+    es: 'Esta rama [ ] está vacía — pon algunos pasos dentro',
+  },
+  'dsl.err.tooManyBranches': {
+    en: 'Too many self-calls — a formula may use at most 5 T&apos;s',
+    es: 'Demasiadas auto-llamadas — una fórmula puede usar como mucho 5 T',
+  },
+  'dsl.err.scaleOutOfRange': {
+    en: 'This size factor is out of range (T needs 0.1–0.95, F and M need 0.05–3)',
+    es: 'Este factor de tamaño está fuera de rango (T necesita 0.1–0.95; F y M, 0.05–3)',
+  },
+  'dsl.err.turnOutOfRange': {
+    en: 'Turns must stay between -360 and +360 degrees',
+    es: 'Los giros deben quedar entre -360 y +360 grados',
+  },
+  'dsl.err.tooDeepNesting': {
+    en: 'Too many brackets inside brackets (4 levels max)',
+    es: 'Demasiados corchetes dentro de corchetes (máximo 4 niveles)',
+  },
+  'dsl.err.noDraw': {
+    en: 'The turtle never draws — add an F somewhere',
+    es: 'La tortuga nunca dibuja — añade una F en alguna parte',
+  },
+  'section.cf.shape.note': {
+    en: 'These knobs apply to the whole drawing; the formula decides its shape.',
+    es: 'Estos controles afectan a todo el dibujo; la fórmula decide su forma.',
+  },
+  'create.guide.title': { en: 'How to write a formula', es: 'Cómo escribir una fórmula' },
+  'create.guide.intro': {
+    en: 'A formula is a list of orders for a <strong>turtle</strong> holding a pen. It starts pointing <strong>up</strong>, walks where you tell it, and the magic order <strong>T</strong> makes it run the whole formula again — smaller. That self-call is the recursion you met in chapter 2.',
+    es: 'Una fórmula es una lista de órdenes para una <strong>tortuga</strong> que sostiene un lápiz. Empieza apuntando <strong>hacia arriba</strong>, camina adonde le digas, y la orden mágica <strong>T</strong> le hace ejecutar toda la fórmula otra vez — más pequeña. Esa auto-llamada es la recursión que conociste en el capítulo 2.',
+  },
+  'create.guide.f.title': { en: '✏️ Draw a stick', es: '✏️ Dibuja un palito' },
+  'create.guide.f.body': {
+    en: 'Walk forward drawing a line. The number is the length: <strong>1</strong> = the full current size, <strong>0.5</strong> = half of it.',
+    es: 'Camina hacia adelante dibujando una línea. El número es el largo: <strong>1</strong> = el tamaño actual completo, <strong>0.5</strong> = la mitad.',
+  },
+  'create.guide.m.title': { en: '👣 Move without drawing', es: '👣 Muévete sin pintar' },
+  'create.guide.m.body': {
+    en: 'Same walk, but with the pen lifted — handy to leave gaps.',
+    es: 'La misma caminata, pero con el lápiz levantado — útil para dejar huecos.',
+  },
+  'create.guide.turn.title': { en: '↪️ Turn', es: '↪️ Gira' },
+  'create.guide.turn.body': {
+    en: 'Rotate on the spot: <strong>+</strong> turns left, <strong>−</strong> turns right, the number is degrees. The turtle starts pointing up, so <strong>+90</strong> faces it left and <strong>-90</strong> faces it right.',
+    es: 'Rota en el sitio: <strong>+</strong> gira a la izquierda, <strong>−</strong> a la derecha, el número son grados. La tortuga empieza apuntando hacia arriba, así que <strong>+90</strong> la deja mirando a la izquierda y <strong>-90</strong> a la derecha.',
+  },
+  'create.guide.branch.title': { en: '🌿 Branch', es: '🌿 Rama' },
+  'create.guide.branch.body': {
+    en: 'Everything inside brackets is a side trip: the turtle remembers where it was, does the trip, and <strong>snaps back</strong> to keep going from the same spot.',
+    es: 'Todo lo que va entre corchetes es un desvío: la tortuga recuerda dónde estaba, hace el desvío y <strong>vuelve de golpe</strong> para seguir desde el mismo punto.',
+  },
+  'create.guide.t.title': { en: '🔁 The self-call', es: '🔁 La auto-llamada' },
+  'create.guide.t.body': {
+    en: 'Run the <strong>whole formula again</strong> from here, at 0.7× the size. This is what makes it a fractal! You can use up to <strong>five</strong> per formula — the tree uses two, the snowflake three.',
+    es: 'Ejecuta <strong>toda la fórmula otra vez</strong> desde aquí, a 0.7× del tamaño. ¡Esto es lo que la hace un fractal! Puedes usar hasta <strong>cinco</strong> por fórmula — el árbol usa dos, el copo tres.',
+  },
+  'create.guide.comment.title': { en: '💬 Notes', es: '💬 Notas' },
+  'create.guide.comment.body': {
+    en: 'Anything after a <strong>#</strong> is ignored — leave yourself notes. Spaces and upper/lower case don&apos;t matter either.',
+    es: 'Todo lo que va después de un <strong>#</strong> se ignora — déjate notas. Los espacios y las mayúsculas/minúsculas tampoco importan.',
+  },
+  'create.guide.example.title': {
+    en: 'Read the tree formula aloud',
+    es: 'Lee la fórmula del árbol en voz alta',
+  },
+  'create.guide.example.body': {
+    en: '"<strong>Draw a stick</strong>. Side trip: <strong>turn left 25°</strong> and <strong>do all of this again at 70% size</strong>. Snap back. Side trip: <strong>turn right 25°</strong> and <strong>do it all again at 70%</strong>." That&apos;s the exact rule from chapter 2 — two self-calls, so the sticks double every generation.',
+    es: '«<strong>Dibuja un palito</strong>. Desvío: <strong>gira 25° a la izquierda</strong> y <strong>haz todo esto otra vez al 70% del tamaño</strong>. Vuelve. Desvío: <strong>gira 25° a la derecha</strong> y <strong>hazlo todo otra vez al 70%</strong>.» Es exactamente la regla del capítulo 2 — dos auto-llamadas, así que los palitos se duplican en cada generación.',
+  },
+
   // ── Learn page ───────────────────────────────────────────────────
   'learn.title': {
     en: 'How Fractals Work · Fractal Tree Studio',
     es: 'Cómo funcionan los fractales · Estudio de Árboles Fractales',
   },
-  'learn.chapter': { en: 'Chapter 2 of 3 · The trick', es: 'Capítulo 2 de 3 · El truco' },
   'learn.hero.title': { en: 'How do fractals work?', es: '¿Cómo funcionan los fractales?' },
   'learn.hero.body': {
     en: "A fractal is a picture made by following <strong>one simple rule</strong>, again and again and again. Each time you repeat the rule, the picture gets richer — that's called an <strong>iteration</strong>. Let's grow a tree, one iteration at a time!",
@@ -318,10 +574,14 @@ export function setLang(lang: Lang): void {
   window.dispatchEvent(new CustomEvent('ftree:langchange', { detail: { lang } }));
 }
 
-export function t(key: string): string {
+export function t(key: string, params?: Record<string, string | number>): string {
   const entry = MESSAGES[key];
   if (!entry) return key;
-  return entry[currentLang];
+  const text = entry[currentLang];
+  if (!params) return text;
+  return text.replace(/\{(\w+)\}/g, (match, name: string) =>
+    name in params ? String(params[name]) : match
+  );
 }
 
 /** Keep <html lang> and the shareable URL (?lang=es) in sync. */
@@ -337,9 +597,9 @@ function syncLangArtifacts(): void {
 }
 
 /** Append the current language to internal page links so navigation keeps it. */
-function localizeInternalLinks(): void {
+export function localizeInternalLinks(): void {
   const links = document.querySelectorAll<HTMLAnchorElement>(
-    'a[href^="./index.html"], a[href^="./learn.html"], a[href^="./generator.html"]'
+    ROUTES.map((route) => `a[href^="./${route.file}"]`).join(', ')
   );
   links.forEach((link) => {
     const url = new URL(link.getAttribute('href')!, window.location.href);

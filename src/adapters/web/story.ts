@@ -5,6 +5,7 @@
 import { composeWebServices } from '../../composition/WebComposition';
 import { CanvasConfig, FractalParamsInput } from '../../core/domain/types';
 import { initChrome } from './chrome';
+import { createSerialRunner } from './serialRunner';
 import { getCanvasBackground } from './theme';
 
 // A visibly organic tree: wide ranges, high wildness, hand-drawn strokes.
@@ -32,32 +33,11 @@ function init(): void {
   };
   const { fractalService, configService } = composeWebServices(canvas, config);
 
-  // Serialize generate() calls (see docs/CONTRACTS.md): remember at most one
-  // queued run and start it when the current one finishes.
-  let busy = false;
-  let pending: FractalParamsInput | null = null;
-  const grow = async (params: FractalParamsInput = WILD_TREE): Promise<void> => {
-    if (busy) {
-      pending = params;
-      return;
-    }
-    busy = true;
-    try {
-      let next: FractalParamsInput | null = params;
-      while (next) {
-        config.backgroundColor = getCanvasBackground();
-        const validated = configService.validate(next);
-        next = null;
-        await fractalService.generate(validated);
-        next = pending;
-        pending = null;
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      busy = false;
-    }
-  };
+  const run = createSerialRunner(async (params: FractalParamsInput) => {
+    config.backgroundColor = getCanvasBackground();
+    await fractalService.generate(configService.validate(params));
+  });
+  const grow = (params: FractalParamsInput = WILD_TREE): Promise<void> => run(params);
 
   document.getElementById('story-regrow')?.addEventListener('click', () => void grow());
   window.addEventListener('ftree:themechange', () => {

@@ -2,12 +2,16 @@ import {
   IConfigService,
   IFractalService,
   IRendererService,
+  ISnowflakeService,
   ISpeedControlService,
+  ITurtleFractalService,
 } from '../core/ports';
 import { CanvasConfig } from '../core/domain/types';
 import { ConfigService } from '../core/application/ConfigService';
 import { FractalService } from '../core/application/FractalService';
+import { SnowflakeService } from '../core/application/SnowflakeService';
 import { SpeedControlService } from '../core/application/SpeedControlService';
+import { TurtleFractalService } from '../core/application/TurtleFractalService';
 import { WebRendererService } from '../adapters/web/WebRendererService';
 
 export interface WebServices {
@@ -39,4 +43,39 @@ export function composeWebServices(
   );
 
   return { fractalService, rendererService, configService, speedControlService };
+}
+
+export interface TurtleWebServices {
+  turtleService: ITurtleFractalService;
+  rendererService: IRendererService;
+  speedControlService: ISpeedControlService;
+}
+
+/** Composition root for canvases driven by the generic turtle engine. */
+export function composeTurtleServices(
+  canvas: HTMLCanvasElement,
+  canvasConfig?: CanvasConfig
+): TurtleWebServices {
+  const speedControlService = new SpeedControlService();
+  const rendererService = new WebRendererService(canvas);
+  const turtleService = new TurtleFractalService(
+    rendererService,
+    speedControlService,
+    canvasConfig
+  );
+
+  return { turtleService, rendererService, speedControlService };
+}
+
+export interface SnowflakeWebServices extends TurtleWebServices {
+  snowflakeService: ISnowflakeService;
+}
+
+/** Composition root for the snowflake page. */
+export function composeSnowflakeServices(
+  canvas: HTMLCanvasElement,
+  canvasConfig?: CanvasConfig
+): SnowflakeWebServices {
+  const services = composeTurtleServices(canvas, canvasConfig);
+  return { ...services, snowflakeService: new SnowflakeService(services.turtleService) };
 }

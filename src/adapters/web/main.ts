@@ -1,6 +1,7 @@
 import { composeWebServices } from '../../composition/WebComposition';
 import { initializeControls, getUserInput, rerenderControls } from './ControlsView';
 import { initChrome } from './chrome';
+import { createSerialRunner } from './serialRunner';
 import { getCanvasBackground } from './theme';
 
 function init(): void {
@@ -16,30 +17,11 @@ function init(): void {
   const { fractalService, rendererService, configService, speedControlService } =
     composeWebServices(canvas, canvasConfig);
 
-  // FractalService instances are not safe for overlapping generate() calls
-  // (see docs/CONTRACTS.md), so serialize: if a generation is requested while
-  // one is running, remember it and run once more when the current one ends.
-  let busy = false;
-  let pending = false;
-  const generate = async (): Promise<void> => {
-    if (busy) {
-      pending = true;
-      return;
-    }
-    busy = true;
-    try {
-      do {
-        pending = false;
-        const params = configService.validate(getUserInput());
-        speedControlService.setDelay(params.animationSpeed);
-        await fractalService.generate(params);
-      } while (pending);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      busy = false;
-    }
-  };
+  const generate = createSerialRunner(async () => {
+    const params = configService.validate(getUserInput());
+    speedControlService.setDelay(params.animationSpeed);
+    await fractalService.generate(params);
+  });
 
   initializeControls(
     {

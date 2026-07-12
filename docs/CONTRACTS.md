@@ -11,7 +11,10 @@ described here is still a bug.
 
 Value types referenced below (`FractalParams`, `FractalColors`,
 `CanvasConfig`, `RenderResult`, `FractalLogEntry`) are defined in
-`src/core/domain/types.ts`.
+`src/core/domain/types.ts`; turtle-engine types (`TurtleProgram`,
+`TurtleStep`, `TurtleOptions`, `TurtleRenderResult`) in
+`src/core/domain/turtle.ts`; `SnowflakeParams` in
+`src/core/domain/snowflake.ts`.
 
 ---
 
@@ -65,6 +68,74 @@ counting) is allowed to live.
 
 - Delegates directly to `renderer.clear()`. No validation, no state reset
   beyond what the renderer itself does.
+
+---
+
+## `ITurtleFractalService`
+
+**Responsibility:** interprets a `TurtleProgram` — a data-driven fractal
+rule made of `draw` / `move` / `turn` / `group` / `recurse` steps — against
+the renderer. Where `IFractalService` hardcodes the two-child tree rule,
+this engine executes whatever rule it is given; the snowflake page and the
+create-your-own page both run on it.
+
+**Implemented by:** `core/application/TurtleFractalService.ts`
+**Consumed by:** `adapters/web/snowflake.ts` (via `SnowflakeService`),
+`adapters/web/create.ts` (via the composition roots)
+
+### `run(program: TurtleProgram, options: Partial<TurtleOptions>): Promise<TurtleRenderResult>`
+
+- **Preconditions:** the program should already be semantically valid
+  (`validateProgram` in `core/application/turtle/formula.ts` — at most 5
+  `recurse` steps, at least one `draw`, scales/turns in range). The engine
+  does not re-validate structure; it only enforces runtime safety.
+- **Postconditions:**
+  - `renderer.initialize()` is called exactly once per `run()`.
+  - The program is executed once per `options.symmetry`, each arm's
+    starting heading rotated by `2π/symmetry`, from the configured origin
+    (`bottom-center` or `center`).
+  - `recurse` steps re-execute the whole program at `level + 1` with
+    `length × scale`, restoring the turtle pose afterwards (a self-call is
+    implicitly bracketed). Recursion stops at `options.depth` and below
+    0.5 px segment length.
+  - **Safety budget:** at most `options.maxSegments` (clamped to
+    ≤ 50 000, default 20 000) segments are drawn; when the budget is
+    spent the run unwinds early and resolves with `truncated: true`. A
+    five-branch program at depth 8 therefore terminates instead of
+    freezing the tab.
+  - `segmentsDrawn` always equals the number of `drawBranch()` calls.
+- **Invariants:** all run state (segment count, truncation flag, turtle
+  pose) is local to each `run()` call — unlike `FractalService` there is
+  no instance-level counter. Overlapping `run()` calls on one instance
+  still interleave their strokes on the shared canvas, so callers
+  serialize runs the same way as with `IFractalService`
+  (`adapters/web/serialRunner.ts`).
+- **Errors:** propagates renderer/speed-control errors unmodified, like
+  `IFractalService`.
+
+### `clear(): void`
+
+- Delegates directly to `renderer.clear()`.
+
+---
+
+## `ISnowflakeService`
+
+**Responsibility:** a thin domain façade that turns friendly snowflake
+knobs (`SnowflakeParams`) into a fixed dendrite `TurtleProgram` — spike
+pair plus shrinking spine, all self-calls — run with 6-fold symmetry from
+the canvas center.
+
+**Implemented by:** `core/application/SnowflakeService.ts`
+
+### `generate(input: Partial<SnowflakeParams>): Promise<TurtleRenderResult>`
+
+- **Preconditions:** none — every field is optional; input is merged over
+  `SNOWFLAKE_DEFAULTS` and clamped (`validateSnowflakeParams`).
+- **Postconditions:** with `jitter: 0` the crystal is exactly six-fold
+  symmetric and draws `6 · (3^depth − 1) / 2` segments (three self-calls
+  per rule). Everything else follows the `ITurtleFractalService.run()`
+  contract.
 
 ---
 

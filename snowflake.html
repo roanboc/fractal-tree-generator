@@ -3,10 +3,10 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title data-i18n="generator.title">Grow Your Own Tree · Fractal Tree Studio</title>
+    <title data-i18n="snowflake.title">Craft a Snowflake · Fractal Tree Studio</title>
     <meta
       name="description"
-      content="Grow your own fractal tree — play with iterations, angles, colors and wildness on an interactive canvas."
+      content="Grow a six-fold fractal snow crystal — the same recursive trick that grows trees, rotated six times around a center."
     />
     <link
       rel="icon"
@@ -37,57 +37,45 @@
         <p class="chapter-badge mb-3" id="chapter-badge"></p>
         <h1
           class="text-strong text-3xl font-bold tracking-tight sm:text-4xl"
-          data-i18n-html="hero.title"
+          data-i18n-html="snowflake.hero.title"
         >
-          Grow your own <span class="text-accent">fractal tree</span>
+          Craft your own <span class="text-accent">snowflake</span>
         </h1>
-        <p class="text-muted mt-2 max-w-2xl" data-i18n-html="hero.body">
-          Every tree here is drawn from one simple rule, repeated over and over. Tune the sliders,
-          hit <span class="text-strong font-semibold">Generate</span>, and watch a unique tree
-          appear. New here?
-          <a href="./learn.html" class="text-accent font-medium underline-offset-4 hover:underline"
-            >See how fractals work →</a
-          >
+        <p class="text-muted mt-2 max-w-2xl" data-i18n-html="snowflake.hero.body">
+          The very trick that grows trees also grows snow: one rule, repeated six times around a
+          center. Real crystals are almost perfectly symmetric, so this one needs barely any chaos —
+          just a pinch of frost.
         </p>
       </div>
 
       <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
-        <section class="card flex items-center p-4 sm:p-5" aria-label="Fractal canvas">
+        <section class="card flex items-center p-4 sm:p-5" aria-label="Snowflake canvas">
           <canvas
-            id="fractalCanvas"
+            id="snowflakeCanvas"
             class="canvas-frame"
             width="880"
             height="640"
-            aria-label="Fractal tree drawing"
+            aria-label="Fractal snowflake drawing"
           ></canvas>
         </section>
 
         <aside class="card p-5" aria-label="Controls">
-          <div id="controls"><!-- Control panel is rendered by ControlsView --></div>
+          <div id="controls"><!-- Control panel is rendered by SnowflakeControls --></div>
         </aside>
       </div>
 
-      <!-- Conclusion: closes the question chapter 1 opened -->
+      <!-- Tease the final chapter: the snowflake is just another formula -->
       <section class="mt-14 text-center">
         <div class="card mx-auto max-w-2xl p-8">
-          <h2 class="text-strong text-2xl font-bold" data-i18n="conclusion.title">
-            So… why are trees so beautiful?
+          <h2 class="text-strong text-2xl font-bold" data-i18n="snowflake.outro.title">
+            One rule, six arms ❄️
           </h2>
-          <p class="prose-fun mx-auto mt-3 max-w-xl" data-i18n-html="conclusion.body1">
-            Because they follow a <strong>fractal rule</strong> — one simple pattern, repeated over
-            and over — with <strong>a pinch of chaos</strong> sprinkled on top. The rule makes the
-            pattern; the wildness makes it alive.
+          <p class="prose-fun mx-auto mt-3 max-w-xl" data-i18n-html="snowflake.outro.body">
+            Every flake here is a single recursive rule — <strong>grow a spike pair, keep
+            going, shrink</strong> — copied six times around the middle. Trees, snowflakes… what
+            else can one little rule draw? In the next chapter, <strong>you</strong> write the
+            rule.
           </p>
-          <p class="prose-fun mx-auto mt-3 max-w-xl" data-i18n-html="conclusion.body2">
-            That's the beauty of math: from one tiny rule, endless one-of-a-kind trees. Next time
-            you pass a tree, a river or a seashell, you'll see the secret pattern hiding inside. 🌳
-          </p>
-          <a
-            href="./index.html"
-            class="text-accent mt-5 inline-block text-sm font-medium underline-offset-4 hover:underline"
-            data-i18n="conclusion.restart"
-            >← Start the journey again</a
-          >
         </div>
       </section>
 
@@ -99,6 +87,6 @@
       <a href="https://github.com/roanboc/fractal-tree-generator" class="footer-link">GitHub</a>
     </footer>
 
-    <script type="module" src="/src/adapters/web/main.ts"></script>
+    <script type="module" src="/src/adapters/web/snowflake.ts"></script>
   </body>
 </html>
