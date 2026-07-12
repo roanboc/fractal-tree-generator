@@ -17,6 +17,11 @@ requirements:
 Bug fixes that change no documented behavior can go straight to step 3.
 Agent-oriented guidance for the same process lives in `.claude/skills/`.
 
+Pull requests follow `.github/pull_request_template.md`: the body links the
+scope document, gives every EA layer a verdict, and describes **all**
+changes on the branch (`git diff main...HEAD`), not just the latest commit —
+and is kept updated as the branch grows.
+
 ## Development workflow
 
 ```bash

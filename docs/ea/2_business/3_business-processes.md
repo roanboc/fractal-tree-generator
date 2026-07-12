@@ -10,7 +10,12 @@ the [business services](./2_business-services.md).
 The visitor-facing process realizing the whole
 [value stream](../1_strategy/3_value-stream.md). Linear by design; every page
 offers prev/next pagers and a numbered header so visitors always know where
-they are.
+they are. The header and pager (both rendered from the route list) are the
+**only** chapter navigation: end-of-chapter narrative cards set up the next
+chapter but never duplicate its link, and any in-content journey link
+carries a `data-nav` attribute so `chrome.ts` resolves its target from the
+route list rather than a hardcoded path. The journey's closing "start
+again" moment lives on the final chapter (`pages/create.html`).
 
 ```mermaid
 flowchart LR
@@ -61,6 +66,13 @@ flowchart TB
 
 Realized by the two-way sync collaboration documented in
 [application/3_application-collaborations.md](../4_application/3_application-collaborations.md).
+
+Two rules keep visual editing aligned with the mental model "do the steps,
+then repeat": new steps are inserted **before** a trailing self-call
+(`insertStep` in the formula toolchain — a rule the _text_ editor
+deliberately does not enforce, since steps after a self-call are valid DSL
+for advanced authors), and every step row can be moved up/down without
+delete-and-re-add.
 
 ## P3 — Localization
 

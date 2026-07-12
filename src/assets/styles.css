@@ -438,6 +438,21 @@
     color: #f87171;
   }
 
+  .rule-move {
+    @apply flex h-6 w-5 shrink-0 items-center justify-center rounded-full text-[0.6rem] transition;
+    color: var(--text-faint);
+  }
+
+  .rule-move:hover:not(:disabled) {
+    background: var(--chip-bg);
+    color: var(--accent-text);
+  }
+
+  .rule-move:disabled {
+    opacity: 0.25;
+    cursor: default;
+  }
+
   .rule-group {
     @apply flex flex-col gap-2 rounded-xl p-3;
     border: 1px dashed var(--border);

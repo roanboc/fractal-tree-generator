@@ -17,15 +17,15 @@ each mapped to its real source location so this document stays verifiable.
 
 ## Core application components (platform-free, `src/core/`)
 
-| Component              | Source                                     | Responsibility                                                            |
-| ---------------------- | ------------------------------------------ | ------------------------------------------------------------------------- |
-| `FractalService`       | `core/application/FractalService.ts`       | Recursive two-child tree algorithm                                        |
-| `TurtleFractalService` | `core/application/TurtleFractalService.ts` | Generic turtle-program interpreter with symmetry, jitter, segment budget  |
-| `SnowflakeService`     | `core/application/SnowflakeService.ts`     | Façade: `SnowflakeParams` → dendrite `TurtleProgram`                      |
-| Formula toolchain      | `core/application/turtle/formula.ts`       | `parseFormula`, `serializeFormula`, `validateProgram`, `estimateSegments` |
-| `ConfigService`        | `core/application/ConfigService.ts`        | Tree defaults + clamping                                                  |
-| `SpeedControlService`  | `core/application/SpeedControlService.ts`  | Animation delay                                                           |
-| `math.ts`              | `core/application/math.ts`                 | `sampleInterval`, `clamp`, color helpers                                  |
+| Component              | Source                                     | Responsibility                                                                          |
+| ---------------------- | ------------------------------------------ | --------------------------------------------------------------------------------------- |
+| `FractalService`       | `core/application/FractalService.ts`       | Recursive two-child tree algorithm                                                      |
+| `TurtleFractalService` | `core/application/TurtleFractalService.ts` | Generic turtle-program interpreter with symmetry, jitter, segment budget                |
+| `SnowflakeService`     | `core/application/SnowflakeService.ts`     | Façade: `SnowflakeParams` → dendrite `TurtleProgram`                                    |
+| Formula toolchain      | `core/application/turtle/formula.ts`       | `parseFormula`, `serializeFormula`, `validateProgram`, `estimateSegments`, `insertStep` |
+| `ConfigService`        | `core/application/ConfigService.ts`        | Tree defaults + clamping                                                                |
+| `SpeedControlService`  | `core/application/SpeedControlService.ts`  | Animation delay                                                                         |
+| `math.ts`              | `core/application/math.ts`                 | `sampleInterval`, `clamp`, color helpers                                                |
 
 ## Adapter components
 

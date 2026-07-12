@@ -11,7 +11,9 @@ layer.** A change in requirements is never coded directly: align it through
 the numbered EA layers (`docs/ea/1_strategy` → … → `5_technology`), record
 it in a scope document (`docs/scope/`), then implement. Use the
 `ea-first-change` skill for the process, `scope-doc` for the scope
-document, and `ea-doc-style` when touching anything under `docs/`.
+document, `ea-doc-style` when touching anything under `docs/`, and
+`pr-description` when opening or updating a PR (the body must cover the
+whole branch, not just the latest commit).
 Pure bug fixes that change no documented behavior can skip the alignment,
 but still keep the docs true.
 

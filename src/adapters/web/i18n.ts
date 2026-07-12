@@ -96,7 +96,6 @@ const MESSAGES: Record<string, Entry> = {
     en: "It takes just one rule. Let's learn it — and then you'll grow trees of your own.",
     es: 'Basta una sola regla. Aprendámosla — y después cultivarás tus propios árboles.',
   },
-  'story.cta.button': { en: '✨ How fractals work', es: '✨ Cómo funcionan los fractales' },
 
   // ── Chapter 3: generator page ────────────────────────────────────
   'generator.title': {
@@ -284,6 +283,8 @@ const MESSAGES: Record<string, Entry> = {
   'create.step.branch': { en: 'Branch (side trip)', es: 'Rama (desvío)' },
   'create.step.ofLength': { en: 'of the size', es: 'del tamaño' },
   'create.step.remove': { en: 'Remove step', es: 'Quitar paso' },
+  'create.step.moveUp': { en: 'Move step up', es: 'Subir el paso' },
+  'create.step.moveDown': { en: 'Move step down', es: 'Bajar el paso' },
   'create.addStep': { en: '＋ Add a step…', es: '＋ Añadir un paso…' },
   'create.add.draw': { en: '✏️ Draw a stick', es: '✏️ Dibuja un palito' },
   'create.add.move': { en: '👣 Move without drawing', es: '👣 Muévete sin pintar' },
@@ -427,6 +428,14 @@ const MESSAGES: Record<string, Entry> = {
     en: '"<strong>Draw a stick</strong>. Side trip: <strong>turn left 25°</strong> and <strong>do all of this again at 70% size</strong>. Snap back. Side trip: <strong>turn right 25°</strong> and <strong>do it all again at 70%</strong>." That&apos;s the exact rule from chapter 2 — two self-calls, so the sticks double every generation.',
     es: '«<strong>Dibuja un palito</strong>. Desvío: <strong>gira 25° a la izquierda</strong> y <strong>haz todo esto otra vez al 70% del tamaño</strong>. Vuelve. Desvío: <strong>gira 25° a la derecha</strong> y <strong>hazlo todo otra vez al 70%</strong>.» Es exactamente la regla del capítulo 2 — dos auto-llamadas, así que los palitos se duplican en cada generación.',
   },
+  'create.outro.title': {
+    en: 'You made it to the last chapter 🎉',
+    es: '¡Llegaste al último capítulo! 🎉',
+  },
+  'create.outro.body': {
+    en: 'You started by wondering why trees are beautiful — and now you write the rules that grow them. Every fractal you invent here is yours: save it, share it, or walk the journey again with new eyes.',
+    es: 'Empezaste preguntándote por qué los árboles son bellos — y ahora escribes las reglas que los hacen crecer. Cada fractal que inventes aquí es tuyo: guárdalo, compártelo o recorre el viaje otra vez con otros ojos.',
+  },
 
   // ── Learn page ───────────────────────────────────────────────────
   'learn.title': {
@@ -542,7 +551,6 @@ const MESSAGES: Record<string, Entry> = {
     en: "One rule. Many repeats. Infinite trees. Go make one that's never existed before!",
     es: 'Una regla. Muchas repeticiones. Árboles infinitos. ¡Ve y crea uno que nunca haya existido!',
   },
-  'learn.cta.button': { en: '🌳 Open the generator', es: '🌳 Abrir el generador' },
 };
 
 let currentLang: Lang = DEFAULT_LANG;

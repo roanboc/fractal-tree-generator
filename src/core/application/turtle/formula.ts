@@ -257,6 +257,22 @@ export function serializeFormula(program: TurtleProgram): string {
 }
 
 /**
+ * Insert a step into a step list, keeping any trailing self-call(s) last.
+ * "Do it all again" closes a rule: steps placed after it only run once the
+ * recursion has fully unwound, which is almost never what the author
+ * building a rule visually means. So new steps land before the trailing
+ * self-call run — while a new self-call itself still goes at the very end.
+ * (The text DSL intentionally has no such restriction.)
+ */
+export function insertStep(list: TurtleStep[], step: TurtleStep): void {
+  let insertAt = list.length;
+  if (step.kind !== 'recurse') {
+    while (insertAt > 0 && list[insertAt - 1].kind === 'recurse') insertAt--;
+  }
+  list.splice(insertAt, 0, step);
+}
+
+/**
  * Closed-form upper bound on segments the program will draw. With D draw
  * steps and B self-calls per run, each level multiplies by B:
  * D·(B^depth − 1)/(B − 1), times symmetry. The interpreter may draw fewer

@@ -60,3 +60,9 @@ development workflow (lint, typecheck, tests, build).
 - The scope document's "in scope / out of scope" table matches the diff.
 - Cross-links between docs resolve (paths, not just names, changed? update
   the links).
+
+## Step 5 — PR description
+
+When opening (or updating) the pull request, use the `pr-description`
+skill: the body follows `.github/pull_request_template.md` and covers the
+whole branch (`main...HEAD`), not just the latest commit.

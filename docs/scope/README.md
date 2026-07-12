@@ -33,7 +33,9 @@ folders are numbered in:
    EA docs in sync with what is actually delivered.
 
 Agent guidance for this process lives in `.claude/skills/ea-first-change/`
-and `.claude/skills/scope-doc/`.
+and `.claude/skills/scope-doc/`; PR descriptions follow
+`.github/pull_request_template.md` (see `.claude/skills/pr-description/`)
+and must cover the whole branch.
 
 ## Initiatives
 
@@ -43,6 +45,7 @@ and `.claude/skills/scope-doc/`.
 | 2   | [2_guided-journey-and-realism.md](./2_guided-journey-and-realism.md)             | PR #4        | Three-chapter journey, interval-based realism, i18n, theming           |
 | 3   | [3_snowflake-and-custom-fractals.md](./3_snowflake-and-custom-fractals.md)       | PR #5        | Turtle engine + formula DSL, snowflake and create-your-own chapters    |
 | 4   | [4_project-structure-and-ea-docs.md](./4_project-structure-and-ea-docs.md)       | this branch  | Root cleanup, numbered EA docs as single source, skills, this process  |
+| 5   | [5_navigation-and-rule-builder.md](./5_navigation-and-rule-builder.md)           | this branch  | One navigation system, rule-builder ordering/reordering, PR template   |
 
 Scope documents 1–2 are **retrospective records**, reconstructed from the
 git history after this process was adopted; from #3 onward, documents are

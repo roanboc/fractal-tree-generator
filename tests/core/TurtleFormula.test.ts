@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
   estimateSegments,
+  insertStep,
   parseFormula,
   serializeFormula,
   validateProgram,
@@ -171,5 +172,49 @@ describe('estimateSegments', () => {
     expect(estimateSegments(flat, 3, 1)).toBe(2); // no recursion
     const snow = parseOk('F1 [+60 T0.36] [-60 T0.36] T0.72');
     expect(estimateSegments(snow, 5, 6)).toBe(726); // 6·(3^5−1)/2
+  });
+});
+
+describe('insertStep', () => {
+  it('appends when the list has no trailing self-call', () => {
+    const program = parseOk('F1 +20');
+    insertStep(program.steps, { kind: 'draw', scale: 0.5 });
+    expect(serializeFormula(program)).toBe('F1 +20 F0.5');
+  });
+
+  it('inserts a new step before the trailing self-call', () => {
+    const program = parseOk('F1 +20 T0.8');
+    insertStep(program.steps, { kind: 'draw', scale: 0.5 });
+    expect(serializeFormula(program)).toBe('F1 +20 F0.5 T0.8');
+  });
+
+  it('inserts before a run of trailing self-calls', () => {
+    const program = parseOk('F1 T0.7 T0.5');
+    insertStep(program.steps, { kind: 'turn', degrees: 30 });
+    expect(serializeFormula(program)).toBe('F1 +30 T0.7 T0.5');
+  });
+
+  it('still appends a new self-call at the very end', () => {
+    const program = parseOk('F1 T0.7');
+    insertStep(program.steps, { kind: 'recurse', scale: 0.5 });
+    expect(serializeFormula(program)).toBe('F1 T0.7 T0.5');
+  });
+
+  it('inserts a branch group before the trailing self-call', () => {
+    const program = parseOk('F1 T0.6');
+    insertStep(program.steps, {
+      kind: 'group',
+      steps: [
+        { kind: 'turn', degrees: 30 },
+        { kind: 'recurse', scale: 0.7 },
+      ],
+    });
+    expect(serializeFormula(program)).toBe('F1 [+30 T0.7] T0.6');
+  });
+
+  it('treats only the trailing run as protected — a mid-list self-call stays put', () => {
+    const program = parseOk('T0.7 F1');
+    insertStep(program.steps, { kind: 'draw', scale: 0.5 });
+    expect(serializeFormula(program)).toBe('T0.7 F1 F0.5');
   });
 });

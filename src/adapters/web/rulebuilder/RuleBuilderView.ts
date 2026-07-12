@@ -5,6 +5,7 @@
 
 import { MAX_BRANCHES, TurtleProgram, TurtleStep } from '../../../core/domain/turtle';
 import {
+  insertStep,
   RECURSE_SCALE_RANGE,
   SCALE_RANGE,
   TURN_RANGE,
@@ -88,6 +89,28 @@ export function createRuleBuilder(
     return input;
   }
 
+  function moveButton(list: TurtleStep[], index: number, delta: -1 | 1): HTMLButtonElement {
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'rule-move';
+    btn.textContent = delta === -1 ? '▲' : '▼';
+    const label = t(delta === -1 ? 'create.step.moveUp' : 'create.step.moveDown');
+    btn.title = label;
+    btn.setAttribute('aria-label', label);
+    const target = index + delta;
+    btn.disabled = target < 0 || target >= list.length;
+    btn.addEventListener('click', () => {
+      [list[index], list[target]] = [list[target], list[index]];
+      render();
+      onChange();
+    });
+    return btn;
+  }
+
+  function rowControls(list: TurtleStep[], index: number): HTMLElement[] {
+    return [moveButton(list, index, -1), moveButton(list, index, 1), deleteButton(list, index)];
+  }
+
   function deleteButton(list: TurtleStep[], index: number): HTMLButtonElement {
     const btn = document.createElement('button');
     btn.type = 'button';
@@ -114,7 +137,7 @@ export function createRuleBuilder(
       label.className = 'rule-label';
       label.textContent = `🌿 ${t('create.step.branch')}`;
       header.appendChild(label);
-      header.appendChild(deleteButton(list, index));
+      for (const control of rowControls(list, index)) header.appendChild(control);
       box.appendChild(header);
 
       const children = document.createElement('div');
@@ -157,7 +180,7 @@ export function createRuleBuilder(
       row.appendChild(unit);
     }
 
-    row.appendChild(deleteButton(list, index));
+    for (const control of rowControls(list, index)) row.appendChild(control);
     return row;
   }
 
@@ -182,7 +205,9 @@ export function createRuleBuilder(
     select.addEventListener('change', () => {
       const choice = ADD_CHOICES.find((c) => c.id === select.value);
       if (!choice) return;
-      list.push(choice.make());
+      // Keep the trailing self-call last — a rule reads "do the steps,
+      // then repeat", so additions go before the repeat (see insertStep).
+      insertStep(list, choice.make());
       render();
       onChange();
     });
