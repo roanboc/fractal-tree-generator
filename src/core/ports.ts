@@ -5,9 +5,15 @@ import {
   FractalParamsInput,
   RenderResult,
 } from './domain/types';
+import { TurtleOptions, TurtleProgram, TurtleRenderResult } from './domain/turtle';
 
 export interface IFractalService {
   generate(params: FractalParamsInput): Promise<RenderResult>;
+  clear(): void;
+}
+
+export interface ITurtleFractalService {
+  run(program: TurtleProgram, options: Partial<TurtleOptions>): Promise<TurtleRenderResult>;
   clear(): void;
 }
 
