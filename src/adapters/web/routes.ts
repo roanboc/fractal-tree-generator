@@ -46,6 +46,13 @@ export const ROUTES: Route[] = [
     pagerKey: 'pager.snowflake',
     chapterKey: 'chapter.snowflake',
   },
+  {
+    id: 'create',
+    file: 'create.html',
+    navKey: 'nav.create',
+    pagerKey: 'pager.create',
+    chapterKey: 'chapter.create',
+  },
 ];
 
 /** Resolve the route for the current page; the site root serves index.html. */

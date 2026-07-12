@@ -12,6 +12,7 @@ export default defineConfig({
         learn: resolve(__dirname, 'learn.html'),
         generator: resolve(__dirname, 'generator.html'),
         snowflake: resolve(__dirname, 'snowflake.html'),
+        create: resolve(__dirname, 'create.html'),
       },
     },
   },

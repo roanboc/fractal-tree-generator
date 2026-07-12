@@ -378,4 +378,86 @@
     border: 1px solid var(--border);
     color: var(--text-strong);
   }
+
+  /* Create-your-own page: formula box */
+  .formula-textarea {
+    @apply w-full resize-y rounded-xl p-4 font-mono text-sm leading-7 outline-none;
+    background: var(--canvas-bg);
+    border: 1px solid var(--border);
+    color: var(--text-strong);
+  }
+
+  .formula-textarea:focus {
+    border-color: var(--accent-text);
+  }
+
+  .formula-textarea-invalid,
+  .formula-textarea-invalid:focus {
+    border-color: #f87171;
+  }
+
+  .formula-errors {
+    @apply mt-2 flex flex-col gap-1 font-mono text-xs;
+    color: #f87171;
+  }
+
+  .estimate-warn {
+    color: #fbbf24;
+  }
+
+  /* Create-your-own page: rule builder rows */
+  .rule-row {
+    @apply flex items-center gap-2 rounded-lg px-3 py-2 text-sm;
+    background: var(--chip-bg);
+    color: var(--text-body);
+  }
+
+  .rule-label {
+    @apply flex-1 truncate font-medium;
+  }
+
+  .rule-number {
+    @apply w-20 rounded-md px-2 py-1 text-right font-mono text-xs outline-none;
+    background: var(--canvas-bg);
+    border: 1px solid var(--border);
+    color: var(--accent-text);
+  }
+
+  .rule-unit {
+    @apply text-xs;
+    color: var(--text-muted);
+  }
+
+  .rule-delete {
+    @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs transition;
+    color: var(--text-faint);
+  }
+
+  .rule-delete:hover {
+    background: var(--chip-bg);
+    color: #f87171;
+  }
+
+  .rule-group {
+    @apply flex flex-col gap-2 rounded-xl p-3;
+    border: 1px dashed var(--border);
+  }
+
+  .rule-group > .rule-row {
+    background: transparent;
+    @apply px-0 py-0;
+  }
+
+  .rule-children {
+    @apply ml-4 flex flex-col gap-2;
+    border-left: 2px solid var(--border-soft);
+    padding-left: 0.75rem;
+  }
+
+  .rule-add {
+    @apply w-fit cursor-pointer rounded-lg px-3 py-1.5 text-xs font-medium outline-none;
+    background: var(--chip-bg);
+    border: 1px solid var(--border);
+    color: var(--text-body);
+  }
 }

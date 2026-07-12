@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title data-i18n="create.title">Create Your Own Fractal · Fractal Tree Studio</title>
+    <meta
+      name="description"
+      content="Write your own turtle formula — draw, turn, branch — and watch the fractal it grows. Presets included: tree, snowflake, fern and more."
+    />
+    <link
+      rel="icon"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌳</text></svg>"
+    />
+    <script>
+      // Apply the theme before first paint to avoid a flash. Kept inline and
+      // duplicated on every page on purpose; the app logic lives in theme.ts.
+      (function () {
+        var stored = localStorage.getItem('ftree-theme');
+        var theme =
+          stored === 'light' || stored === 'dark'
+            ? stored
+            : window.matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+        document.documentElement.dataset.theme = theme;
+      })();
+    </script>
+    <link href="/src/assets/styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header, chapter badge and pager are rendered by chrome.ts from routes.ts -->
+    <header class="site-header" id="site-header"></header>
+
+    <main class="mx-auto max-w-6xl px-4 py-8 sm:px-6">
+      <div class="mb-8">
+        <p class="chapter-badge mb-3" id="chapter-badge"></p>
+        <h1
+          class="text-strong text-3xl font-bold tracking-tight sm:text-4xl"
+          data-i18n-html="create.hero.title"
+        >
+          Create your <span class="text-accent">own fractal</span>
+        </h1>
+        <p class="text-muted mt-2 max-w-2xl" data-i18n-html="create.hero.body">
+          You've grown trees and snowflakes from ready-made rules — now write the rule yourself.
+          Move the turtle, turn it, branch it, and let it call itself. Start from a known fractal
+          below, or from a blank line.
+        </p>
+      </div>
+
+      <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_340px]">
+        <div class="flex min-w-0 flex-col gap-6">
+          <section class="card flex items-center p-4 sm:p-5" aria-label="Fractal canvas">
+            <canvas
+              id="createCanvas"
+              class="canvas-frame"
+              width="880"
+              height="640"
+              aria-label="Custom fractal drawing"
+            ></canvas>
+          </section>
+
+          <section class="card p-5" aria-label="Formula">
+            <div class="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <h2 class="section-title" data-i18n="create.formula.title">The formula</h2>
+              <label class="text-muted flex items-center gap-2 text-xs">
+                <span data-i18n="create.presets">Load a known fractal:</span>
+                <select id="preset-select" class="rule-add"></select>
+              </label>
+            </div>
+            <div id="formula-box"></div>
+            <p id="estimate" class="section-note mt-2"></p>
+          </section>
+
+          <section class="card p-5" aria-label="Rule builder">
+            <h2 class="section-title" data-i18n="create.builder.title">Build it step by step</h2>
+            <p class="section-note mb-4 mt-2" data-i18n="create.builder.note">
+              The very same rule, as editable steps — change one side and the formula follows.
+            </p>
+            <div id="rule-builder" class="flex flex-col gap-2"></div>
+          </section>
+        </div>
+
+        <aside class="card h-fit p-5" aria-label="Controls">
+          <div id="controls"><!-- Options panel is rendered by create.ts --></div>
+        </aside>
+      </div>
+
+      <!-- Notation guide -->
+      <section class="mt-14" aria-label="Formula guide">
+        <h2 class="text-strong mb-2 text-center text-2xl font-bold" data-i18n="create.guide.title">
+          How to write a formula
+        </h2>
+        <p
+          class="prose-fun mx-auto mb-6 max-w-2xl text-center"
+          data-i18n-html="create.guide.intro"
+        >
+          A formula is a list of orders for a <strong>turtle</strong> holding a pen. It starts
+          pointing <strong>up</strong>, walks where you tell it, and the magic order
+          <strong>T</strong> makes it run the whole formula again — smaller. That self-call is the
+          recursion you met in chapter 2.
+        </p>
+
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="card p-5">
+            <p class="formula-code mb-2 inline-block px-3 py-1">F1</p>
+            <h3 class="text-strong font-semibold" data-i18n="create.guide.f.title">
+              ✏️ Draw a stick
+            </h3>
+            <p class="prose-fun mt-1 text-sm" data-i18n-html="create.guide.f.body">
+              Walk forward drawing a line. The number is the length:
+              <strong>1</strong> = the full current size, <strong>0.5</strong> = half of it.
+            </p>
+          </div>
+          <div class="card p-5">
+            <p class="formula-code mb-2 inline-block px-3 py-1">M0.5</p>
+            <h3 class="text-strong font-semibold" data-i18n="create.guide.m.title">
+              👣 Move without drawing
+            </h3>
+            <p class="prose-fun mt-1 text-sm" data-i18n-html="create.guide.m.body">
+              Same walk, but with the pen lifted — handy to leave gaps.
+            </p>
+          </div>
+          <div class="card p-5">
+            <p class="formula-code mb-2 inline-block px-3 py-1">+60&nbsp;&nbsp;-45</p>
+            <h3 class="text-strong font-semibold" data-i18n="create.guide.turn.title">
+              ↪️ Turn
+            </h3>
+            <p class="prose-fun mt-1 text-sm" data-i18n-html="create.guide.turn.body">
+              Rotate on the spot: <strong>+</strong> turns left, <strong>−</strong> turns right, the
+              number is degrees. The turtle starts pointing up, so <strong>+90</strong> faces it
+              left and <strong>-90</strong> faces it right.
+            </p>
+          </div>
+          <div class="card p-5">
+            <p class="formula-code mb-2 inline-block px-3 py-1">[ … ]</p>
+            <h3 class="text-strong font-semibold" data-i18n="create.guide.branch.title">
+              🌿 Branch
+            </h3>
+            <p class="prose-fun mt-1 text-sm" data-i18n-html="create.guide.branch.body">
+              Everything inside brackets is a side trip: the turtle remembers where it was, does the
+              trip, and <strong>snaps back</strong> to keep going from the same spot.
+            </p>
+          </div>
+          <div class="card p-5">
+            <p class="formula-code mb-2 inline-block px-3 py-1">T0.7</p>
+            <h3 class="text-strong font-semibold" data-i18n="create.guide.t.title">
+              🔁 The self-call
+            </h3>
+            <p class="prose-fun mt-1 text-sm" data-i18n-html="create.guide.t.body">
+              Run the <strong>whole formula again</strong> from here, at 0.7× the size. This is what
+              makes it a fractal! You can use up to <strong>five</strong> per formula — the tree
+              uses two, the snowflake three.
+            </p>
+          </div>
+          <div class="card p-5">
+            <p class="formula-code mb-2 inline-block px-3 py-1"># hello</p>
+            <h3 class="text-strong font-semibold" data-i18n="create.guide.comment.title">
+              💬 Notes
+            </h3>
+            <p class="prose-fun mt-1 text-sm" data-i18n-html="create.guide.comment.body">
+              Anything after a <strong>#</strong> is ignored — leave yourself notes. Spaces and
+              upper/lower case don't matter either.
+            </p>
+          </div>
+        </div>
+
+        <div class="card mx-auto mt-6 max-w-2xl p-6">
+          <h3 class="text-strong text-lg font-bold" data-i18n="create.guide.example.title">
+            Read the tree formula aloud
+          </h3>
+          <pre class="formula-code mt-3">F1 [+25 T0.7] [-25 T0.7]</pre>
+          <p class="prose-fun mt-3 text-sm" data-i18n-html="create.guide.example.body">
+            "<strong>Draw a stick</strong>. Side trip: <strong>turn left 25°</strong> and
+            <strong>do all of this again at 70% size</strong>. Snap back. Side trip:
+            <strong>turn right 25°</strong> and <strong>do it all again at 70%</strong>." That's
+            the exact rule from chapter 2 — two self-calls, so the sticks double every generation.
+          </p>
+        </div>
+      </section>
+
+      <nav class="pager" aria-label="Journey navigation" id="pager"></nav>
+    </main>
+
+    <footer class="text-faint mx-auto max-w-6xl px-4 pb-10 pt-4 text-center text-xs sm:px-6">
+      <span data-i18n="footer.text">Built with a single recursive rule · Open source on</span>
+      <a href="https://github.com/roanboc/fractal-tree-generator" class="footer-link">GitHub</a>
+    </footer>
+
+    <script type="module" src="/src/adapters/web/create.ts"></script>
+  </body>
+</html>
