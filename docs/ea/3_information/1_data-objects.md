@@ -28,12 +28,12 @@ browser and the CLI share them.
 
 ## Edge data (adapters only)
 
-| Data                        | Kept in                                              | Notes                                                             |
-| --------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------- |
-| i18n dictionary             | `src/adapters/web/i18n.ts`                           | ~200 keys × {en, es}; `{param}` placeholders substituted by `t()` |
-| Route list                  | `src/adapters/web/routes.ts`                         | The Journey Chapter catalog: file, nav/pager/chapter keys         |
-| Preset catalog              | `src/adapters/web/create.ts`                         | Six named formulas with suggested depth/symmetry/origin/size      |
-| Theme + language preference | browser `localStorage` (`ftree-theme`, `ftree-lang`) | Language additionally mirrored in the URL                         |
+| Data                        | Kept in                                              | Notes                                                                                                                       |
+| --------------------------- | ---------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| i18n dictionary             | `src/adapters/web/i18n.ts`                           | ~200 keys × {en, es}; `{param}` placeholders substituted by `t()`                                                           |
+| Route list                  | `src/adapters/web/routes.ts`                         | The Journey Chapter catalog: file, nav/pager/chapter keys                                                                   |
+| Preset catalog              | `src/adapters/web/create.ts`                         | Six named formulas with suggested depth/symmetry/origin/size; `DEFAULT_PRESET_ID` names the one loaded on page start (fern) |
+| Theme + language preference | browser `localStorage` (`ftree-theme`, `ftree-lang`) | Language additionally mirrored in the URL                                                                                   |
 
 ## Type relationships
 

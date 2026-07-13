@@ -114,6 +114,10 @@ const MESSAGES: Record<string, Entry> = {
     en: "That's the beauty of math: from one tiny rule, endless one-of-a-kind trees. Next time you pass a tree, a river or a seashell, you'll see the secret pattern hiding inside. 🌳",
     es: 'Esa es la belleza de las matemáticas: de una reglita, infinitos árboles irrepetibles. La próxima vez que pases junto a un árbol, un río o una caracola, verás el patrón secreto que esconden. 🌳',
   },
+  'conclusion.bridge': {
+    en: "And trees are just the beginning. Take the very same rule, copy it <strong>six times around a center</strong>, and something much colder starts to grow — that's the next chapter.",
+    es: 'Y los árboles son solo el principio. Toma la misma regla, cópiala <strong>seis veces alrededor de un centro</strong>, y algo mucho más frío empieza a crecer: ese es el próximo capítulo.',
+  },
   'conclusion.restart': { en: '← Start the journey again', es: '← Empezar el viaje de nuevo' },
   'hero.title': {
     en: 'Grow your own <span class="text-accent">fractal tree</span>',
@@ -198,8 +202,8 @@ const MESSAGES: Record<string, Entry> = {
   },
   'snowflake.outro.title': { en: 'One rule, six arms ❄️', es: 'Una regla, seis brazos ❄️' },
   'snowflake.outro.body': {
-    en: 'Every flake here is a single recursive rule — <strong>grow a spike pair, keep going, shrink</strong> — copied six times around the middle. Trees, snowflakes… what else can one little rule draw? In the next chapter, <strong>you</strong> write the rule.',
-    es: 'Cada copo es una sola regla recursiva — <strong>brota un par de púas, sigue, encoge</strong> — copiada seis veces alrededor del centro. Árboles, copos de nieve… ¿qué más puede dibujar una reglita? En el próximo capítulo, la regla la escribes <strong>tú</strong>.',
+    en: 'Every flake here is a single recursive rule — <strong>grow a spike pair, keep going, shrink</strong> — copied six times around the middle. And the same trick draws far more than trees and snowflakes: <strong>ferns, bushes, crystals, even spirals</strong>. In the final chapter, <strong>you</strong> write the rule — and invent fractals nobody has ever seen.',
+    es: 'Cada copo es una sola regla recursiva — <strong>brota un par de púas, sigue, encoge</strong> — copiada seis veces alrededor del centro. Y el mismo truco dibuja mucho más que árboles y copos: <strong>helechos, arbustos, cristales e incluso espirales</strong>. En el último capítulo, la regla la escribes <strong>tú</strong> — e inventas fractales que nadie ha visto.',
   },
   'section.sf.shape.note': {
     en: 'Six identical arms grow from the center; these knobs shape every arm at once.',

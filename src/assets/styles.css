@@ -11,6 +11,8 @@
     --surface: rgba(255, 255, 255, 0.04);
     --border: rgba(255, 255, 255, 0.1);
     --border-soft: rgba(255, 255, 255, 0.05);
+    /* Interactive elements only (buttons, toggles) — cards keep --border */
+    --border-strong: rgba(255, 255, 255, 0.28);
     --header-bg: rgba(5, 6, 15, 0.75);
     --shadow: rgba(0, 0, 0, 0.4);
     --text-strong: #ffffff;
@@ -31,6 +33,7 @@
     --surface: #ffffff;
     --border: rgba(15, 23, 42, 0.12);
     --border-soft: rgba(15, 23, 42, 0.07);
+    --border-strong: rgba(15, 23, 42, 0.25);
     --header-bg: rgba(255, 255, 255, 0.82);
     --shadow: rgba(15, 23, 42, 0.1);
     --text-strong: #0f172a;
@@ -117,7 +120,7 @@
 
   .icon-btn {
     @apply flex h-9 w-9 items-center justify-center rounded-full text-base transition;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
   }
 
   .icon-btn:hover {
@@ -126,7 +129,7 @@
 
   .lang-switch {
     @apply flex items-center overflow-hidden rounded-full text-xs font-bold;
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-strong);
   }
 
   .lang-btn {
@@ -167,7 +170,8 @@
 
   .btn-ghost {
     @apply btn;
-    border: 1px solid var(--border);
+    background: var(--chip-bg);
+    border: 1px solid var(--border-strong);
     color: var(--text-body);
   }
 
@@ -181,7 +185,7 @@
   }
 
   :root:not([data-theme='light']) .btn-outline-warm {
-    @apply border-amber-400/40 text-amber-300 hover:border-amber-300;
+    @apply border-amber-400/70 bg-amber-400/10 text-amber-300 hover:border-amber-300;
   }
 
   .control-label {
@@ -207,7 +211,7 @@
 
   /* "What does this do?" expandable help boxes */
   .info-btn {
-    @apply flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full font-serif text-[11px] font-bold italic leading-none transition;
+    @apply relative flex h-[18px] w-[18px] shrink-0 items-center justify-center rounded-full font-serif text-[11px] font-bold italic leading-none transition;
     border: 1px solid var(--border);
     color: var(--text-muted);
   }
@@ -429,7 +433,7 @@
   }
 
   .rule-delete {
-    @apply flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs transition;
+    @apply relative flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs transition;
     color: var(--text-faint);
   }
 
@@ -439,7 +443,7 @@
   }
 
   .rule-move {
-    @apply flex h-6 w-5 shrink-0 items-center justify-center rounded-full text-[0.6rem] transition;
+    @apply relative flex h-6 w-5 shrink-0 items-center justify-center rounded-full text-[0.6rem] transition;
     color: var(--text-faint);
   }
 
@@ -474,5 +478,41 @@
     background: var(--chip-bg);
     border: 1px solid var(--border);
     color: var(--text-body);
+  }
+
+  /* Touch devices: enlarge hit areas to ~40px+ without changing visual
+     size. The ::after overlays extend the tappable region; .rule-move
+     stays narrow horizontally because the up/down pair sits adjacent and
+     overlapping hit areas would cross-fire. */
+  @media (pointer: coarse) {
+    .info-btn::after,
+    .rule-delete::after,
+    .rule-move::after {
+      content: '';
+      position: absolute;
+    }
+
+    .info-btn::after {
+      inset: -11px;
+    }
+
+    .rule-delete::after {
+      inset: -8px;
+    }
+
+    .rule-move::after {
+      inset: -8px -2px;
+    }
+
+    /* 44px tall (the binding dimension in a horizontal row); widths stay
+       at their natural size so the five chips + toggles still fit a
+       360px header. */
+    .nav-link {
+      @apply min-h-[44px] min-w-[32px] justify-center;
+    }
+
+    .icon-btn {
+      @apply h-10 w-10;
+    }
   }
 }
