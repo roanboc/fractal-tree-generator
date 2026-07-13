@@ -26,7 +26,7 @@ flowchart TB
   driver["«Driver»<br>Math feels abstract<br>and unapproachable"]:::motivation
   goal["«Goal»<br>Take anyone from wonder<br>to authoring fractals"]:::motivation
 
-  vs["«Value Stream»<br>Wonder → Understand → Create<br>→ Craft → Author"]:::strategy
+  vs["«Value Stream»<br>Wonder → Understand → Create<br>→ Craft → Author → Behold"]:::strategy
   cap["«Capability»<br>Interactive fractal education<br>& generative art"]:::strategy
   res["«Resource»<br>Shared TypeScript core<br>(two fractal engines)"]:::strategy
 

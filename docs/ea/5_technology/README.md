@@ -20,7 +20,7 @@ their runtime nodes_.
 
 ```mermaid
 flowchart TB
-  browser["«Node»<br>Visitor's browser<br>(Canvas2D, localStorage)"]:::technology
+  browser["«Node»<br>Visitor's browser<br>(Canvas2D, WebGL, localStorage)"]:::technology
   pages["«Technology Service»<br>GitHub Pages<br>(static hosting)"]:::technology
   actions["«Technology Service»<br>GitHub Actions<br>(CI + deploy)"]:::technology
   devnode["«Node»<br>Developer/CLI machine<br>(Node.js + Cairo)"]:::technology

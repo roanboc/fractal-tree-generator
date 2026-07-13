@@ -7,7 +7,7 @@
 // keys, never translated strings, so i18n.ts can import it without a cycle.
 
 export interface Route {
-  id: 'why' | 'learn' | 'tree' | 'snowflake' | 'create';
+  id: 'why' | 'learn' | 'tree' | 'snowflake' | 'create' | 'tree3d';
   file: string;
   /** Short nav chip label, e.g. "Why?" */
   navKey: string;
@@ -52,6 +52,13 @@ export const ROUTES: Route[] = [
     navKey: 'nav.create',
     pagerKey: 'pager.create',
     chapterKey: 'chapter.create',
+  },
+  {
+    id: 'tree3d',
+    file: 'tree3d.html',
+    navKey: 'nav.tree3d',
+    pagerKey: 'pager.tree3d',
+    chapterKey: 'chapter.tree3d',
   },
 ];
 

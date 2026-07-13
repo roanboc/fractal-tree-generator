@@ -93,7 +93,7 @@
   }
 
   .nav-link {
-    @apply flex items-center gap-1.5 whitespace-nowrap rounded-full px-1.5 py-1.5 text-sm font-medium transition sm:px-3;
+    @apply flex items-center gap-1.5 whitespace-nowrap rounded-full px-1 py-1.5 text-sm font-medium transition sm:px-3;
     color: var(--text-muted);
   }
 
@@ -152,6 +152,26 @@
   .canvas-frame {
     @apply w-full rounded-xl;
     background: var(--canvas-bg);
+  }
+
+  /* The 3D canvas is dragged to orbit: keep touch drags from scrolling. */
+  .canvas-orbit {
+    touch-action: none;
+    cursor: grab;
+  }
+
+  .canvas-orbit:active {
+    cursor: grabbing;
+  }
+
+  /* Keyboard focus for icon-sized controls; .btn carries its own ring. */
+  .icon-btn,
+  .info-btn,
+  .lang-btn,
+  .rule-delete,
+  .rule-move,
+  .nav-link {
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70;
   }
 
   .btn {
@@ -505,10 +525,10 @@
     }
 
     /* 44px tall (the binding dimension in a horizontal row); widths stay
-       at their natural size so the five chips + toggles still fit a
+       at their natural size so the six chips + toggles still fit a
        360px header. */
     .nav-link {
-      @apply min-h-[44px] min-w-[32px] justify-center;
+      @apply min-h-[44px] min-w-[28px] justify-center;
     }
 
     .icon-btn {

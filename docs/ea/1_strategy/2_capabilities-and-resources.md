@@ -11,7 +11,7 @@ flowchart TB
   c0["«Capability»<br>Interactive fractal education<br>& generative art"]:::strategy
   c1["«Capability»<br>Inspire<br>(storytelling)"]:::strategy
   c2["«Capability»<br>Educate<br>(step-by-step recursion)"]:::strategy
-  c3["«Capability»<br>Generate art<br>(tree & snowflake engines)"]:::strategy
+  c3["«Capability»<br>Generate art<br>(tree, snowflake & 3D engines)"]:::strategy
   c4["«Capability»<br>Author fractal rules<br>(DSL + visual builder)"]:::strategy
   c5["«Capability»<br>Localize<br>(EN/ES everywhere)"]:::strategy
   c6["«Capability»<br>Publish & operate at zero cost"]:::strategy
@@ -30,7 +30,7 @@ flowchart TB
 | -------------------- | ----------------------------------------------------------------- | -------------------------------------------------------- |
 | Inspire              | [Inspiration service](../2_business/2_business-services.md)       | `index.html`, `story.ts`                                 |
 | Educate              | [Fractal education service](../2_business/2_business-services.md) | `learn.html`, `learn.ts`                                 |
-| Generate art         | Tree generation + Snowflake crafting services                     | `FractalService`, `SnowflakeService`                     |
+| Generate art         | Tree generation + Snowflake crafting + 3D tree beholding services | `FractalService`, `SnowflakeService`, `Tree3DService`    |
 | Author fractal rules | Custom-rule authoring service                                     | `TurtleFractalService`, `turtle/formula.ts`, `create.ts` |
 | Localize             | Localized experience service                                      | `i18n.ts`, `?lang=` URL scheme                           |
 | Publish at zero cost | Release process                                                   | Vite static build, GitHub Actions + Pages                |
@@ -46,9 +46,10 @@ flowchart TB
 
 ## Courses of action («Course of Action»)
 
-| Course of action                                                                                              | Status                 | Rationale                                                                                                       |
-| ------------------------------------------------------------------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------------------------------- |
-| Generalize the branching rule into a data-driven turtle engine rather than forking `FractalService` per shape | **Adopted**            | One engine, one test suite, one safety budget; the snowflake became a 4-step program instead of a new algorithm |
-| Extend the linear numbered journey (not a two-level menu) as pages grow                                       | **Adopted**            | Preserves the basic→advanced narrative; realized by `routes.ts`                                                 |
-| Expose authoring as builder **plus** editable text formula                                                    | **Adopted**            | Builder for beginners, text for power users; canonical serialization keeps them in lock-step                    |
-| Rewrite the tree page onto the turtle engine                                                                  | **Rejected (for now)** | The tree's per-branch interval sampling has richer semantics than the DSL; not worth destabilizing chapter 3    |
+| Course of action                                                                                              | Status                 | Rationale                                                                                                                                                                                       |
+| ------------------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Generalize the branching rule into a data-driven turtle engine rather than forking `FractalService` per shape | **Adopted**            | One engine, one test suite, one safety budget; the snowflake became a 4-step program instead of a new algorithm                                                                                 |
+| Extend the linear numbered journey (not a two-level menu) as pages grow                                       | **Adopted**            | Preserves the basic→advanced narrative; realized by `routes.ts`                                                                                                                                 |
+| Expose authoring as builder **plus** editable text formula                                                    | **Adopted**            | Builder for beginners, text for power users; canonical serialization keeps them in lock-step                                                                                                    |
+| Rewrite the tree page onto the turtle engine                                                                  | **Rejected (for now)** | The tree's per-branch interval sampling has richer semantics than the DSL; not worth destabilizing chapter 3                                                                                    |
+| Render the 3D chapter with hand-written WebGL instead of a 3D library                                         | **Adopted**            | The scene is only line segments; ~one shader suffices, and zero new runtime dependencies keeps the static, zero-cost driver intact (realized by `src/adapters/web/WebGLTreeRendererService.ts`) |

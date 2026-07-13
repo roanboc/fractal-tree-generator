@@ -8,7 +8,7 @@ _[← Technology layer](./README.md)_
 
 | Node                               | Artifacts it hosts                                            | Origin                          |
 | ---------------------------------- | ------------------------------------------------------------- | ------------------------------- |
-| **Visitor's browser**              | `dist/web/*.html`, JS/CSS bundles, `index.html`…`create.html` | Fetched from GitHub Pages       |
+| **Visitor's browser**              | `dist/web/*.html`, JS/CSS bundles, `index.html`…`tree3d.html` | Fetched from GitHub Pages       |
 | **GitHub Actions runner (CI)**     | Checked-out repo, `node_modules`, ESLint/TS/Vitest reports    | Ephemeral, per workflow run     |
 | **GitHub Actions runner (deploy)** | `dist/web/` build artifact                                    | Produced by `npm run build`     |
 | **GitHub Pages**                   | Published `dist/web/`                                         | Deployed by the deploy workflow |
@@ -22,7 +22,7 @@ flowchart TB
 
   subgraph webPath["Web delivery"]
     viteb["vite build"]:::technology
-    distweb["«Artifact»<br>dist/web/<br>(5 static pages)"]:::technology
+    distweb["«Artifact»<br>dist/web/<br>(6 static pages)"]:::technology
     pagesHost["«Node»<br>GitHub Pages"]:::technology
   end
 
@@ -55,7 +55,7 @@ flowchart LR
   checkout["Checkout + npm ci"]:::technology
   lint["Lint (ESLint)"]:::technology
   typecheck["Typecheck (tsc)"]:::technology
-  test["Test (Vitest, 51 tests)"]:::technology
+  test["Test (Vitest, 68 tests)"]:::technology
   build["Build (vite build)"]:::technology
   gate{"All green?"}:::technology
   merge(("merge to main")):::technology
@@ -79,6 +79,6 @@ in [strategy/1_motivation.md](../1_strategy/1_motivation.md).
 
 | Environment    | Requirement                                                                              | Why                           |
 | -------------- | ---------------------------------------------------------------------------------------- | ----------------------------- |
-| Web (browser)  | None beyond a modern browser with Canvas2D                                               | Pure static assets            |
+| Web (browser)  | None beyond a modern browser with Canvas2D (+ WebGL for chapter 6)                       | Pure static assets            |
 | CLI / CI build | Node.js ≥ 18; Cairo/Pango/libjpeg/libgif/librsvg system libraries (`libcairo2-dev` etc.) | `node-canvas` native bindings |
 | Local dev      | `npm install`, `npm run dev` (Vite dev server, port 3000)                                | Hot-reloading iteration       |

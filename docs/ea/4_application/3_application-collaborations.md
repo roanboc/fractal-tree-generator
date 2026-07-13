@@ -42,6 +42,13 @@ Realizes: Tree generation, Snowflake crafting, Custom-rule authoring
 (drawing step). Contract: `IFractalService.generate` /
 `ITurtleFractalService.run` in [interface contracts](../4_application/5_interface-contracts.md).
 
+The 3D tree page (`tree3d.ts`) deliberately does **not** use the serial
+runner: `Tree3DService.generate` builds the whole `Segment3D` scene
+synchronously and `presentScene` replaces the displayed scene atomically,
+so overlapping calls cannot interleave strokes the way the per-segment 2D
+engines can. Camera motion (orbit/zoom/spin) happens entirely inside
+`WebGLTreeRendererService` without re-entering the core.
+
 ## C2 — Two-way formula sync (chapter 5 authoring loop)
 
 ```mermaid

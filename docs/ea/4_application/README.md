@@ -31,18 +31,21 @@ flowchart TB
     genp["«Application Component»<br>Tree page (main.ts)"]:::application
     snowp["«Application Component»<br>Snowflake page (snowflake.ts)"]:::application
     createp["«Application Component»<br>Create page (create.ts)"]:::application
+    t3dp["«Application Component»<br>3D tree page (tree3d.ts)"]:::application
   end
 
   subgraph CORE["Platform-free core (src/core)"]
     fs["«Application Component»<br>FractalService"]:::application
     ts["«Application Component»<br>TurtleFractalService"]:::application
     sf["«Application Component»<br>SnowflakeService"]:::application
+    t3d["«Application Component»<br>Tree3DService"]:::application
     formula["«Application Component»<br>Formula toolchain"]:::application
     ports["«Application Interface»<br>Ports (IRendererService, …)"]:::application
   end
 
   subgraph ADAPT["Adapters"]
     webr["«Application Component»<br>WebRendererService<br>(Canvas2D)"]:::application
+    webglr["«Application Component»<br>WebGLTreeRendererService<br>(WebGL)"]:::application
     noder["«Application Component»<br>NodeCanvasRendererService"]:::application
   end
 
@@ -54,10 +57,13 @@ flowchart TB
   snowp -->|uses| sf
   createp -->|uses| ts
   createp -->|uses| formula
+  t3dp -->|uses| t3d
   sf -->|delegates to| ts
   fs -->|via| ports
   ts -->|via| ports
+  t3d -->|via| ports
   ports -->|realized by| webr
+  ports -->|realized by| webglr
   ports -->|realized by| noder
   cli -->|uses| fs
 

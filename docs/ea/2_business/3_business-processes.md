@@ -15,7 +15,7 @@ they are. The header and pager (both rendered from the route list) are the
 chapter but never duplicate its link, and any in-content journey link
 carries a `data-nav` attribute so `chrome.ts` resolves its target from the
 route list rather than a hardcoded path. The journey's closing "start
-again" moment lives on the final chapter (`pages/create.html`).
+again" moment lives on the final chapter (`pages/tree3d.html`).
 
 ```mermaid
 flowchart LR
@@ -25,12 +25,14 @@ flowchart LR
   p3["«Business Process»<br>Grow a tree<br><i>Ch. 3</i>"]:::business
   p4["«Business Process»<br>Craft a snowflake<br><i>Ch. 4</i>"]:::business
   p5["«Business Process»<br>Author a rule<br><i>Ch. 5</i>"]:::business
+  p6["«Business Process»<br>Behold it in 3D<br><i>Ch. 6</i>"]:::business
   art["«Business Object»<br>Artwork (PNG)"]:::business
 
-  e0 -->|triggers| p1 --> p2 --> p3 --> p4 --> p5
+  e0 -->|triggers| p1 --> p2 --> p3 --> p4 --> p5 --> p6
   p3 -.->|produces| art
   p4 -.->|produces| art
   p5 -.->|produces| art
+  p6 -.->|produces| art
 
   classDef business fill:#fffbb5,stroke:#b8a200,color:#333
 ```

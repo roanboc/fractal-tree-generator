@@ -4,6 +4,8 @@ import {
   IRendererService,
   ISnowflakeService,
   ISpeedControlService,
+  ITree3DRendererService,
+  ITree3DService,
   ITurtleFractalService,
 } from '../core/ports';
 import { CanvasConfig } from '../core/domain/types';
@@ -11,7 +13,9 @@ import { ConfigService } from '../core/application/ConfigService';
 import { FractalService } from '../core/application/FractalService';
 import { SnowflakeService } from '../core/application/SnowflakeService';
 import { SpeedControlService } from '../core/application/SpeedControlService';
+import { Tree3DService } from '../core/application/Tree3DService';
 import { TurtleFractalService } from '../core/application/TurtleFractalService';
+import { WebGLTreeRendererService } from '../adapters/web/WebGLTreeRendererService';
 import { WebRendererService } from '../adapters/web/WebRendererService';
 
 export interface WebServices {
@@ -78,4 +82,18 @@ export function composeSnowflakeServices(
 ): SnowflakeWebServices {
   const services = composeTurtleServices(canvas, canvasConfig);
   return { ...services, snowflakeService: new SnowflakeService(services.turtleService) };
+}
+
+export interface Tree3DWebServices {
+  tree3dService: ITree3DService;
+  rendererService: ITree3DRendererService;
+}
+
+/** Composition root for the 3D tree page (chapter 6). */
+export function composeTree3DServices(
+  canvas: HTMLCanvasElement,
+  canvasConfig?: CanvasConfig
+): Tree3DWebServices {
+  const rendererService = new WebGLTreeRendererService(canvas);
+  return { tree3dService: new Tree3DService(rendererService, canvasConfig), rendererService };
 }

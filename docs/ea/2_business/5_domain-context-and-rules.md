@@ -85,19 +85,20 @@ visibility that have nothing to do with how a tree is drawn.
 Use these terms consistently in code, commit messages, and issues — they
 should mean the same thing everywhere.
 
-| Term                    | Meaning                                                                                                                        |
-| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
-| **Fractal Tree**        | The complete branching structure produced by one generation.                                                                   |
-| **Generation**          | One end-to-end run of the algorithm: validate params → draw → (CLI only) persist + log.                                        |
-| **Branch**              | A single straight line segment; the atomic drawing unit. A tree with depth _n_ has exactly 2ⁿ − 1 branches.                    |
-| **Trunk**               | The first branch drawn (depth = max), starting at canvas bottom-center pointing straight up.                                   |
-| **Depth**               | How many branching generations occur below the trunk. Depth 1 = trunk only, no children.                                       |
-| **Leaf zone**           | Branches at depth ≤ 2, rendered in the leaf color instead of the trunk color, to visually separate "twigs" from "wood."        |
-| **Branch angle**        | The angle (degrees) each child branch diverges from its parent's direction, applied symmetrically left and right.              |
-| **Length factor**       | The multiplier applied to branch length at each generation; child branches are always shorter than their parent by this ratio. |
-| **Jitter / randomness** | A normalized `0–1` factor that perturbs angle and length slightly so trees look organic rather than perfectly symmetric.       |
-| **Render target**       | The surface a generation is drawn onto: the browser's `<canvas>`, or an in-memory `node-canvas` buffer written to a PNG.       |
-| **Speed control**       | The artificial per-branch delay used to animate the web canvas or slow down CLI output for demonstration purposes.             |
+| Term                    | Meaning                                                                                                                                                                            |
+| ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Fractal Tree**        | The complete branching structure produced by one generation.                                                                                                                       |
+| **Generation**          | One end-to-end run of the algorithm: validate params → draw → (CLI only) persist + log.                                                                                            |
+| **Branch**              | A single straight line segment; the atomic drawing unit. A tree with depth _n_ has exactly 2ⁿ − 1 branches.                                                                        |
+| **Trunk**               | The first branch drawn (depth = max), starting at canvas bottom-center pointing straight up.                                                                                       |
+| **Depth**               | How many branching generations occur below the trunk. Depth 1 = trunk only, no children.                                                                                           |
+| **Leaf zone**           | Branches at depth ≤ 2, rendered in the leaf color instead of the trunk color, to visually separate "twigs" from "wood."                                                            |
+| **Branch angle**        | The angle (degrees) each child branch diverges from its parent's direction, applied symmetrically left and right.                                                                  |
+| **Length factor**       | The multiplier applied to branch length at each generation; child branches are always shorter than their parent by this ratio.                                                     |
+| **Jitter / randomness** | A normalized `0–1` factor that perturbs angle and length slightly so trees look organic rather than perfectly symmetric.                                                           |
+| **Twist**               | 3D chapter only: an extra rotation of each level's children around their parent branch's axis, so branches spiral around the trunk instead of always sprouting in the same planes. |
+| **Render target**       | The surface a generation is drawn onto: the browser's `<canvas>`, or an in-memory `node-canvas` buffer written to a PNG.                                                           |
+| **Speed control**       | The artificial per-branch delay used to animate the web canvas or slow down CLI output for demonstration purposes.                                                                 |
 
 ## Business rules and their rationale
 
@@ -120,6 +121,21 @@ These constraints are enforced in exactly one place
 (`ConfigService.validate`, see [interface contracts](../4_application/5_interface-contracts.md#iconfigservice))
 so the web UI, the CLI, and any future adapter all get the same guarantees
 without re-implementing the rule.
+
+### 3D tree rules (chapter 6)
+
+The 3D engine follows the same practice with its own single clamp point,
+`validateTree3DParams` in `src/core/application/Tree3DService.ts`:
+
+| Field          | Range   | Why this range                                                                                                                                                                                                                                                                     |
+| -------------- | ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `depth`        | 1–8     | With up to 5 children per split the crown multiplies far faster than the 2D tree; 8 levels is already tens of thousands of potential segments (see the budget below).                                                                                                              |
+| `branches`     | 2–5     | 2 reproduces the flat chapter-3 fork; beyond 5, crowns close into a visually solid blob and per-branch twigs stop reading as a rule.                                                                                                                                               |
+| `branchAngle`  | 10–80°  | Same reasoning as the 2D `angle` rule: below 10° children overlap their parent, above 80° they fold back toward the trunk.                                                                                                                                                         |
+| `twist`        | 0–120°  | 0 keeps every level's children in fixed planes (the flat look); beyond 120° per level the spiral wraps faster than the eye can follow and reads as noise, not structure.                                                                                                           |
+| `lengthFactor` | 0.5–0.8 | Must stay `< 1` for convergence (same rule as the 2D tree); the floor is higher than 2D's 0.1 because in 3D short children immediately hide inside the parent's silhouette.                                                                                                        |
+| `wildness`     | 0–1     | Same normalized convention as the 2D tree's `randomness`.                                                                                                                                                                                                                          |
+| `maxSegments`  | 15 000  | Safety before spectacle ([Principle 4](../1_strategy/1_motivation.md#principles-principle)): the full 5-branch depth-8 crown would be ~98 000 segments; the scene is built breadth-first and stops at this budget so the tab never freezes and a truncated crown still looks even. |
 
 ## Practices for keeping business context attached to the code
 

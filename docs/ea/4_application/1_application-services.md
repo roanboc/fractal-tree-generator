@@ -7,11 +7,12 @@ each realizing (part of) a [business service](../2_business/2_business-services.
 
 ## Fractal engines
 
-| Application service                                                                                                                              | Realizes (business)                               | Provided by                                    | Contract                                                                              |
-| ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------- |
-| **Tree generation** — recursive two-child tree with per-branch interval sampling and wildness                                                    | Tree generation; also powers all learn-page demos | `src/core/application/FractalService.ts`       | `IFractalService` in [interface contracts](../4_application/5_interface-contracts.md) |
-| **Turtle interpretation** — executes data-driven rules (draw/move/turn/branch/self-call) with n-fold symmetry, jitter, and a hard segment budget | Snowflake crafting, Custom-rule authoring         | `src/core/application/TurtleFractalService.ts` | `ITurtleFractalService`                                                               |
-| **Snowflake façade** — friendly knobs → fixed dendrite program at symmetry 6                                                                     | Snowflake crafting                                | `src/core/application/SnowflakeService.ts`     | `ISnowflakeService`                                                                   |
+| Application service                                                                                                                                             | Realizes (business)                               | Provided by                                    | Contract                                                                              |
+| --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Tree generation** — recursive two-child tree with per-branch interval sampling and wildness                                                                   | Tree generation; also powers all learn-page demos | `src/core/application/FractalService.ts`       | `IFractalService` in [interface contracts](../4_application/5_interface-contracts.md) |
+| **Turtle interpretation** — executes data-driven rules (draw/move/turn/branch/self-call) with n-fold symmetry, jitter, and a hard segment budget                | Snowflake crafting, Custom-rule authoring         | `src/core/application/TurtleFractalService.ts` | `ITurtleFractalService`                                                               |
+| **Snowflake façade** — friendly knobs → fixed dendrite program at symmetry 6                                                                                    | Snowflake crafting                                | `src/core/application/SnowflakeService.ts`     | `ISnowflakeService`                                                                   |
+| **3D tree growth** — breadth-first n-child tree in space (tilt + twist around the parent axis) built as platform-free `Segment3D` geometry, hard segment budget | 3D tree beholding                                 | `src/core/application/Tree3DService.ts`        | `ITree3DService`                                                                      |
 
 ## Formula toolchain
 
@@ -24,17 +25,18 @@ each realizing (part of) a [business service](../2_business/2_business-services.
 
 ## Supporting services
 
-| Application service      | Behavior                                                                           | Provided by                                                              |
-| ------------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **Parameter validation** | Tree defaults + clamping; idempotent                                               | `ConfigService.ts`                                                       |
-| **Speed control**        | Configurable delay between segments (watch-it-grow animation)                      | `SpeedControlService.ts`                                                 |
-| **Rendering**            | Draw one segment; save PNG; clear                                                  | `WebRendererService.ts` (browser) / `NodeCanvasRendererService.ts` (CLI) |
-| **Serial-run guard**     | Serializes overlapping generate calls; latest queued params win                    | `serialRunner.ts`                                                        |
-| **Navigation chrome**    | Header, chapter badge, pager rendered from the route list                          | `chrome.ts` + `routes.ts`                                                |
-| **Internationalization** | Dictionary lookup with `{param}` substitution; page translation; link localization | `i18n.ts`                                                                |
-| **Theming**              | Dark/light with pre-paint flash guard; canvas background sync                      | `theme.ts`                                                               |
-| **Control panels**       | Spec-driven parameter UIs from shared widgets                                      | `ControlsView.ts`, `SnowflakeControls.ts`, `controls/widgets.ts`         |
-| **Rule building UI**     | Visual step editing + text box, two-way synced                                     | `rulebuilder/RuleBuilderView.ts`, `rulebuilder/FormulaBox.ts`            |
+| Application service      | Behavior                                                                                  | Provided by                                                                           |
+| ------------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Parameter validation** | Tree defaults + clamping; idempotent                                                      | `ConfigService.ts`                                                                    |
+| **Speed control**        | Configurable delay between segments (watch-it-grow animation)                             | `SpeedControlService.ts`                                                              |
+| **Rendering**            | Draw one segment; save PNG; clear                                                         | `WebRendererService.ts` (browser) / `NodeCanvasRendererService.ts` (CLI)              |
+| **3D scene rendering**   | Display a `Segment3D` scene with orbit/zoom camera, staggered growth, slow spin; save PNG | `WebGLTreeRendererService.ts` (browser WebGL)                                         |
+| **Serial-run guard**     | Serializes overlapping generate calls; latest queued params win                           | `serialRunner.ts`                                                                     |
+| **Navigation chrome**    | Header, chapter badge, pager rendered from the route list                                 | `chrome.ts` + `routes.ts`                                                             |
+| **Internationalization** | Dictionary lookup with `{param}` substitution; page translation; link localization        | `i18n.ts`                                                                             |
+| **Theming**              | Dark/light with pre-paint flash guard; canvas background sync                             | `theme.ts`                                                                            |
+| **Control panels**       | Spec-driven parameter UIs from shared widgets                                             | `ControlsView.ts`, `SnowflakeControls.ts`, `Tree3DControls.ts`, `controls/widgets.ts` |
+| **Rule building UI**     | Visual step editing + text box, two-way synced                                            | `rulebuilder/RuleBuilderView.ts`, `rulebuilder/FormulaBox.ts`                         |
 
 ## Realization map (business ← application)
 
@@ -46,6 +48,7 @@ flowchart LR
     b3["«Business Service»<br>Custom-rule authoring"]:::business
     b4["«Business Service»<br>Artwork export"]:::business
     b5["«Business Service»<br>Localized experience"]:::business
+    b6["«Business Service»<br>3D tree beholding"]:::business
   end
 
   subgraph A["Application services"]
@@ -55,6 +58,8 @@ flowchart LR
     a4["«Application Service»<br>Formula toolchain"]:::application
     a5["«Application Service»<br>Rendering (save)"]:::application
     a6["«Application Service»<br>Internationalization"]:::application
+    a7["«Application Service»<br>3D tree growth"]:::application
+    a8["«Application Service»<br>3D scene rendering"]:::application
   end
 
   a1 -->|realizes| b1
@@ -64,6 +69,9 @@ flowchart LR
   a4 -->|realizes| b3
   a5 -->|realizes| b4
   a6 -->|realizes| b5
+  a7 -->|realizes| b6
+  a8 -->|serves| a7
+  a8 -->|realizes| b4
 
   classDef business fill:#fffbb5,stroke:#b8a200,color:#333
   classDef application fill:#c2f0ff,stroke:#0288d1,color:#333

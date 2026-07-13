@@ -37,13 +37,13 @@ function renderHeader(): void {
   ).join('');
 
   header.innerHTML = `
-    <div class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-4 py-3 sm:px-6">
+    <div class="mx-auto flex max-w-6xl items-center justify-between gap-2 px-3 py-3 sm:px-6">
       <a href="./index.html" class="text-strong flex items-center gap-2 text-base font-bold">
         <span class="text-xl">🌳</span>
         <span class="hidden md:inline">Fractal Tree Studio</span>
       </a>
-      <div class="flex items-center gap-2">
-        <nav class="flex items-center gap-1" aria-label="Journey">${navLinks}</nav>
+      <div class="flex items-center gap-1.5 sm:gap-2">
+        <nav class="flex items-center gap-0.5 sm:gap-1" aria-label="Journey">${navLinks}</nav>
         <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle theme">
           ☀️
         </button>
