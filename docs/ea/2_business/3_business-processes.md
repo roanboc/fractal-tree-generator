@@ -43,7 +43,7 @@ converge on one canonical rule; drawing never blocks on an invalid rule.
 ```mermaid
 flowchart TB
   start(("start")):::business
-  preset["Load a known-fractal preset<br><i>(or start from the tree default)</i>"]:::business
+  preset["Load a known-fractal preset<br><i>(or start from the fern default)</i>"]:::business
   editT["Edit the text formula"]:::business
   editB["Edit visual steps"]:::business
   val{"Rule valid?"}:::business

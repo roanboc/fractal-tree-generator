@@ -143,7 +143,10 @@ function init(): void {
     canvasConfig
   );
 
-  let activePreset = PRESETS[0];
+  // The fern opens the chapter: a shape the visitor has not already grown
+  // in chapter 3 (see docs/scope/6_chapter-bridges-and-affordance.md).
+  const DEFAULT_PRESET_ID = 'fern';
+  let activePreset = PRESETS.find((p) => p.id === DEFAULT_PRESET_ID) ?? PRESETS[0];
   let program = mustParse(activePreset.formula);
   let lastValid = structuredClone(program);
   let options = optionsFor(activePreset);
