@@ -14,7 +14,8 @@ Value types referenced below (`FractalParams`, `FractalColors`,
 `src/core/domain/types.ts`; turtle-engine types (`TurtleProgram`,
 `TurtleStep`, `TurtleOptions`, `TurtleRenderResult`) in
 `src/core/domain/turtle.ts`; `SnowflakeParams` in
-`src/core/domain/snowflake.ts`.
+`src/core/domain/snowflake.ts`; 3D-chapter types (`Tree3DParams`,
+`Segment3D`, `Vec3`, `Tree3DRenderResult`) in `src/core/domain/tree3d.ts`.
 
 ---
 
@@ -136,6 +137,96 @@ the canvas center.
   symmetric and draws `6 · (3^depth − 1) / 2` segments (three self-calls
   per rule). Everything else follows the `ITurtleFractalService.run()`
   contract.
+
+---
+
+## `ITree3DService`
+
+**Responsibility:** owns the 3D branching rule — grows an n-child tree in
+space (each split tilts away from its parent and twists around the parent's
+axis) as platform-free `Segment3D` geometry and hands the finished scene to
+the injected `ITree3DRendererService`.
+
+**Implemented by:** `core/application/Tree3DService.ts`
+**Consumed by:** `adapters/web/tree3d.ts` (via `composeTree3DServices`)
+
+### `generate(input: Partial<Tree3DParams>): Promise<Tree3DRenderResult>`
+
+- **Preconditions:** none — every field is optional; input is merged over
+  `TREE3D_DEFAULTS` and clamped by `validateTree3DParams` (ranges and
+  rationale in [domain context & rules](../2_business/5_domain-context-and-rules.md#3d-tree-rules-chapter-6)).
+- **Postconditions:**
+  - The scene is built **breadth-first** (level by level) so segments are
+    ordered by `level` — renderers may use that ordering and the `level`
+    field to stagger growth.
+  - With the budget not hit, exactly `(branches^depth − 1) / (branches − 1)`
+    segments are built (a full n-ary tree); `wildness` perturbs geometry,
+    never the count.
+  - **Safety budget:** at most `TREE3D_MAX_SEGMENTS` (15 000) segments are
+    built; when the budget stops the build early the result carries
+    `truncated: true` and, because the build is breadth-first, the missing
+    segments are the outermost twigs rather than one lopsided limb.
+  - `renderer.initialize()` then `renderer.presentScene()` are each called
+    exactly once per `generate()`, in that order.
+  - `segmentsBuilt` always equals the length of the presented scene.
+- **Invariants:** all build state is local to each `generate()` call.
+  Overlapping calls are safe (unlike the 2D engines): each call presents a
+  complete scene atomically, so the last call to finish wins the display.
+- **Errors:** propagates renderer errors unmodified.
+
+### `clear(): void`
+
+- Delegates directly to `renderer.clear()`.
+
+---
+
+## `ITree3DRendererService`
+
+**Responsibility:** displays a finished `Segment3D` scene on _some_ 3D
+surface and owns everything view-related: camera (orbit/zoom), staggered
+growth reveal, optional slow spin, and PNG export. This is the seam
+between the platform-free 3D rule and a concrete rendering target.
+
+**Implemented by:** `adapters/web/WebGLTreeRendererService.ts` (raw WebGL,
+no 3D library — see the course of action in
+[capabilities & resources](../1_strategy/2_capabilities-and-resources.md#courses-of-action-course-of-action))
+
+### `initialize(config: CanvasConfig): void`
+
+- Same caller contract as `IRendererService.initialize`: the web adapter
+  receives its `HTMLCanvasElement` via the constructor and never queries
+  the DOM. Sets the drawing-buffer size and background color; the GL
+  context and shader program are created once and reused across calls.
+- If the browser cannot provide a WebGL context, the adapter degrades
+  gracefully: it logs the failure and every later call becomes a no-op
+  (the canvas simply stays on its CSS background) rather than throwing.
+
+### `presentScene(segments: Segment3D[]): void`
+
+- Replaces the displayed scene **atomically** — there is no per-segment
+  drawing call for callers to interleave.
+- The adapter re-frames its camera to fit the new scene's bounds, keeping
+  the visitor's current orbit direction, and starts a growth reveal
+  staggered by each segment's `level` (instant when the visitor prefers
+  reduced motion).
+- May be called with an empty array; that displays an empty (background
+  only) scene.
+
+### `setAutoRotate(enabled: boolean): void`
+
+- Turns the slow orbital spin on or off. Purely presentational; renderers
+  without a continuous display loop may treat it as a no-op.
+
+### `save(outputPath: string): Promise<void>`
+
+- Web adapter: `outputPath` is ignored — renders one fresh frame and
+  triggers a browser download (`fractal-tree-3d.png`), mirroring
+  `WebRendererService.save`.
+
+### `clear(): void`
+
+- Drops the scene and repaints the background from the last
+  `initialize()`. Safe to call before `initialize()` (no-op).
 
 ---
 

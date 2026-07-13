@@ -1,8 +1,8 @@
 # CLAUDE.md
 
-Interactive fractal studio: a five-chapter web journey (browser Canvas2D)
-plus a Node CLI (headless PNG + SQLite history), sharing one TypeScript
-core via ports-and-adapters.
+Interactive fractal studio: a six-chapter web journey (browser Canvas2D +
+WebGL) plus a Node CLI (headless PNG + SQLite history), sharing one
+TypeScript core via ports-and-adapters.
 
 ## The rule that governs everything else
 
@@ -19,9 +19,9 @@ but still keep the docs true.
 
 ## Layout
 
-- `pages/` — the five HTML entry points (Vite root). URLs don't change when
+- `pages/` — the six HTML entry points (Vite root). URLs don't change when
   built: `index.html`, `learn.html`, `generator.html`, `snowflake.html`,
-  `create.html`.
+  `create.html`, `tree3d.html`.
 - `src/core/` — framework-agnostic domain + services. Depends only on
   `src/core/ports.ts` interfaces, never on adapters.
 - `src/adapters/web/`, `src/adapters/node/` — platform implementations of

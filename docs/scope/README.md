@@ -39,14 +39,15 @@ and must cover the whole branch.
 
 ## Initiatives
 
-| #   | Scope document                                                                   | Delivered as | Summary                                                                  |
-| --- | -------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------------------ |
-| 1   | [1_services-architecture-foundation.md](./1_services-architecture-foundation.md) | PRs #1–#3    | TypeScript services core, CLI + web, ports-and-adapters refactor, docs   |
-| 2   | [2_guided-journey-and-realism.md](./2_guided-journey-and-realism.md)             | PR #4        | Three-chapter journey, interval-based realism, i18n, theming             |
-| 3   | [3_snowflake-and-custom-fractals.md](./3_snowflake-and-custom-fractals.md)       | PR #5        | Turtle engine + formula DSL, snowflake and create-your-own chapters      |
-| 4   | [4_project-structure-and-ea-docs.md](./4_project-structure-and-ea-docs.md)       | this branch  | Root cleanup, numbered EA docs as single source, skills, this process    |
-| 5   | [5_navigation-and-rule-builder.md](./5_navigation-and-rule-builder.md)           | this branch  | One navigation system, rule-builder ordering/reordering, PR template     |
-| 6   | [6_chapter-bridges-and-affordance.md](./6_chapter-bridges-and-affordance.md)     | this branch  | Chapter 3→4→5 narrative bridges, fern default preset, control affordance |
+| #   | Scope document                                                                   | Delivered as | Summary                                                                      |
+| --- | -------------------------------------------------------------------------------- | ------------ | ---------------------------------------------------------------------------- |
+| 1   | [1_services-architecture-foundation.md](./1_services-architecture-foundation.md) | PRs #1–#3    | TypeScript services core, CLI + web, ports-and-adapters refactor, docs       |
+| 2   | [2_guided-journey-and-realism.md](./2_guided-journey-and-realism.md)             | PR #4        | Three-chapter journey, interval-based realism, i18n, theming                 |
+| 3   | [3_snowflake-and-custom-fractals.md](./3_snowflake-and-custom-fractals.md)       | PR #5        | Turtle engine + formula DSL, snowflake and create-your-own chapters          |
+| 4   | [4_project-structure-and-ea-docs.md](./4_project-structure-and-ea-docs.md)       | this branch  | Root cleanup, numbered EA docs as single source, skills, this process        |
+| 5   | [5_navigation-and-rule-builder.md](./5_navigation-and-rule-builder.md)           | this branch  | One navigation system, rule-builder ordering/reordering, PR template         |
+| 6   | [6_chapter-bridges-and-affordance.md](./6_chapter-bridges-and-affordance.md)     | PR #7        | Chapter 3→4→5 narrative bridges, fern default preset, control affordance     |
+| 7   | [7_3d-tree-chapter.md](./7_3d-tree-chapter.md)                                   | this branch  | Chapter 6: the tree in 3D (WebGL adapter), journey-wide bridges, focus rings |
 
 Scope documents 1–2 are **retrospective records**, reconstructed from the
 git history after this process was adopted; from #3 onward, documents are

@@ -1,10 +1,11 @@
 # Fractal Tree Studio
 
 A guided, bilingual (EN/ES) journey from _why is nature beautiful?_ to
-_writing your own fractal formulas_ — five interactive chapters in the
-browser (HTML Canvas), plus a Node CLI that renders the same trees
-headlessly (PNG + SQLite history). One TypeScript core, ports-and-adapters,
-zero backend: the whole site builds to static files.
+_writing your own fractal formulas_ and _walking around a 3D tree_ — six
+interactive chapters in the browser (HTML Canvas + WebGL), plus a Node CLI
+that renders the same trees headlessly (PNG + SQLite history). One
+TypeScript core, ports-and-adapters, zero backend: the whole site builds to
+static files.
 
 ## Quick start
 
@@ -46,7 +47,7 @@ Changing something? Start with the process in
 ## Project structure
 
 ```
-pages/            # The five HTML chapters (Vite root)
+pages/            # The six HTML chapters (Vite root)
 src/
 ├── core/         # Framework-agnostic domain + services (the only home of business logic)
 ├── adapters/     # web/ (Canvas2D, DOM) and node/ (node-canvas, SQLite)

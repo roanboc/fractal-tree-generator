@@ -61,22 +61,22 @@ label is authoritative.
 flowchart TB
   subgraph MOT["Motivation & Strategy"]
     goal["«Goal»<br>Take anyone from wonder<br>to authoring fractals"]:::motivation
-    vs["«Value Stream»<br>Wonder → Understand → Create<br>→ Craft → Author"]:::strategy
+    vs["«Value Stream»<br>Wonder → Understand → Create<br>→ Craft → Author → Behold"]:::strategy
   end
 
   subgraph BUS["Business layer"]
-    svc["«Business Service»<br>Guided fractal journey<br>(5 chapters)"]:::business
+    svc["«Business Service»<br>Guided fractal journey<br>(6 chapters)"]:::business
     actor["«Business Actor»<br>Visitor / Learner / Creator"]:::business
   end
 
   subgraph APP["Application layer"]
-    web["«Application Component»<br>Web app (5 pages)"]:::application
-    core["«Application Component»<br>Shared TypeScript core<br>(FractalService, TurtleFractalService)"]:::application
+    web["«Application Component»<br>Web app (6 pages)"]:::application
+    core["«Application Component»<br>Shared TypeScript core<br>(FractalService, TurtleFractalService,<br>Tree3DService)"]:::application
     cli["«Application Component»<br>Node CLI"]:::application
   end
 
   subgraph TEC["Technology layer"]
-    browser["«Node»<br>Web browser + Canvas2D"]:::technology
+    browser["«Node»<br>Web browser + Canvas2D/WebGL"]:::technology
     pages["«Technology Service»<br>GitHub Pages hosting"]:::technology
     node["«Node»<br>Node.js runtime"]:::technology
   end

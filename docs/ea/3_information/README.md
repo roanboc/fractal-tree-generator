@@ -26,6 +26,7 @@ flowchart TB
     fp["«Data Object»<br>FractalParams"]:::application
     tp["«Data Object»<br>TurtleProgram"]:::application
     sp["«Data Object»<br>SnowflakeParams"]:::application
+    t3p["«Data Object»<br>Tree3DParams /<br>Segment3D scene"]:::application
     fe["«Data Object»<br>FormulaError"]:::application
     rr["«Data Object»<br>RenderResult /<br>TurtleRenderResult"]:::application
     log["«Data Object»<br>FractalLogEntry"]:::application
@@ -43,6 +44,7 @@ flowchart TB
   fp -->|drawn to| png
   tp -->|drawn to| png
   sp -->|expands into| tp
+  t3p -->|drawn to| png
   tp -.->|invalid input yields| fe
   log -->|persisted in| db
   url -->|resolves| ls

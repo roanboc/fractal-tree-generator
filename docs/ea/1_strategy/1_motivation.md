@@ -31,24 +31,27 @@ flowchart TB
   d2["«Driver»<br>Demos stop at watching"]:::motivation
   g1["«Goal»<br>Explain fractals through wonder,<br>one rule at a time"]:::motivation
   g2["«Goal»<br>Progress every visitor from<br>basic play to authoring rules"]:::motivation
-  o1["«Outcome»<br>5-chapter guided journey<br>ending in a formula editor"]:::motivation
+  o1["«Outcome»<br>6-chapter guided journey:<br>formula editor, then a 3D finale"]:::motivation
   o2["«Outcome»<br>Two more shapes mastered:<br>snowflake + user-defined"]:::motivation
+  o3["«Outcome»<br>The rule seen leaving the page:<br>the same tree, orbitable in space"]:::motivation
 
   d1 -->|influences| g1
   d2 -->|influences| g2
   g1 -->|realized by| o1
   g2 -->|realized by| o1
   g2 -->|realized by| o2
+  g1 -->|realized by| o3
 
   classDef motivation fill:#e6d6f5,stroke:#7e57c2,color:#333
 ```
 
-| Goal                                                | Delivered outcome                                                                                                                               |
-| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| Explain fractals through wonder, one rule at a time | Chapters 1–2 (story + didactic pages) kept intact; chapters 4–5 reuse their vocabulary ("stick", "rule", "self-call")                           |
-| Progress visitors from basic play to authoring      | The journey now ends at `create.html`, where the visitor writes the rule — with the tree and snowflake available as loadable presets to dissect |
-| Stay bilingual                                      | Every new string ships EN + ES; parser errors are machine codes translated at the edge                                                          |
-| Stay free to operate                                | All new pages remain static; no backend added                                                                                                   |
+| Goal                                                | Delivered outcome                                                                                                                                                       |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Explain fractals through wonder, one rule at a time | Chapters 1–2 (story + didactic pages) kept intact; chapters 4–6 reuse their vocabulary ("stick", "rule", "self-call"); every closing card hands off to the next chapter |
+| Progress visitors from basic play to authoring      | The visitor writes the rule in `create.html` — with the tree and snowflake available as loadable presets to dissect                                                     |
+| Show the rule is bigger than the page               | Chapter 6 (`tree3d.html`) grows the chapter-3 tree in three dimensions with the same recursion — tilt **and** twist per split — orbitable and exportable                |
+| Stay bilingual                                      | Every new string ships EN + ES; parser errors are machine codes translated at the edge                                                                                  |
+| Stay free to operate                                | All new pages remain static; no backend added                                                                                                                           |
 
 ## Principles («Principle»)
 

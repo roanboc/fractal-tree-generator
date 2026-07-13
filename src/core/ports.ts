@@ -6,6 +6,7 @@ import {
   RenderResult,
 } from './domain/types';
 import { SnowflakeParams } from './domain/snowflake';
+import { Segment3D, Tree3DParamsInput, Tree3DRenderResult } from './domain/tree3d';
 import { TurtleOptions, TurtleProgram, TurtleRenderResult } from './domain/turtle';
 
 export interface IFractalService {
@@ -20,6 +21,26 @@ export interface ITurtleFractalService {
 
 export interface ISnowflakeService {
   generate(input: Partial<SnowflakeParams>): Promise<TurtleRenderResult>;
+  clear(): void;
+}
+
+export interface ITree3DService {
+  generate(input: Tree3DParamsInput): Promise<Tree3DRenderResult>;
+  clear(): void;
+}
+
+/**
+ * Displays a finished Segment3D scene and owns everything view-related:
+ * camera, growth reveal, optional slow spin, PNG export. Contracted in
+ * docs/ea/4_application/5_interface-contracts.md.
+ */
+export interface ITree3DRendererService {
+  initialize(config: CanvasConfig): void;
+  /** Replace the displayed scene atomically; renderers redraw on their own schedule. */
+  presentScene(segments: Segment3D[]): void;
+  /** Purely presentational; renderers without a display loop may no-op. */
+  setAutoRotate(enabled: boolean): void;
+  save(outputPath: string): Promise<void>;
   clear(): void;
 }
 

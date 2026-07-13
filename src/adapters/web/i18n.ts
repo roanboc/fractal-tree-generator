@@ -18,6 +18,7 @@ const MESSAGES: Record<string, Entry> = {
   'nav.generator': { en: 'Create!', es: '¡Crear!' },
   'nav.snowflake': { en: 'Snowflake', es: 'Copo' },
   'nav.create': { en: 'Your rule', es: 'Tu regla' },
+  'nav.tree3d': { en: 'In 3D', es: 'En 3D' },
   'footer.text': {
     en: 'Built with a single recursive rule · Open source on',
     es: 'Hecho con una sola regla recursiva · Código abierto en',
@@ -34,6 +35,7 @@ const MESSAGES: Record<string, Entry> = {
   'pager.tree': { en: 'Grow your own tree', es: 'Cultiva tu propio árbol' },
   'pager.snowflake': { en: 'Craft a snowflake', es: 'Crea un copo de nieve' },
   'pager.create': { en: 'Create your own fractal', es: 'Crea tu propio fractal' },
+  'pager.tree3d': { en: 'See your tree in 3D', es: 'Mira tu árbol en 3D' },
   'chapter.badge': {
     en: 'Chapter {n} of {total} · {label}',
     es: 'Capítulo {n} de {total} · {label}',
@@ -43,6 +45,7 @@ const MESSAGES: Record<string, Entry> = {
   'chapter.tree': { en: 'Your turn', es: 'Tu turno' },
   'chapter.snowflake': { en: 'The crystal', es: 'El cristal' },
   'chapter.create': { en: 'Your rule', es: 'Tu regla' },
+  'chapter.tree3d': { en: 'The leap', es: 'El salto' },
 
   // ── Chapter 1: the wonder (index.html) ───────────────────────────
   'story.title': {
@@ -95,6 +98,10 @@ const MESSAGES: Record<string, Entry> = {
   'story.cta.body': {
     en: "It takes just one rule. Let's learn it — and then you'll grow trees of your own.",
     es: 'Basta una sola regla. Aprendámosla — y después cultivarás tus propios árboles.',
+  },
+  'story.cta.bridge': {
+    en: 'Up next: the trick itself. One tiny rule — <strong>draw a stick, split, repeat</strong> — is about to explain every shape you just saw.',
+    es: 'A continuación: el truco. Una reglita — <strong>dibuja un palito, divide, repite</strong> — está a punto de explicar todas las formas que acabas de ver.',
   },
 
   // ── Chapter 3: generator page ────────────────────────────────────
@@ -202,8 +209,8 @@ const MESSAGES: Record<string, Entry> = {
   },
   'snowflake.outro.title': { en: 'One rule, six arms ❄️', es: 'Una regla, seis brazos ❄️' },
   'snowflake.outro.body': {
-    en: 'Every flake here is a single recursive rule — <strong>grow a spike pair, keep going, shrink</strong> — copied six times around the middle. And the same trick draws far more than trees and snowflakes: <strong>ferns, bushes, crystals, even spirals</strong>. In the final chapter, <strong>you</strong> write the rule — and invent fractals nobody has ever seen.',
-    es: 'Cada copo es una sola regla recursiva — <strong>brota un par de púas, sigue, encoge</strong> — copiada seis veces alrededor del centro. Y el mismo truco dibuja mucho más que árboles y copos: <strong>helechos, arbustos, cristales e incluso espirales</strong>. En el último capítulo, la regla la escribes <strong>tú</strong> — e inventas fractales que nadie ha visto.',
+    en: 'Every flake here is a single recursive rule — <strong>grow a spike pair, keep going, shrink</strong> — copied six times around the middle. And the same trick draws far more than trees and snowflakes: <strong>ferns, bushes, crystals, even spirals</strong>. In the next chapter, <strong>you</strong> write the rule — and invent fractals nobody has ever seen.',
+    es: 'Cada copo es una sola regla recursiva — <strong>brota un par de púas, sigue, encoge</strong> — copiada seis veces alrededor del centro. Y el mismo truco dibuja mucho más que árboles y copos: <strong>helechos, arbustos, cristales e incluso espirales</strong>. En el siguiente capítulo, la regla la escribes <strong>tú</strong> — e inventas fractales que nadie ha visto.',
   },
   'section.sf.shape.note': {
     en: 'Six identical arms grow from the center; these knobs shape every arm at once.',
@@ -433,12 +440,78 @@ const MESSAGES: Record<string, Entry> = {
     es: '«<strong>Dibuja un palito</strong>. Desvío: <strong>gira 25° a la izquierda</strong> y <strong>haz todo esto otra vez al 70% del tamaño</strong>. Vuelve. Desvío: <strong>gira 25° a la derecha</strong> y <strong>hazlo todo otra vez al 70%</strong>.» Es exactamente la regla del capítulo 2 — dos auto-llamadas, así que los palitos se duplican en cada generación.',
   },
   'create.outro.title': {
-    en: 'You made it to the last chapter 🎉',
-    es: '¡Llegaste al último capítulo! 🎉',
+    en: 'You write the rules now 🎉',
+    es: '¡Ahora las reglas las escribes tú! 🎉',
   },
   'create.outro.body': {
-    en: 'You started by wondering why trees are beautiful — and now you write the rules that grow them. Every fractal you invent here is yours: save it, share it, or walk the journey again with new eyes.',
-    es: 'Empezaste preguntándote por qué los árboles son bellos — y ahora escribes las reglas que los hacen crecer. Cada fractal que inventes aquí es tuyo: guárdalo, compártelo o recorre el viaje otra vez con otros ojos.',
+    en: 'You started by wondering why trees are beautiful — and now you write the rules that grow them. Every fractal you invent here is yours: save it, share it, dissect it.',
+    es: 'Empezaste preguntándote por qué los árboles son bellos — y ahora escribes las reglas que los hacen crecer. Cada fractal que inventes aquí es tuyo: guárdalo, compártelo, disecciónalo.',
+  },
+  'create.outro.bridge': {
+    en: "One last wonder awaits. Everything you've drawn so far lives on flat paper — but the rule doesn't care about paper. In the final chapter, your tree <strong>leaps off the page</strong>.",
+    es: 'Queda un último asombro. Todo lo que has dibujado vive en papel plano — pero a la regla el papel le da igual. En el último capítulo, tu árbol <strong>salta fuera de la página</strong>.',
+  },
+
+  // ── Chapter 6: the tree in 3D ────────────────────────────────────
+  'tree3d.title': {
+    en: 'Your Tree in 3D · Fractal Tree Studio',
+    es: 'Tu árbol en 3D · Estudio de Árboles Fractales',
+  },
+  'tree3d.hero.title': {
+    en: 'The same rule, <span class="text-accent">one more dimension</span>',
+    es: 'La misma regla, <span class="text-accent">una dimensión más</span>',
+  },
+  'tree3d.hero.body': {
+    en: 'Every tree so far lived on flat paper — but nothing in the rule says "stay flat". Let each split tilt <strong>and</strong> twist around its parent, and the very same recursion fills space. This one you can walk around.',
+    es: 'Hasta ahora, cada árbol vivía en papel plano — pero nada en la regla dice «quédate plano». Deja que cada división se incline <strong>y</strong> gire alrededor de su rama madre, y la misma recursión llena el espacio. Alrededor de este puedes caminar.',
+  },
+  'tree3d.hint': {
+    en: 'Drag to orbit · scroll or pinch to zoom',
+    es: 'Arrastra para orbitar · rueda o pellizco para acercar',
+  },
+  'tree3d.autorotate': { en: 'Slow spin 🌀', es: 'Giro lento 🌀' },
+  'btn.grow3d': { en: '🌳 Grow in 3D', es: '🌳 Cultivar en 3D' },
+  'section.t3.shape.note': {
+    en: 'The chapter-3 rule with one new knob: every split may also twist out of the page.',
+    es: 'La regla del capítulo 3 con un control nuevo: cada división también puede girar fuera de la página.',
+  },
+  'control.t3.depth': { en: 'Iterations', es: 'Iteraciones' },
+  'control.t3.branches': { en: 'Branches per split', es: 'Ramas por división' },
+  'control.t3.branchAngle': { en: 'Branch angle', es: 'Ángulo de rama' },
+  'control.t3.twist': { en: 'Twist', es: 'Torsión' },
+  'control.t3.lengthFactor': { en: 'Shrink per level', es: 'Encogimiento por nivel' },
+  'control.t3.wildness': { en: 'Wildness', es: 'Rebeldía' },
+  'help.t3.depth': {
+    en: 'How many times the branching rule repeats. With several branches per split the crown multiplies fast — drawing stops at a safety budget so the page never freezes.',
+    es: 'Cuántas veces se repite la regla de ramificación. Con varias ramas por división la copa se multiplica rápido — el dibujo se detiene en un límite de seguridad para que la página nunca se congele.',
+  },
+  'help.t3.branches': {
+    en: 'How many child branches sprout at every tip, spread evenly around the parent. Two gives the flat chapter-3 fork; three or more only fit because there is now a whole extra dimension to grow into.',
+    es: 'Cuántas ramas hijas brotan en cada punta, repartidas uniformemente alrededor de la rama madre. Dos da la bifurcación plana del capítulo 3; tres o más solo caben porque ahora hay toda una dimensión extra donde crecer.',
+  },
+  'help.t3.branchAngle': {
+    en: 'How far each child tilts away from its parent stick — the same knob as chapter 3, now measured in space.',
+    es: 'Cuánto se inclina cada rama hija respecto a su rama madre — el mismo control que en el capítulo 3, ahora medido en el espacio.',
+  },
+  'help.t3.twist': {
+    en: 'An extra rotation around the parent stick added at every level, so the branches spiral around the trunk instead of always sprouting in the same directions. This is the knob that only exists in 3D!',
+    es: 'Una rotación extra alrededor de la rama madre que se suma en cada nivel, para que las ramas espiralen alrededor del tronco en vez de brotar siempre en las mismas direcciones. ¡Este control solo existe en 3D!',
+  },
+  'help.t3.lengthFactor': {
+    en: 'How long each new branch is compared to its parent (×0.70 = 70% of the parent). Lower values give compact, bushy crowns; higher values give tall, airy ones.',
+    es: 'Qué tan larga es cada rama nueva comparada con su rama madre (×0.70 = 70% de la madre). Valores bajos dan copas compactas y tupidas; valores altos, copas altas y ligeras.',
+  },
+  'help.t3.wildness': {
+    en: 'Random nudges on every tilt, twist and length, so the tree grows like a living thing instead of a perfect antenna — the same idea as the chapter-3 slider.',
+    es: 'Empujoncitos aleatorios en cada inclinación, torsión y largo, para que el árbol crezca como un ser vivo y no como una antena perfecta — la misma idea que en el capítulo 3.',
+  },
+  'tree3d.outro.title': {
+    en: 'The rule was never flat 🌳',
+    es: 'La regla nunca fue plana 🌳',
+  },
+  'tree3d.outro.body': {
+    en: "You wondered why nature is beautiful, learned the rule, grew it, froze it into a snowflake, wrote it yourself — and now you've walked around it. That's the journey's secret: <strong>one tiny rule, repeated with love, fills a whole world</strong>. Take your fractals with you, or walk the journey again with new eyes.",
+    es: 'Te preguntaste por qué la naturaleza es bella, aprendiste la regla, la cultivaste, la congelaste en un copo, la escribiste tú — y ahora has caminado a su alrededor. Ese es el secreto del viaje: <strong>una reglita, repetida con cariño, llena un mundo entero</strong>. Llévate tus fractales, o recorre el viaje otra vez con otros ojos.',
   },
 
   // ── Learn page ───────────────────────────────────────────────────
@@ -554,6 +627,10 @@ const MESSAGES: Record<string, Entry> = {
   'learn.cta.body': {
     en: "One rule. Many repeats. Infinite trees. Go make one that's never existed before!",
     es: 'Una regla. Muchas repeticiones. Árboles infinitos. ¡Ve y crea uno que nunca haya existido!',
+  },
+  'learn.cta.bridge': {
+    en: 'In the next chapter you take the controls: set the ranges, sprinkle on the wildness, and grow a tree nobody has ever seen — <strong>yours</strong>.',
+    es: 'En el próximo capítulo tomas tú los mandos: ajusta los rangos, espolvorea la rebeldía y cultiva un árbol que nadie ha visto — <strong>el tuyo</strong>.',
   },
 };
 

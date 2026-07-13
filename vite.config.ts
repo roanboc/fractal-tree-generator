@@ -37,6 +37,7 @@ export default defineConfig({
         generator: resolve(__dirname, 'pages/generator.html'),
         snowflake: resolve(__dirname, 'pages/snowflake.html'),
         create: resolve(__dirname, 'pages/create.html'),
+        tree3d: resolve(__dirname, 'pages/tree3d.html'),
       },
     },
   },

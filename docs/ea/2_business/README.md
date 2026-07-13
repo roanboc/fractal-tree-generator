@@ -33,6 +33,7 @@ flowchart TB
   tree["«Business Service»<br>Tree generation"]:::business
   snow["«Business Service»<br>Snowflake crafting"]:::business
   author["«Business Service»<br>Custom-rule authoring"]:::business
+  behold["«Business Service»<br>3D tree beholding"]:::business
   export["«Business Service»<br>Artwork export"]:::business
   l10n["«Business Service»<br>Localized experience"]:::business
 
@@ -46,6 +47,7 @@ flowchart TB
   creator -->|served by| tree
   creator -->|served by| snow
   creator -->|served by| author
+  creator -->|served by| behold
   creator -->|served by| export
   visitor -->|served by| l10n
 
@@ -54,6 +56,7 @@ flowchart TB
   journey -->|realizes| tree
   journey -->|realizes| snow
   journey -->|realizes| author
+  journey -->|realizes| behold
   export -->|accesses| artwork
 
   classDef business fill:#fffbb5,stroke:#b8a200,color:#333

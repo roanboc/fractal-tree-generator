@@ -16,34 +16,39 @@ never the other way around.
 
 ## Solution overview
 
-The system has two pieces of business logic: the classic recursive tree
-algorithm (`FractalService`) and a generic turtle-program interpreter
+The system has three pieces of business logic: the classic recursive tree
+algorithm (`FractalService`), a generic turtle-program interpreter
 (`TurtleFractalService`) that executes data-driven fractal rules — the
 snowflake page runs a fixed dendrite rule on it (via the `SnowflakeService`
 façade) and the create-your-own page runs user-written formulas parsed by
-`turtle/formula.ts`. Both engines draw through the same
-`IRendererService` segment primitive, so the browser UI and the headless
-CLI stay thin adapters. Nothing about drawing algorithms, validation
-rules, or animation timing is duplicated between platforms; the only
-things that differ are _how a segment gets drawn_ (Canvas2D vs.
-`node-canvas`) and _what happens to the result_ (stays on screen vs. gets
-written to disk + logged).
+`turtle/formula.ts` — and a 3D tree builder (`Tree3DService`) that grows
+the branching rule in space as platform-free `Segment3D` geometry. The 2D
+engines draw through the same `IRendererService` segment primitive, so the
+browser UI and the headless CLI stay thin adapters; the 3D engine hands
+its finished scene to the `ITree3DRendererService` port, whose WebGL
+adapter owns camera and interaction. Nothing about drawing algorithms,
+validation rules, or animation timing is duplicated between platforms; the
+only things that differ are _how a segment gets drawn_ (Canvas2D vs.
+`node-canvas` vs. WebGL) and _what happens to the result_ (stays on screen
+vs. gets written to disk + logged).
 
 ## Project structure
 
 ```
 pages/                           # HTML entry points (Vite root) — index, learn,
-│                                # generator, snowflake, create
+│                                # generator, snowflake, create, tree3d
 src/
 ├── core/                        # Framework-agnostic domain + business logic
 │   ├── domain/types.ts          # Value types: FractalParams, CanvasConfig, ...
 │   ├── domain/turtle.ts         # Turtle engine types: TurtleProgram, TurtleStep, ...
 │   ├── domain/snowflake.ts      # SnowflakeParams
+│   ├── domain/tree3d.ts         # 3D chapter types: Tree3DParams, Segment3D, Vec3, ...
 │   ├── ports.ts                 # Interfaces the core depends on (never concretes)
 │   └── application/
 │       ├── FractalService.ts    # The recursive tree algorithm (chapters 1–3)
 │       ├── TurtleFractalService.ts  # Generic turtle-program interpreter (chapters 4–5)
 │       ├── SnowflakeService.ts  # Dendrite-crystal façade over the turtle engine
+│       ├── Tree3DService.ts     # Breadth-first 3D tree builder (chapter 6)
 │       ├── turtle/formula.ts    # Formula DSL: parser, serializer, validator, estimator
 │       ├── ConfigService.ts     # Tree defaults + validation/clamping
 │       ├── SpeedControlService.ts
@@ -51,22 +56,25 @@ src/
 ├── adapters/                    # Platform-specific implementations of the ports
 │   ├── web/
 │   │   ├── WebRendererService.ts   # Implements IRendererService via Canvas2D
+│   │   ├── WebGLTreeRendererService.ts # Implements ITree3DRendererService via raw WebGL
 │   │   ├── routes.ts               # The journey's route list; nav/badges/pagers derive from it
 │   │   ├── chrome.ts               # Shared header/badge/pager rendering + theme/lang wiring
 │   │   ├── serialRunner.ts         # Serializes generate() runs (latest queued params win)
 │   │   ├── controls/widgets.ts     # Reusable slider/color/action-row widgets
 │   │   ├── ControlsView.ts         # Tree panel (interval sliders + widgets)
 │   │   ├── SnowflakeControls.ts    # Simpler snowflake panel (widgets only)
+│   │   ├── Tree3DControls.ts       # 3D tree panel (widgets + spin toggle)
 │   │   ├── rulebuilder/            # FormulaBox (text) + RuleBuilderView (visual), two-way synced
 │   │   ├── main.ts                 # Entry: generator page (chapter 3)
 │   │   ├── story.ts / learn.ts     # Entries: chapters 1–2
-│   │   └── snowflake.ts / create.ts # Entries: chapters 4–5
+│   │   ├── snowflake.ts / create.ts # Entries: chapters 4–5
+│   │   └── tree3d.ts               # Entry: 3D tree page (chapter 6)
 │   └── node/
 │       ├── NodeCanvasRendererService.ts  # Implements IRendererService via node-canvas
 │       ├── FractalLogRepository.ts       # Implements IFractalLogRepository via SQLite
 │       └── LoggerService.ts
 ├── composition/                 # Composition roots — the only place adapters are wired together
-│   ├── WebComposition.ts        # composeWebServices / composeTurtleServices / composeSnowflakeServices
+│   ├── WebComposition.ts        # composeWebServices / composeTurtleServices / composeSnowflakeServices / composeTree3DServices
 │   └── NodeComposition.ts       # Used by cli.ts only
 └── cli.ts                       # Node CLI entry point
 
